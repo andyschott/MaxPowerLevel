@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Destiny2;
 using Microsoft.AspNetCore.Mvc;
 using MaxPowerLevel.Models;
 
@@ -10,9 +11,17 @@ namespace MaxPowerLevel.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            using(var destiny = new Destiny())
+            {
+                var manifest = await destiny.GetManifest();
+                var model = new HomeViewModel()
+                {
+                    Manifest = manifest
+                };
+                return View(model);
+            }
         }
 
         public IActionResult Privacy()

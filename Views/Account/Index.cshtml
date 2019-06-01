@@ -1,0 +1,14 @@
+@{
+    ViewData["Title"] = "Accounts";
+}
+
+<div class="row">
+    <div class="col-md-12">
+      <ul>
+      @foreach (var account in Model.Accounts)
+      {
+        <li><a asp-action="Details" asp-route-id="@account.Id">@Model.GetAccountName(account)</a></li>
+      }
+      </ul>
+    </div>
+</div>

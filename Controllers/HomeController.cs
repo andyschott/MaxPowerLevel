@@ -14,37 +14,13 @@ namespace MaxPowerLevel.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IConfiguration _config;
-
-        public HomeController(IConfiguration config)
+        public IActionResult Index()
         {
-            _config = config;
-        }
-
-        public async Task<IActionResult> Index()
-        {
-            var model = new HomeViewModel();
-
             if(User.Identity.IsAuthenticated)
             {
-                var accessToken = await HttpContext.GetTokenAsync("access_token");
-                
-                using(var destiny = new Destiny(_config["Bungie:ApiKey"], accessToken))
-                {
-                    var value = User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                    long.TryParse(value, out long membershipId);
-
-                    var membershipData = await destiny.GetMembershipData(membershipId);
-                    model.Accounts = (from membership in membershipData.Memberships
-                                      select new Account
-                                      {
-                                          Id = membership.MembershipId,
-                                          Type = membership.MembershipType
-                                      }).ToList();
-                }
+                return Redirect("/Account");
             }
-
-            return View(model);
+            return View();
         }
 
         public IActionResult Privacy()

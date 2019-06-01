@@ -1,23 +1,9 @@
-﻿@model HomeViewModel
-
-@{
+﻿@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="row">
     <div class="col-md-12">
-        @if (!User.Identity.IsAuthenticated)
-        {
-            <a asp-action="Login" asp-controller="Account" class="btn btn-default">Login with Bungie</a>
-        }
-        else
-        {
-            <ul>
-            @foreach (var account in @Model.Accounts)
-            {
-                <li>@account.Id: @account.Type.ToString()</li>                
-            }
-            </ul>
-        }
+        <a asp-action="Login" asp-controller="Account" asp-route-returnUrl="/Account" class="btn btn-default">Login with Bungie</a>
     </div>
 </div>

@@ -6,19 +6,34 @@ using System.Threading.Tasks;
 using Destiny2;
 using Microsoft.AspNetCore.Mvc;
 using MaxPowerLevel.Models;
+using System.Security.Claims;
+using Microsoft.Extensions.Configuration;
 
 namespace MaxPowerLevel.Controllers
 {
     public class HomeController : Controller
     {
-        public async Task<IActionResult> Index()
+        private readonly IConfiguration _config;
+
+        public HomeController(IConfiguration config)
         {
-            using(var destiny = new Destiny())
+            _config = config;
+        }
+
+        public IActionResult Index()
+        {
+            using(var destiny = new Destiny(_config["Bungie:ApiKey"]))
             {
-                var manifest = await destiny.GetManifest();
+                int membershipId = -1;
+                if(User.Identity.IsAuthenticated)
+                {
+                    var value = User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+                    int.TryParse(value, out membershipId);
+                }
+
                 var model = new HomeViewModel()
                 {
-                    Manifest = manifest
+                    MembershipId = membershipId
                 };
                 return View(model);
             }

@@ -4,6 +4,15 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <p>Manifest version @Model.Manifest.Version</p>
+<div class="row">
+    <div class="col-md-12">
+        @if (!User.Identity.IsAuthenticated)
+        {
+            <a asp-action="Login" asp-controller="Account" class="btn btn-default">Login with Bungie</a>
+        }
+        else
+        {
+            <p>Membership ID: @Model.MembershipId</p>
+        }
+    </div>
 </div>

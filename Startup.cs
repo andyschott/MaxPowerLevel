@@ -1,7 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
+using MaxPowerLevel.Helpers;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -9,6 +18,8 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Linq;
 
 namespace MaxPowerLevel
 {
@@ -33,6 +44,34 @@ namespace MaxPowerLevel
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+
+            services.AddAuthentication(options => {
+                options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = "Bungie";
+            })
+            .AddCookie()
+            .AddOAuth("Bungie", options => {
+                options.ClientId = Configuration["Bungie:ClientId"];
+                options.ClientSecret = Configuration["Bungie:ClientSecret"];
+                options.CallbackPath = new PathString("/signin-bungie/");
+
+                options.AuthorizationEndpoint = "https://www.bungie.net/en/oauth/authorize";
+                options.TokenEndpoint = "https://www.bungie.net/platform/app/oauth/token/";
+
+                options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "membership_id");
+
+                options.Events = new OAuthEvents
+                {
+                    OnCreatingTicket = context =>
+                    {
+                        context.RunClaimActions(context.TokenResponse.Response);
+                        var t = new Task(() => {});
+                        t.Start();
+                        return t;
+                    }
+                };
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,6 +90,7 @@ namespace MaxPowerLevel
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseAuthentication();
             app.UseCookiePolicy();
 
             app.UseMvc(routes =>

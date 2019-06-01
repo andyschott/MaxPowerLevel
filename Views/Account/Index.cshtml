@@ -7,7 +7,7 @@
       <ul>
       @foreach (var account in Model.Accounts)
       {
-        <li><a asp-action="Details" asp-route-id="@account.Id">@Model.GetAccountName(account)</a></li>
+        <li><a asp-action="Details" asp-route-type="@((int)account.Type)" asp-route-id="@account.Id">@Model.GetAccountName(account)</a></li>
       }
       </ul>
     </div>

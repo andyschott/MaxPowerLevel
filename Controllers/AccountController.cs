@@ -38,20 +38,31 @@ namespace MaxPowerLevel.Controllers
 
                 var membershipData = await destiny.GetMembershipData(membershipId);
                 model.Accounts = (from membership in membershipData.Memberships
-                                    select new Account
-                                    {
-                                        Id = membership.MembershipId,
-                                        Type = membership.MembershipType
-                                    }).ToList();
+                                  select new Account(membership.MembershipType, membership.MembershipId))
+                                 .ToList();
             }
 
             return View(model);
         }
 
-        [HttpGet]
-        public IActionResult Details(int id)
+        [HttpGet("{type}/{id}")]
+        public async Task<IActionResult> Details(int type, long id)
         {
-            return View();
+            var membershipType = (BungieMembershipType)type;
+            var model = new AccountDetailsViewModel(membershipType, id);
+
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+            using(var destiny = new Destiny(_config["Bungie:ApiKey"], accessToken))
+            {
+                var profileResponse = await destiny.GetProfile(membershipType, id);
+                foreach(var characterId in profileResponse.Profile.Data.CharacterIds)
+                {
+                    var characterInfo = await destiny.GetCharacterInfo(membershipType, id, characterId, DestinyComponentType.Characters);
+                    model.Characters.Add(new Character(characterId, characterInfo.Character.Data));
+                }
+            }
+
+            return View(model);
         }
     }
 }

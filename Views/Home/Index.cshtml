@@ -12,7 +12,12 @@
         }
         else
         {
-            <p>Membership ID: @Model.MembershipId</p>
+            <ul>
+            @foreach (var account in @Model.Accounts)
+            {
+                <li>@account.Id: @account.Type.ToString()</li>                
+            }
+            </ul>
         }
     </div>
 </div>

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using MaxPowerLevel.Models;
 using System.Security.Claims;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Authentication;
 
 namespace MaxPowerLevel.Controllers
 {
@@ -20,23 +21,30 @@ namespace MaxPowerLevel.Controllers
             _config = config;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            using(var destiny = new Destiny(_config["Bungie:ApiKey"]))
+            var model = new HomeViewModel();
+
+            if(User.Identity.IsAuthenticated)
             {
-                int membershipId = -1;
-                if(User.Identity.IsAuthenticated)
+                var accessToken = await HttpContext.GetTokenAsync("access_token");
+                
+                using(var destiny = new Destiny(_config["Bungie:ApiKey"], accessToken))
                 {
                     var value = User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                    int.TryParse(value, out membershipId);
-                }
+                    long.TryParse(value, out long membershipId);
 
-                var model = new HomeViewModel()
-                {
-                    MembershipId = membershipId
-                };
-                return View(model);
+                    var membershipData = await destiny.GetMembershipData(membershipId);
+                    model.Accounts = (from membership in membershipData.Memberships
+                                      select new Account
+                                      {
+                                          Id = membership.MembershipId,
+                                          Type = membership.MembershipType
+                                      }).ToList();
+                }
             }
+
+            return View(model);
         }
 
         public IActionResult Privacy()

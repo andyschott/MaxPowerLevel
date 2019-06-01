@@ -59,6 +59,8 @@ namespace MaxPowerLevel
                 options.AuthorizationEndpoint = "https://www.bungie.net/en/oauth/authorize";
                 options.TokenEndpoint = "https://www.bungie.net/platform/app/oauth/token/";
 
+                options.SaveTokens = true;
+
                 options.ClaimActions.MapJsonKey(ClaimTypes.NameIdentifier, "membership_id");
 
                 options.Events = new OAuthEvents

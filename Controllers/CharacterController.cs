@@ -15,6 +15,7 @@ namespace MaxPowerLevel.Controllers
     public class CharacterController : Controller
     {
         private readonly IDestinyService _destiny;
+        private readonly IManifestService _manifest;
 
         private static readonly ISet<ItemSlot> _includedSlots =
             new HashSet<ItemSlot>
@@ -29,9 +30,10 @@ namespace MaxPowerLevel.Controllers
                 ItemSlot.ClassArmor,
             };
 
-        public CharacterController(IDestinyService destiny)
+        public CharacterController(IDestinyService destiny, IManifestService manifest)
         {
             _destiny = destiny;
+            _manifest = manifest;
         }
         
         [HttpGet("{type}/{id}/{characterId}")]
@@ -39,7 +41,6 @@ namespace MaxPowerLevel.Controllers
         {
             var membershipType = (BungieMembershipType)type;
 
-            var db = new ManifestDb((string)HttpContext.Items["ManifestDbPath"]);
             var model = new CharacterViewModel();
 
             var characterInfo = await _destiny.GetCharacterInfoAsync(membershipType, id, characterId, DestinyComponentType.CharacterEquipment);
@@ -50,7 +51,7 @@ namespace MaxPowerLevel.Controllers
                     continue;
                 }
 
-                var item = await db.LoadInventoryItem(itemComponent.ItemHash);
+                var item = await _manifest.LoadInventoryItemAsync(itemComponent.ItemHash);
                 DestinyItemInstanceComponent instance = null;
                 if(item.Inventory.IsInstanceItem)
                 {

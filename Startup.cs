@@ -49,6 +49,7 @@ namespace MaxPowerLevel
             services.AddHttpContextAccessor();
 
             services.AddScoped<IDestinyService, DestinyService>();
+            services.AddScoped<IManifestService, ManifestService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 

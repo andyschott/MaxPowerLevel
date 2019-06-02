@@ -14,10 +14,12 @@ namespace MaxPowerLevel.Controllers
     public class AccountController : Controller
     {
         private readonly IDestinyService _destiny;
+        private readonly IManifestService _manifest;
 
-        public AccountController(IDestinyService destiny)
+        public AccountController(IDestinyService destiny, IManifestService manifest)
         {
             _destiny = destiny;
+            _manifest = manifest;
         }
 
         [HttpGet("login")]
@@ -48,13 +50,11 @@ namespace MaxPowerLevel.Controllers
             var membershipType = (BungieMembershipType)type;
             var model = new AccountDetailsViewModel(membershipType, id);
 
-            var db = new ManifestDb((string)HttpContext.Items["ManifestDbPath"]);
-
             var profileResponse = await _destiny.GetProfileAsync(membershipType, id);
             foreach(var characterId in profileResponse.Profile.Data.CharacterIds)
             {
                 var characterInfo = await _destiny.GetCharacterInfoAsync(membershipType, id, characterId, DestinyComponentType.Characters);
-                var classDef = await db.LoadClass(characterInfo.Character.Data.ClassHash);
+                var classDef = await _manifest.LoadClassAsync(characterInfo.Character.Data.ClassHash);
 
                 model.Characters.Add(new Character(characterId, characterInfo.Character.Data, classDef));
             }

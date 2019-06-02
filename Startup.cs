@@ -140,7 +140,11 @@ namespace MaxPowerLevel
                 ClientSecret = Configuration["Bungie:ClientSecret"],
                 RefreshToken = refreshToken.Value
             };
-            var tokenResponse = await new HttpClient().RequestRefreshTokenAsync(request);
+            TokenResponse tokenResponse;
+            using(var client = new HttpClient())
+            {
+                tokenResponse = await client.RequestRefreshTokenAsync(request);
+            }
 
             if(tokenResponse.IsError)
             {

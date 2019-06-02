@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using IdentityModel.Client;
 using MaxPowerLevel.Helpers;
 using MaxPowerLevel.Middleware;
+using MaxPowerLevel.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -45,6 +46,9 @@ namespace MaxPowerLevel
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddHttpContextAccessor();
+
+            services.AddScoped<IDestinyService, DestinyService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 

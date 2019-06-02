@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Destiny2;
 using MaxPowerLevel.Models;
+using MaxPowerLevel.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -12,11 +13,11 @@ namespace MaxPowerLevel.Controllers
     [Route("[controller]")]
     public class AccountController : Controller
     {
-        private readonly IConfiguration _config;
+        private readonly IDestinyService _destiny;
 
-        public AccountController(IConfiguration config)
+        public AccountController(IDestinyService destiny)
         {
-            _config = config;
+            _destiny = destiny;
         }
 
         [HttpGet("login")]
@@ -30,18 +31,13 @@ namespace MaxPowerLevel.Controllers
         {
             var model = new AccountsViewModel();
 
-            var accessToken = await HttpContext.GetTokenAsync("access_token");
-            
-            using(var destiny = new Destiny(_config["Bungie:ApiKey"], accessToken))
-            {
-                var value = User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                long.TryParse(value, out long membershipId);
+            var value = User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            long.TryParse(value, out long membershipId);
 
-                var membershipData = await destiny.GetMembershipData(membershipId);
-                model.Accounts = (from membership in membershipData.Memberships
-                                  select new Account(membership.MembershipType, membership.MembershipId))
-                                 .ToList();
-            }
+            var membershipData = await _destiny.GetMembershipDataAsync(membershipId);
+            model.Accounts = (from membership in membershipData.Memberships
+                                select new Account(membership.MembershipType, membership.MembershipId))
+                                .ToList();
 
             return View(model);
         }
@@ -54,17 +50,13 @@ namespace MaxPowerLevel.Controllers
 
             var db = new ManifestDb((string)HttpContext.Items["ManifestDbPath"]);
 
-            var accessToken = await HttpContext.GetTokenAsync("access_token");
-            using(var destiny = new Destiny(_config["Bungie:ApiKey"], accessToken))
+            var profileResponse = await _destiny.GetProfileAsync(membershipType, id);
+            foreach(var characterId in profileResponse.Profile.Data.CharacterIds)
             {
-                var profileResponse = await destiny.GetProfile(membershipType, id);
-                foreach(var characterId in profileResponse.Profile.Data.CharacterIds)
-                {
-                    var characterInfo = await destiny.GetCharacterInfo(membershipType, id, characterId, DestinyComponentType.Characters);
-                    var classDef = await db.LoadClass(characterInfo.Character.Data.ClassHash);
+                var characterInfo = await _destiny.GetCharacterInfoAsync(membershipType, id, characterId, DestinyComponentType.Characters);
+                var classDef = await db.LoadClass(characterInfo.Character.Data.ClassHash);
 
-                    model.Characters.Add(new Character(characterId, characterInfo.Character.Data, classDef));
-                }
+                model.Characters.Add(new Character(characterId, characterInfo.Character.Data, classDef));
             }
 
             return View(model);

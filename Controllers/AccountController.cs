@@ -52,6 +52,8 @@ namespace MaxPowerLevel.Controllers
             var membershipType = (BungieMembershipType)type;
             var model = new AccountDetailsViewModel(membershipType, id);
 
+            var db = new ManifestDb((string)HttpContext.Items["ManifestDbPath"]);
+
             var accessToken = await HttpContext.GetTokenAsync("access_token");
             using(var destiny = new Destiny(_config["Bungie:ApiKey"], accessToken))
             {
@@ -59,7 +61,9 @@ namespace MaxPowerLevel.Controllers
                 foreach(var characterId in profileResponse.Profile.Data.CharacterIds)
                 {
                     var characterInfo = await destiny.GetCharacterInfo(membershipType, id, characterId, DestinyComponentType.Characters);
-                    model.Characters.Add(new Character(characterId, characterInfo.Character.Data));
+                    var classDef = await db.LoadClass(characterInfo.Character.Data.ClassHash);
+
+                    model.Characters.Add(new Character(characterId, characterInfo.Character.Data, classDef));
                 }
             }
 

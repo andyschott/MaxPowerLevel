@@ -51,6 +51,8 @@ namespace MaxPowerLevel.Middleware
                 Task t = UpdateCurrentManifestVersion(updatedVersion);
             }
 
+            context.Items.Add("ManifestDbPath", _manifestDbPath.FullName);
+
             await _next(context);
         }
 

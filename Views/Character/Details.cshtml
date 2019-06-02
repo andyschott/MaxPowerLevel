@@ -1,0 +1,14 @@
+@{
+    ViewData["Title"] = "Character Gear";
+}
+
+<div class="row">
+    <div class="col-md-12">
+      <ul>
+      @foreach (var item in Model.Items)
+      {
+        <li>@item.Name (@item.PowerLevel) [@item.Tier]</li>
+      }
+      </ul>
+    </div>
+</div>

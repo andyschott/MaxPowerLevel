@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using IdentityModel.Client;
 using MaxPowerLevel.Helpers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -50,7 +52,12 @@ namespace MaxPowerLevel
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = "Bungie";
             })
-            .AddCookie()
+            .AddCookie(options => {
+                options.Events = new CookieAuthenticationEvents
+                {
+                    OnValidatePrincipal = HandleRefreshToken
+                };
+            })
             .AddOAuth("Bungie", options => {
                 options.ClientId = Configuration["Bungie:ClientId"];
                 options.ClientSecret = Configuration["Bungie:ClientSecret"];
@@ -68,9 +75,11 @@ namespace MaxPowerLevel
                     OnCreatingTicket = context =>
                     {
                         context.RunClaimActions(context.TokenResponse.Response);
-                        var t = new Task(() => {});
-                        t.Start();
-                        return t;
+                        return Task.CompletedTask;
+                    },
+                    OnRemoteFailure = context =>
+                    {
+                        return Task.CompletedTask;
                     }
                 };
             });
@@ -101,6 +110,50 @@ namespace MaxPowerLevel
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+        }
+
+        // https://stackoverflow.com/q/52175302/3857
+        private async Task HandleRefreshToken(CookieValidatePrincipalContext context)
+        {
+            if(!context.Principal.Identity.IsAuthenticated)
+            {
+                return;
+            }
+
+            var tokens = context.Properties.GetTokens();
+            var refreshToken = tokens.FirstOrDefault(t => t.Name == "refresh_token");
+            var accessToken = tokens.FirstOrDefault(t => t.Name == "access_token");
+            var exp = tokens.FirstOrDefault(t => t.Name == "expires_at");
+            var expires = DateTime.Parse(exp.Value);
+            if(expires >= DateTime.Now)
+            {
+                return;
+            }
+
+            // Token is expired. Attempt to renew it.
+            var request = new RefreshTokenRequest
+            {
+                Address = "https://www.bungie.net/platform/app/oauth/token/",
+                ClientId = Configuration["Bungie:ClientId"],
+                ClientSecret = Configuration["Bungie:ClientSecret"],
+                RefreshToken = refreshToken.Value
+            };
+            var tokenResponse = await new HttpClient().RequestRefreshTokenAsync(request);
+
+            if(tokenResponse.IsError)
+            {
+                context.RejectPrincipal();
+                return;
+            }
+
+            refreshToken.Value = tokenResponse.RefreshToken;
+            accessToken.Value = tokenResponse.AccessToken;
+
+            var newExpires = DateTime.UtcNow + TimeSpan.FromSeconds(tokenResponse.ExpiresIn);
+            exp.Value = newExpires.ToString("o", CultureInfo.InvariantCulture);
+
+            context.Properties.StoreTokens(tokens);
+            context.ShouldRenew = true;
         }
     }
 }

@@ -9,6 +9,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace MaxPowerLevel.Controllers
 {
+    [Route("[controller]")]
     public class AccountController : Controller
     {
         private readonly IConfiguration _config;
@@ -18,7 +19,7 @@ namespace MaxPowerLevel.Controllers
             _config = config;
         }
 
-        [HttpGet]
+        [HttpGet("login")]
         public IActionResult Login(string returnUrl = "/")
         {
             return Challenge(new AuthenticationProperties() { RedirectUri = returnUrl });

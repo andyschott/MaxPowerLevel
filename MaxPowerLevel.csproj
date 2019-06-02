@@ -5,11 +5,12 @@
     <UserSecretsId>ed64c0be-3d6b-4283-b887-4dcb9de6293a</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.App"/>
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All"/>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2"/>
+    <PackageReference Include="IdentityModel" Version="3.10.10"/>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Destiny2\Destiny2.csproj" />
+    <ProjectReference Include="..\Destiny2\Destiny2.csproj"/>
   </ItemGroup>
 </Project>

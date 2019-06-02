@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using IdentityModel.Client;
 using MaxPowerLevel.Helpers;
+using MaxPowerLevel.Middleware;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -103,6 +104,7 @@ namespace MaxPowerLevel
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseCookiePolicy();
+            app.UseDownloadManifest(Configuration["Bungie:ApiKey"]);
 
             app.UseMvc(routes =>
             {

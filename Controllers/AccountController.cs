@@ -50,13 +50,11 @@ namespace MaxPowerLevel.Controllers
             var membershipType = (BungieMembershipType)type;
             var model = new AccountDetailsViewModel(membershipType, id);
 
-            var profileResponse = await _destiny.GetProfileAsync(membershipType, id);
-            foreach(var characterId in profileResponse.Profile.Data.CharacterIds)
+            var profileResponse = await _destiny.GetProfileAsync(membershipType, id, DestinyComponentType.Characters);
+            foreach(var item in profileResponse.Characters.Data)
             {
-                var characterInfo = await _destiny.GetCharacterInfoAsync(membershipType, id, characterId, DestinyComponentType.Characters);
-                var classDef = await _manifest.LoadClassAsync(characterInfo.Character.Data.ClassHash);
-
-                model.Characters.Add(new Character(characterId, characterInfo.Character.Data, classDef));
+                var classDef = await _manifest.LoadClassAsync(item.Value.ClassHash);
+                model.Characters.Add(new Character(item.Key, item.Value, classDef));
             }
 
             return View(model);

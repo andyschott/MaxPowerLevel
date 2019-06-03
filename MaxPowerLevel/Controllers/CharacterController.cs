@@ -43,9 +43,11 @@ namespace MaxPowerLevel.Controllers
         {
             var membershipType = (BungieMembershipType)type;
 
+            var maxGear = await _maxPower.ComputeMaxPowerAsync(membershipType, id, characterId);
             var model = new CharacterViewModel()
             {
-                Items = await _maxPower.ComputeMaxPowerAsync(membershipType, id, characterId),
+                Items = maxGear,
+                MaxPower = _maxPower.ComputePower(maxGear.Values),
             };
 
             return View(model);

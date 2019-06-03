@@ -70,6 +70,11 @@ namespace MaxPowerLevel.Services
                 .ToDictionary(item => item.Slot);
         }
 
+        public int ComputePower(IEnumerable<Item> items)
+        {
+            return MaxPower.ComputePower(items);
+        }
+
         private (DestinyItemComponent Item, DestinyItemInstanceComponent Instance) LoadItem(DestinyItemComponent itemComponent, IDictionary<long, DestinyItemInstanceComponent> itemInstances)
         {
             itemInstances.TryGetValue(itemComponent.ItemInstanceId, out DestinyItemInstanceComponent instance);

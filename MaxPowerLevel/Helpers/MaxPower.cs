@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Destiny2;
@@ -7,6 +8,11 @@ namespace MaxPowerLevel.Helpers
 {
     public static class MaxPower
     {
+        public static int ComputePower(IEnumerable<Item> items)
+        {
+            var power = items.Average(item => item.PowerLevel);
+            return (int)Math.Floor(power);
+        }
         public static IEnumerable<Item> FindMax(params IEnumerable<Item>[] items)
         {
             if(!items.Any())

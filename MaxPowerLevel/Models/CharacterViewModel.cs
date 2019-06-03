@@ -6,6 +6,7 @@ namespace MaxPowerLevel.Models
     public class CharacterViewModel
     {
         public IDictionary<ItemSlot, Item> Items { get; set; } = new Dictionary<ItemSlot, Item>();
+        public int MaxPower { get; set; } = 0;
 
         public Item KineticWeapon
         {

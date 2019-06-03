@@ -50,6 +50,7 @@ namespace MaxPowerLevel
 
             services.AddScoped<IDestinyService, DestinyService>();
             services.AddScoped<IManifestService, ManifestService>();
+            services.AddScoped<IMaxPowerService, MaxPowerService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 

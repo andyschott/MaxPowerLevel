@@ -16,6 +16,7 @@ namespace MaxPowerLevel.Controllers
     {
         private readonly IDestinyService _destiny;
         private readonly IManifestService _manifest;
+        private readonly IMaxPowerService _maxPower;
 
         private static readonly ISet<ItemSlot> _includedSlots =
             new HashSet<ItemSlot>
@@ -30,10 +31,11 @@ namespace MaxPowerLevel.Controllers
                 ItemSlot.ClassArmor,
             };
 
-        public CharacterController(IDestinyService destiny, IManifestService manifest)
+        public CharacterController(IDestinyService destiny, IManifestService manifest, IMaxPowerService maxPower)
         {
             _destiny = destiny;
             _manifest = manifest;
+            _maxPower = maxPower;
         }
         
         [HttpGet("{type}/{id}/{characterId}")]
@@ -43,22 +45,10 @@ namespace MaxPowerLevel.Controllers
 
             var model = new CharacterViewModel();
 
-            var characterInfo = await _destiny.GetCharacterInfoAsync(membershipType, id, characterId, DestinyComponentType.CharacterEquipment);
-            foreach(var itemComponent in characterInfo.Equipment.Data.Items)
+            var maxPowerGear = await _maxPower.ComputeMaxPowerAsync(membershipType, id, characterId);
+            foreach(var item in maxPowerGear.Values)
             {
-                if(!_includedSlots.Contains((ItemSlot)itemComponent.BucketHash))
-                {
-                    continue;
-                }
-
-                var item = await _manifest.LoadInventoryItemAsync(itemComponent.ItemHash);
-                DestinyItemInstanceComponent instance = null;
-                if(item.Inventory.IsInstanceItem)
-                {
-                    var instanceResponse = await _destiny.GetItemAsync(membershipType, id, itemComponent.ItemInstanceId, DestinyComponentType.ItemInstances);
-                    instance = instanceResponse?.Instance?.Data;
-                }
-                model.Items.Add(new Item(itemComponent, item, instance));
+                model.Items.Add(item);
             }
             
             return View(model);

@@ -5,6 +5,7 @@ using Destiny2;
 using Destiny2.Definitions;
 using Destiny2.Entities.Items;
 using Destiny2.Responses;
+using MaxPowerLevel.Helpers;
 using MaxPowerLevel.Models;
 
 namespace MaxPowerLevel.Services
@@ -56,10 +57,10 @@ namespace MaxPowerLevel.Services
                 .OrderByDescending(item => item.PowerLevel)
                 .ToLookup(item => item.Slot);
 
-            var maxWeapons = FindMax(gearSlots[ItemSlot.KineticWeapon],
+            var maxWeapons = MaxPower.FindMax(gearSlots[ItemSlot.KineticWeapon],
                 gearSlots[ItemSlot.EnergyWeapon],
                 gearSlots[ItemSlot.PowerWeapon]);
-            var maxArmor = FindMax(gearSlots[ItemSlot.Helmet],
+            var maxArmor = MaxPower.FindMax(gearSlots[ItemSlot.Helmet],
                 gearSlots[ItemSlot.Gauntlet],
                 gearSlots[ItemSlot.ChestArmor],
                 gearSlots[ItemSlot.LegArmor],
@@ -87,133 +88,6 @@ namespace MaxPowerLevel.Services
             }
 
             return items;
-        }
-
-        private IEnumerable<Item> FindMax(params IEnumerable<Item>[] items)
-        {
-            if(!items.Any())
-            {
-                return Enumerable.Empty<Item>();
-            }
-
-            // The first item can just be added to the list.
-            var maxItems = new List<Item>();
-            maxItems.Add(items[0].First());
-            int? exoticIndex = null;
-
-            for(var index = 1; index < items.Length; ++index)
-            {
-                var maxItem = items[index].First();
-                if(maxItem.Tier != TierType.Exotic)
-                {
-                    // This item isn't exotic. Add it to the list and move on.
-                    maxItems.Add(maxItem);
-                    continue;
-                }
-
-                // If a previous item is an exotic, determine which slot
-                // has the higher non-exotic.
-                if(exoticIndex == null)
-                {
-                    // No other exotics. Use this one and move on to the
-                    // next slot.
-                    maxItems.Add(maxItem);
-                    exoticIndex = index;
-                    continue;
-                }
- 
-                var prevExotic = maxItems[exoticIndex.Value];
-                if(prevExotic.PowerLevel == maxItem.PowerLevel)
-                {
-                    var prevLegendaryMaxItem = items[exoticIndex.Value]
-                        .FirstOrDefault(item => item.Tier != TierType.Exotic);
-                    if(null == prevLegendaryMaxItem)
-                    {
-                        // Only exotics in the previous slot. Use a non-exotic
-                        // in this slot.
-                        maxItem = items[index].First(item => item.Tier != TierType.Exotic);
-                        maxItems.Add(maxItem);
-                        continue;
-                    }
-
-                    var curLegendaryMaxItem = items[index]
-                        .FirstOrDefault(item => item.Tier != TierType.Exotic);
-                    if(null == curLegendaryMaxItem)
-                    {
-                        // Only exotics in the current slot. Use a non-exotic
-                        // in the previous slot.
-                        var prevMaxItem = items[exoticIndex.Value]
-                            .First(item => item.Tier != TierType.Exotic);
-                        maxItems[exoticIndex.Value] = prevMaxItem;
-
-                        maxItems.Add(maxItem);
-                        exoticIndex = index;
-                        continue;
-                    }
-
-                    if(prevLegendaryMaxItem.PowerLevel > curLegendaryMaxItem.PowerLevel)
-                    {
-                        // Use the exotic in this slot instead of the previous one.
-                        maxItems[exoticIndex.Value] = prevLegendaryMaxItem;
-                        maxItems.Add(maxItem);
-                        exoticIndex = index;
-                        continue;
-                    }
-                    else
-                    {
-                        // Use the exotic in the previous slot.
-                        maxItems.Add(curLegendaryMaxItem);
-                        continue;
-                    }
-                }
-                else if(prevExotic.PowerLevel > maxItem.PowerLevel)
-                {
-                    // Use the exotic in the previous slot.
-                    var maxLegendary = items[index]
-                        .FirstOrDefault(item => item.Tier != TierType.Exotic);
-                    if(null == maxLegendary)
-                    {
-                        // No non-exotics in this slot. Use a legendary in the
-                        // previous slot.
-                        var prevMaxItem = items[exoticIndex.Value]
-                            .First(item => item.Tier != TierType.Exotic);
-                        maxItems[exoticIndex.Value] = prevMaxItem;
-
-                        maxItems.Add(maxItem);
-                        exoticIndex = index;
-                        continue;
-                    }
-                    else
-                    {
-                        maxItems.Add(maxLegendary);
-                        continue;
-                    }
-                }
-                else // prevExotic.PowerLevel < maxItem.powerLevel
-                {
-                    // use the exotic in this slot.
-                    var prevMaxLegendary = items[exoticIndex.Value]
-                        .FirstOrDefault(item => item.Tier != TierType.Exotic);
-                    if(null == prevMaxLegendary)
-                    {
-                        // No non-exitcs in the previous slot. Use a 
-                        // legendary in this slot.
-                        maxItem = items[index].First(item => item.Tier != TierType.Exotic);
-                        maxItems.Add(maxItem);
-                        continue;
-                    }
-                    else
-                    {
-                        maxItems[exoticIndex.Value] = prevMaxLegendary;
-
-                        maxItems[index] = maxItem;
-                        exoticIndex = index;
-                        continue;
-                    }
-                }
-            }
-
-             return maxItems;
         }
     }
 }

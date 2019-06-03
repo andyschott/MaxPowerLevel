@@ -18,6 +18,10 @@ namespace MaxPowerLevel.Helpers
             var maxItems = new List<Item>();
             maxItems.Add(items[0].First());
             int? exoticIndex = null;
+            if(maxItems[0].Tier == TierType.Exotic)
+            {
+                exoticIndex = 0;
+            }
 
             for(var index = 1; index < items.Length; ++index)
             {

@@ -13,6 +13,7 @@ namespace MaxPowerLevel.Models
             PowerLevel = instance?.PrimaryStat?.Value ?? 0;
             Tier = itemDef.Inventory.TierType;
             ClassType = itemDef.ClassType;
+            Icon = Destiny.CreateUrl(itemDef.DisplayProperties.Icon);
         }
 
         public Item(string name, ItemSlot slot, int powerLevel,
@@ -30,6 +31,7 @@ namespace MaxPowerLevel.Models
         public int PowerLevel { get; }
         public TierType Tier { get; }
         public DestinyClass ClassType { get; }
+        public string Icon { get; }
 
         public override bool Equals(object obj)
         {

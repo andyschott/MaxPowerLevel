@@ -4,11 +4,27 @@
 
 <div class="row">
     <div class="col-md-12">
-      <ul>
-      @foreach (var item in Model.Items)
-      {
-        <li>@item.Name (@item.PowerLevel) [@item.Tier]</li>
-      }
-      </ul>
+      <table>
+        <tr>
+          <td><img src="@Model.KineticWeapon.Icon">[@Model.KineticWeapon.PowerLevel] @Model.KineticWeapon.Name</td>
+          <td><img src="@Model.Helmet.Icon">[@Model.Helmet.PowerLevel] @Model.Helmet.Name</td>
+        </tr>
+        <tr>
+          <td><img src="@Model.EnergyWeapon.Icon">[@Model.EnergyWeapon.PowerLevel] @Model.EnergyWeapon.Name</td>
+          <td><img src="@Model.Gauntlet.Icon">[@Model.Gauntlet.PowerLevel] @Model.Gauntlet.Name</td>
+        </tr>
+        <tr>
+          <td><img src="@Model.PowerWeapon.Icon">[@Model.PowerWeapon.PowerLevel] @Model.PowerWeapon.Name</td>
+          <td><img src="@Model.ChestArmor.Icon">[@Model.ChestArmor.PowerLevel] @Model.ChestArmor.Name</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><img src="@Model.LegArmor.Icon">[@Model.LegArmor.PowerLevel] @Model.LegArmor.Name</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><img src="@Model.ClassItem.Icon">[@Model.ClassItem.PowerLevel] @Model.ClassItem.Name</td>
+        </tr>
+      </table>
     </div>
 </div>

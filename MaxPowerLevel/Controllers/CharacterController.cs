@@ -34,7 +34,7 @@ namespace MaxPowerLevel.Controllers
             var model = new CharacterViewModel()
             {
                 Items = maxGear,
-                MaxPower = _maxPower.ComputePower(maxGear),
+                MaxPower = _maxPower.ComputePower(maxGear.Values),
             };
 
             return View(model);

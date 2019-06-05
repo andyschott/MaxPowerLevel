@@ -2,14 +2,46 @@
     ViewData["Title"] = "Character Gear";
 }
 
-<div class="row">
-    <div class="col-md-12">
-      <p>Max Power: @Model.MaxPower</p>
-      @foreach(var item in Model.Items)
-      {
-          <div>
-            <img src="@item.Icon">[@item.PowerLevel] @item.Name
-          </div>
-      }
+<div class="container">
+  <div class="row">
+    <p>Max Power: @Model.MaxPower</p>
+  </div>
+  <div class="row mb-2">
+    <div class="col-sm">
+      <img src="@Model.KineticWeapon.Icon">[@Model.KineticWeapon.PowerLevel] @Model.KineticWeapon.Name
     </div>
+    <div class="col-sm">
+      <img src="@Model.Helmet.Icon">[@Model.Helmet.PowerLevel] @Model.Helmet.Name
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-sm">
+      <img src="@Model.EnergyWeapon.Icon">[@Model.EnergyWeapon.PowerLevel] @Model.EnergyWeapon.Name
+    </div>
+    <div class="col-sm">
+      <img src="@Model.Gauntlet.Icon">[@Model.Gauntlet.PowerLevel] @Model.Gauntlet.Name
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-sm">
+      <img src="@Model.PowerWeapon.Icon">[@Model.PowerWeapon.PowerLevel] @Model.PowerWeapon.Name
+    </div>
+    <div class="col-sm">
+      <img src="@Model.ChestArmor.Icon">[@Model.ChestArmor.PowerLevel] @Model.ChestArmor.Name
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-sm">
+    </div>
+    <div class="col-sm">
+      <img src="@Model.LegArmor.Icon">[@Model.LegArmor.PowerLevel] @Model.LegArmor.Name
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-sm">
+    </div>
+    <div class="col-sm">
+      <img src="@Model.ClassArmor.Icon">[@Model.ClassArmor.PowerLevel] @Model.ClassArmor.Name
+    </div>
+  </div>
 </div>

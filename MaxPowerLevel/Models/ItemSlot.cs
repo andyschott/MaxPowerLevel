@@ -36,7 +36,7 @@ namespace MaxPowerLevel.Models
                 switch((SlotHashes)Hash)
                 {
                     case SlotHashes.Helmet: return true;
-                    case SlotHashes.Gauntlets: return true;
+                    case SlotHashes.Gauntlet: return true;
                     case SlotHashes.ChestArmor: return true;
                     case SlotHashes.LegArmor: return true;
                     case SlotHashes.ClassArmor: return true;
@@ -52,7 +52,7 @@ namespace MaxPowerLevel.Models
             Power = 953998645,
 
             Helmet = 3448274439,
-            Gauntlets = 3551918588,
+            Gauntlet = 3551918588,
             ChestArmor = 14239492,
             LegArmor = 20886954,
             ClassArmor = 1585787867,

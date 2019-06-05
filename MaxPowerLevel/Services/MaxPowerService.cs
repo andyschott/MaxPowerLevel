@@ -24,7 +24,7 @@ namespace MaxPowerLevel.Services
                 ItemSlot.SlotHashes.Energy,
                 ItemSlot.SlotHashes.Power,
                 ItemSlot.SlotHashes.Helmet,
-                ItemSlot.SlotHashes.Gauntlets,
+                ItemSlot.SlotHashes.Gauntlet,
                 ItemSlot.SlotHashes.ChestArmor,
                 ItemSlot.SlotHashes.LegArmor,
                 ItemSlot.SlotHashes.ClassArmor,
@@ -36,7 +36,7 @@ namespace MaxPowerLevel.Services
             _manifest = manifest;
         }
 
-        public async Task<IEnumerable<Item>> ComputeMaxPowerAsync(BungieMembershipType type, long accountId, long characterId)
+        public async Task<IDictionary<ItemSlot.SlotHashes, Item>> ComputeMaxPowerAsync(BungieMembershipType type, long accountId, long characterId)
         {
             // seems to be ignoring items in the vault
             // info.ProfileInventory.Data.Items has 246 items (should be in the 150's)
@@ -63,12 +63,13 @@ namespace MaxPowerLevel.Services
                 gearSlots[ItemSlot.SlotHashes.Energy],
                 gearSlots[ItemSlot.SlotHashes.Power]);
             var maxArmor = MaxPower.FindMax(gearSlots[ItemSlot.SlotHashes.Helmet],
-                gearSlots[ItemSlot.SlotHashes.Gauntlets],
+                gearSlots[ItemSlot.SlotHashes.Gauntlet],
                 gearSlots[ItemSlot.SlotHashes.ChestArmor],
                 gearSlots[ItemSlot.SlotHashes.LegArmor],
                 gearSlots[ItemSlot.SlotHashes.ClassArmor]);
             
-            return maxWeapons.Concat(maxArmor);
+            return maxWeapons.Concat(maxArmor)
+                .ToDictionary(item => (ItemSlot.SlotHashes)item.Slot.Hash);
         }
 
         public int ComputePower(IEnumerable<Item> items)

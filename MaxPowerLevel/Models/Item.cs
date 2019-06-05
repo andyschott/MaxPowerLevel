@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using Destiny2;
 using Destiny2.Definitions;
 using Destiny2.Entities.Items;
@@ -6,11 +8,12 @@ namespace MaxPowerLevel.Models
 {
     public class Item
     {
-        public Item(DestinyItemComponent itemComponent, DestinyInventoryItemDefinition itemDef, DestinyItemInstanceComponent instance = null)
+        public Item(DestinyItemComponent itemComponent, DestinyInventoryItemDefinition itemDef,
+            DestinyInventoryBucketDefinition bucket, DestinyItemInstanceComponent instance = null)
         {
             Name = itemDef.DisplayProperties.Name;
-            Slot = (ItemSlot)itemComponent.BucketHash;
             PowerLevel = instance?.PrimaryStat?.Value ?? 0;
+            Slot = new ItemSlot(bucket);
             Tier = itemDef.Inventory.TierType;
             ClassType = itemDef.ClassType;
             Icon = Destiny.CreateUrl(itemDef.DisplayProperties.Icon);
@@ -32,6 +35,9 @@ namespace MaxPowerLevel.Models
         public TierType Tier { get; }
         public DestinyClass ClassType { get; }
         public string Icon { get; }
+
+        public bool IsWeapon => Slot.IsWeapon;
+        public bool IsArmor => Slot.IsArmor;
 
         public override bool Equals(object obj)
         {

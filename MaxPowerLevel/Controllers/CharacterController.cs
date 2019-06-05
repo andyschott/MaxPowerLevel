@@ -18,19 +18,6 @@ namespace MaxPowerLevel.Controllers
         private readonly IManifestService _manifest;
         private readonly IMaxPowerService _maxPower;
 
-        private static readonly ISet<ItemSlot> _includedSlots =
-            new HashSet<ItemSlot>
-            {
-                ItemSlot.KineticWeapon,
-                ItemSlot.EnergyWeapon,
-                ItemSlot.PowerWeapon,
-                ItemSlot.Helmet,
-                ItemSlot.Gauntlet,
-                ItemSlot.ChestArmor,
-                ItemSlot.LegArmor,
-                ItemSlot.ClassArmor,
-            };
-
         public CharacterController(IDestinyService destiny, IManifestService manifest, IMaxPowerService maxPower)
         {
             _destiny = destiny;
@@ -47,7 +34,7 @@ namespace MaxPowerLevel.Controllers
             var model = new CharacterViewModel()
             {
                 Items = maxGear,
-                MaxPower = _maxPower.ComputePower(maxGear.Values),
+                MaxPower = _maxPower.ComputePower(maxGear),
             };
 
             return View(model);

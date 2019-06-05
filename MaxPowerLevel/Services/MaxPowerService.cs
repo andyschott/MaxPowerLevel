@@ -17,17 +17,17 @@ namespace MaxPowerLevel.Services
 
         private readonly TaskFactory _factory = new TaskFactory();
 
-        private static readonly ISet<ItemSlot> _includedSlots =
-            new HashSet<ItemSlot>
+        private static readonly ISet<ItemSlot.SlotHashes> _includedBuckets =
+            new HashSet<ItemSlot.SlotHashes>
             {
-                ItemSlot.KineticWeapon,
-                ItemSlot.EnergyWeapon,
-                ItemSlot.PowerWeapon,
-                ItemSlot.Helmet,
-                ItemSlot.Gauntlet,
-                ItemSlot.ChestArmor,
-                ItemSlot.LegArmor,
-                ItemSlot.ClassArmor,
+                ItemSlot.SlotHashes.Kinetic,
+                ItemSlot.SlotHashes.Energy,
+                ItemSlot.SlotHashes.Power,
+                ItemSlot.SlotHashes.Helmet,
+                ItemSlot.SlotHashes.Gauntlets,
+                ItemSlot.SlotHashes.ChestArmor,
+                ItemSlot.SlotHashes.LegArmor,
+                ItemSlot.SlotHashes.ClassArmor,
             };
 
         public MaxPowerService(IDestinyService destiny, IManifestService manifest)
@@ -36,8 +36,10 @@ namespace MaxPowerLevel.Services
             _manifest = manifest;
         }
 
-        public async Task<IDictionary<ItemSlot, Item>> ComputeMaxPowerAsync(BungieMembershipType type, long accountId, long characterId)
+        public async Task<IEnumerable<Item>> ComputeMaxPowerAsync(BungieMembershipType type, long accountId, long characterId)
         {
+            // seems to be ignoring items in the vault
+            // info.ProfileInventory.Data.Items has 246 items (should be in the 150's)
             var info = await _destiny.GetProfileAsync(type, accountId, DestinyComponentType.ProfileInventories,
                 DestinyComponentType.Characters, DestinyComponentType.CharacterInventories,
                 DestinyComponentType.CharacterEquipment, DestinyComponentType.ItemInstances);
@@ -47,27 +49,26 @@ namespace MaxPowerLevel.Services
             var itemComponents = info.CharacterEquipment.Data.Values // Equipped items on all characters
                 .Concat(info.CharacterInventories.Data.Values) // Items in all character inventories
                 .SelectMany(group => group.Items)
-                .Concat(info.ProfileInventory.Data.Items) // Items in the Vault
-                .Where(item => _includedSlots.Contains((ItemSlot)item.BucketHash));
+                .Concat(info.ProfileInventory.Data.Items); // Items in the Vault
 
             var itemInstances = info.ItemComponents.Instances.Data;
+
             var items = await LoadItems(itemComponents, itemInstances);
 
             var gearSlots = items.Where(item => item.ClassType == DestinyClass.Unknown || item.ClassType == classDef.ClassType)
                 .OrderByDescending(item => item.PowerLevel)
-                .ToLookup(item => item.Slot);
+                .ToLookup(item => (ItemSlot.SlotHashes)item.Slot.Hash);
 
-            var maxWeapons = MaxPower.FindMax(gearSlots[ItemSlot.KineticWeapon],
-                gearSlots[ItemSlot.EnergyWeapon],
-                gearSlots[ItemSlot.PowerWeapon]);
-            var maxArmor = MaxPower.FindMax(gearSlots[ItemSlot.Helmet],
-                gearSlots[ItemSlot.Gauntlet],
-                gearSlots[ItemSlot.ChestArmor],
-                gearSlots[ItemSlot.LegArmor],
-                gearSlots[ItemSlot.ClassArmor]);
+            var maxWeapons = MaxPower.FindMax(gearSlots[ItemSlot.SlotHashes.Kinetic],
+                gearSlots[ItemSlot.SlotHashes.Energy],
+                gearSlots[ItemSlot.SlotHashes.Power]);
+            var maxArmor = MaxPower.FindMax(gearSlots[ItemSlot.SlotHashes.Helmet],
+                gearSlots[ItemSlot.SlotHashes.Gauntlets],
+                gearSlots[ItemSlot.SlotHashes.ChestArmor],
+                gearSlots[ItemSlot.SlotHashes.LegArmor],
+                gearSlots[ItemSlot.SlotHashes.ClassArmor]);
             
-            return maxWeapons.Concat(maxArmor)
-                .ToDictionary(item => item.Slot);
+            return maxWeapons.Concat(maxArmor);
         }
 
         public int ComputePower(IEnumerable<Item> items)
@@ -88,11 +89,22 @@ namespace MaxPowerLevel.Services
             foreach(var itemComponent in itemComponents)
             {
                 var itemDef = await _manifest.LoadInventoryItemAsync(itemComponent.ItemHash);
+                var bucket = await _manifest.LoadBucket(itemDef.Inventory.BucketTypeHash);
+                if(!ShouldInclude(bucket))
+                {
+                    continue;
+                }
+
                 itemInstances.TryGetValue(itemComponent.ItemInstanceId, out DestinyItemInstanceComponent instance);
-                items.Add(new Item(itemComponent, itemDef, instance));
+                items.Add(new Item(itemComponent, itemDef, bucket, instance));
             }
 
             return items;
+        }
+
+        private static bool ShouldInclude(DestinyInventoryBucketDefinition bucket)
+        {
+            return _includedBuckets.Contains((ItemSlot.SlotHashes)bucket.Hash);
         }
     }
 }

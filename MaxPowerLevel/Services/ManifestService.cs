@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Destiny2;
 using Destiny2.Definitions;
@@ -23,6 +24,11 @@ namespace MaxPowerLevel.Services
         public Task<DestinyInventoryItemDefinition> LoadInventoryItemAsync(uint hash)
         {
             return _db.LoadInventoryItem(hash);
+        }
+
+        public Task<DestinyInventoryBucketDefinition> LoadBucket(uint hash)
+        {
+            return _db.LoadBucket(hash);
         }
   }
 }

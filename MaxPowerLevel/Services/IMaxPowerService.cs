@@ -7,7 +7,7 @@ namespace MaxPowerLevel.Services
 {
     public interface IMaxPowerService
     {
-         Task<IDictionary<ItemSlot, Item>> ComputeMaxPowerAsync(BungieMembershipType type, long accountId, long characterId);
+         Task<IEnumerable<Item>> ComputeMaxPowerAsync(BungieMembershipType type, long accountId, long characterId);
          int ComputePower(IEnumerable<Item> items);
     }
 }

@@ -7,5 +7,6 @@ namespace MaxPowerLevel.Services
     {
         Task<DestinyClassDefinition> LoadClassAsync(uint hash);
         Task<DestinyInventoryItemDefinition> LoadInventoryItemAsync(uint hash);
+        Task<DestinyInventoryBucketDefinition> LoadBucket(uint hash);
     }
 }

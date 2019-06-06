@@ -13,6 +13,7 @@ namespace MaxPowerLevel.Models
             PowerLevel = character.Light;
             ClassName = classDefinition.DisplayProperties.Name;
             ClassType = classDefinition.ClassType;
+            EmblemPath = Destiny.BaseAddress + character.EmblemPath;
         }
 
         public long Id { get; }
@@ -20,6 +21,7 @@ namespace MaxPowerLevel.Models
         public int PowerLevel { get; }
         public string ClassName { get; }
         public DestinyClass ClassType { get; }
+        public string EmblemPath { get; }
 
         public override string ToString()
         {

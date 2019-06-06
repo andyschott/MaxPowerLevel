@@ -9,7 +9,7 @@
       <ul>
       @foreach (var character in Model.Characters)
       {
-        <li><a asp-action="Details" asp-controller="Character" asp-route-type="@((int)Model.Type)" asp-route-id="@Model.Id" asp-route-characterId="@character.Id">@character</a></li>
+        <li><img src="@character.EmblemPath" width="48" height="48"> <a asp-action="Details" asp-controller="Character" asp-route-type="@((int)Model.Type)" asp-route-id="@Model.Id" asp-route-characterId="@character.Id">@character</a></li>
       }
       </ul>
     </div>

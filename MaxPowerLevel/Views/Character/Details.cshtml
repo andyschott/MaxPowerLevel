@@ -4,8 +4,36 @@
     ViewData["Title"] = "Character Gear";
 }
 
-<p>Max Power: @Model.MaxPower</p>
+<div class="container">
+  <div class="row">
+    <h1>Max Power: @Model.MaxPower</h1>
+  </div>
+  <div class="row">
+    <h1>Lowest Items:</h1>
+  </div>
+  <div class="row">
+    @foreach(var item in Model.LowestItems)
+    {
+      <div class="col-auto">
+        @await Html.PartialAsync("ItemPartial", item)
+      </div>
+    }
+  </div>
+  <div class="row">
+    <h1>All Items</h1>
+  </div>
+  <div class="row">
+    @foreach(var item in Model.Items)
+    {
+      <div class="col-md-4">
+        @await Html.PartialAsync("ItemPartial", item)
+      </div>
+    }
+  </div>
+</div>
 
+<!--
+<h1>Max Power Items</h1>
 <div class="float-md-left">
   @foreach(var weapon in Model.Weapons)
   {
@@ -22,3 +50,4 @@
     </p>
   }
 </div>
+-->

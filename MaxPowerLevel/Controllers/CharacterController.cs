@@ -33,7 +33,7 @@ namespace MaxPowerLevel.Controllers
             var maxGear = await _maxPower.ComputeMaxPowerAsync(membershipType, id, characterId);
             var model = new CharacterViewModel()
             {
-                Items = maxGear,
+                Items = maxGear.Values,
                 MaxPower = _maxPower.ComputePower(maxGear.Values),
             };
 

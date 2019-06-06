@@ -6,6 +6,7 @@ using MaxPowerLevel.Models;
 using MaxPowerLevel.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Configuration;
 
 namespace MaxPowerLevel.Controllers
@@ -31,20 +32,31 @@ namespace MaxPowerLevel.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var model = new AccountsViewModel();
 
             var value = User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
             long.TryParse(value, out long membershipId);
 
             var membershipData = await _destiny.GetMembershipDataAsync(membershipId);
-            model.Accounts = (from membership in membershipData.Memberships
+            var accounts = (from membership in membershipData.Memberships
                                 select new Account(membership.MembershipType, membership.MembershipId))
                                 .ToList();
 
+            if(1 == accounts.Count)
+            {
+                // If there is only one account, redirect to the page for it.
+                var url = Url.RouteUrl("AccountDetails", new {
+                    type = (int)accounts[0].Type,
+                    id = accounts[0].Id
+                });
+                return Redirect(url);
+            }
+
+            var model = new AccountsViewModel();
+            model.Accounts = accounts;
             return View(model);
         }
 
-        [HttpGet("{type}/{id}")]
+        [HttpGet("{type}/{id}", Name = "AccountDetails")]
         public async Task<IActionResult> Details(int type, long id)
         {
             var membershipType = (BungieMembershipType)type;

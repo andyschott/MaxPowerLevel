@@ -1,3 +1,8 @@
 @model MaxPowerLevel.Models.Item
 
-<img src="@Model.Icon">[@Model.PowerLevel] @Model.Name
+<ul style="list-style-type: none;">
+  <li>@Model.Slot.Name:</li>
+  <li><img src="@Model.Icon"></li>
+  <li><span>[@Model.PowerLevel] @Model.Name</span></li>
+</ul>
+

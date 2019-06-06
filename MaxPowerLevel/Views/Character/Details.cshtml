@@ -4,10 +4,13 @@
     ViewData["Title"] = "Character Gear";
 }
 
+<picture class="float-right">
+  <source media="(min-width: 992px)" srcset="@Model.EmblemBackgroundPath">
+  <img src="@Model.EmblemPath" class="d-none d-md-block">
+</picture>
+<h1>Max Power: @Model.MaxPower</h1>
+
 <div class="container">
-  <div class="row">
-    <h1>Max Power: @Model.MaxPower</h1>
-  </div>
   <div class="row">
     <h1>Lowest Items:</h1>
   </div>
@@ -31,23 +34,3 @@
     }
   </div>
 </div>
-
-<!--
-<h1>Max Power Items</h1>
-<div class="float-md-left">
-  @foreach(var weapon in Model.Weapons)
-  {
-    <p>
-      @await Html.PartialAsync("ItemPartial", weapon)
-    </p>
-  }
-</div>
-<div class="float-md-right">
-  @foreach(var armor in Model.Armor)
-  {
-    <p>
-      @await Html.PartialAsync("ItemPartial", armor)
-    </p>
-  }
-</div>
--->

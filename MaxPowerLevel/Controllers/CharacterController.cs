@@ -31,10 +31,14 @@ namespace MaxPowerLevel.Controllers
             var membershipType = (BungieMembershipType)type;
 
             var maxGear = await _maxPower.ComputeMaxPowerAsync(membershipType, id, characterId);
+            var character = await _destiny.GetCharacterInfoAsync(membershipType, id, characterId, DestinyComponentType.Characters);
+
             var model = new CharacterViewModel()
             {
                 Items = maxGear.Values,
                 MaxPower = _maxPower.ComputePower(maxGear.Values),
+                EmblemPath = Destiny.BaseAddress + character.Character.Data.EmblemPath,
+                EmblemBackgroundPath = Destiny.BaseAddress + character.Character.Data.EmblemBackgroundPath
             };
 
             return View(model);

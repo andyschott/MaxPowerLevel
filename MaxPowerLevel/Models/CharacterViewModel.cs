@@ -8,6 +8,8 @@ namespace MaxPowerLevel.Models
     {
         public IEnumerable<Item> Items { get; set; } = new List<Item>();
         public int MaxPower { get; set; } = 0;
+        public string EmblemPath { get; set; }
+        public string EmblemBackgroundPath {get; set; }
 
         public IEnumerable<Item> Weapons => Items.Where(item => item.IsWeapon)
                                                  .OrderBy(item => item.Slot.Order);

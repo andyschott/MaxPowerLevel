@@ -4,46 +4,65 @@
     ViewData["Title"] = "Character Gear";
 }
 
-<div class="container">
+<p>Max Power: @Model.MaxPower</p>
+
+<div class="float-md-left">
+  @foreach(var weapon in Model.Weapons)
+  {
+    <p>
+      @await Html.PartialAsync("ItemPartial", weapon)
+    </p>
+  }
+</div>
+<div class="float-md-right">
+  @foreach(var armor in Model.Armor)
+  {
+    <p>
+      @await Html.PartialAsync("ItemPartial", armor)
+    </p>
+  }
+</div>
+<!--
   <div class="row">
     <p>Max Power: @Model.MaxPower</p>
   </div>
   <div class="row mb-2">
-    <div class="col-sm">
+    <div class="col-md-6">
       @await Html.PartialAsync("ItemPartial", @Model.KineticWeapon)
     </div>
-    <div class="col-sm">
+    <div class="col-md-6">
       @await Html.PartialAsync("ItemPartial", @Model.Helmet)
     </div>
   </div>
   <div class="row mb-2">
-    <div class="col-sm">
+    <div class="col-md">
       @await Html.PartialAsync("ItemPartial", @Model.EnergyWeapon)
     </div>
-    <div class="col-sm">
+    <div class="col-md">
       @await Html.PartialAsync("ItemPartial", @Model.Gauntlet)
     </div>
   </div>
   <div class="row mb-2">
-    <div class="col-sm">
+    <div class="col-md">
       @await Html.PartialAsync("ItemPartial", @Model.PowerWeapon)
     </div>
-    <div class="col-sm">
+    <div class="col-md">
       @await Html.PartialAsync("ItemPartial", @Model.ChestArmor)
     </div>
   </div>
   <div class="row mb-2">
-    <div class="col-sm">
+    <div class="col-md">
     </div>
-    <div class="col-sm">
+    <div class="col-md">
       @await Html.PartialAsync("ItemPartial", @Model.LegArmor)
     </div>
   </div>
   <div class="row mb-2">
-    <div class="col-sm">
+    <div class="col-md">
     </div>
-    <div class="col-sm">
+    <div class="col-md">
       @await Html.PartialAsync("ItemPartial", @Model.ClassArmor)
     </div>
   </div>
+-->
 </div>

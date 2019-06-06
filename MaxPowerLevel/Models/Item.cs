@@ -19,11 +19,11 @@ namespace MaxPowerLevel.Models
             Icon = Destiny.CreateUrl(itemDef.DisplayProperties.Icon);
         }
 
-        public Item(string name, ItemSlot slot, int powerLevel,
+        public Item(string name, ItemSlot.SlotHashes slot, int powerLevel,
             TierType tier = TierType.Superior, DestinyClass classType = DestinyClass.Unknown)
         {
             Name = name;
-            Slot = slot;
+            Slot = new ItemSlot(slot.ToString(), slot);
             PowerLevel = powerLevel;
             Tier = tier;
             ClassType = classType;

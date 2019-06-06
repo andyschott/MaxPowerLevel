@@ -1,4 +1,4 @@
-using System.Collections;
+ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Destiny2;
@@ -51,38 +51,38 @@ namespace MaxPowerLevel.Test
         {
             var items = new[]
             {
-                new Item("Blast Furnace", ItemSlot.KineticWeapon, 653),
-                new Item("Breakneck", ItemSlot.KineticWeapon, 660),
-                new Item("Midnight Coup", ItemSlot.KineticWeapon, 380),
-                new Item("MIDA Multi-Tool", ItemSlot.KineticWeapon, 700, TierType.Exotic),
+                new Item("Blast Furnace", ItemSlot.SlotHashes.Kinetic, 653),
+                new Item("Breakneck", ItemSlot.SlotHashes.Kinetic, 660),
+                new Item("Midnight Coup", ItemSlot.SlotHashes.Kinetic, 380),
+                new Item("MIDA Multi-Tool", ItemSlot.SlotHashes.Kinetic, 700, TierType.Exotic),
 
-                new Item("IKELOS SG", ItemSlot.EnergyWeapon, 380),
-                new Item("Nation of Beasts", ItemSlot.EnergyWeapon, 650),
-                new Item("Loaded Question", ItemSlot.EnergyWeapon, 690),
-                new Item("Riskrunner", ItemSlot.EnergyWeapon, 700, TierType.Exotic),
+                new Item("IKELOS SG", ItemSlot.SlotHashes.Energy, 380),
+                new Item("Nation of Beasts", ItemSlot.SlotHashes.Energy, 650),
+                new Item("Loaded Question", ItemSlot.SlotHashes.Energy, 690),
+                new Item("Riskrunner", ItemSlot.SlotHashes.Energy, 700, TierType.Exotic),
 
-                new Item("Edge Transit", ItemSlot.PowerWeapon, 700),
-                new Item("Avalanche", ItemSlot.PowerWeapon, 698),
-                new Item("Outrageous Fortune", ItemSlot.PowerWeapon, 600),
-                new Item("Whisper of the Worm", ItemSlot.PowerWeapon, 380, TierType.Exotic),
+                new Item("Edge Transit", ItemSlot.SlotHashes.Power, 700),
+                new Item("Avalanche", ItemSlot.SlotHashes.Power, 698),
+                new Item("Outrageous Fortune", ItemSlot.SlotHashes.Power, 600),
+                new Item("Whisper of the Worm", ItemSlot.SlotHashes.Power, 380, TierType.Exotic),
             };
 
             return items.ToDictionary(Item => Item.Name);
         }
 
-        private static ILookup<ItemSlot, Item> CreateItems(params string[] names)
+        private static ILookup<ItemSlot.SlotHashes, Item> CreateItems(params string[] names)
         {
             var items = names.Select(name => _items[name])
                 .OrderByDescending(item => item.PowerLevel)
-                .ToLookup(item => item.Slot);
+                .ToLookup(item => item.Slot.Hash);
             return items;
         }
 
-        private ICollection FindMax(ILookup<ItemSlot, Item> items)
+        private ICollection FindMax(ILookup<ItemSlot.SlotHashes, Item> items)
         {
-            return MaxPower.FindMax(items[ItemSlot.KineticWeapon],
-                items[ItemSlot.EnergyWeapon],
-                items[ItemSlot.PowerWeapon]) as ICollection;
+            return MaxPower.FindMax(items[ItemSlot.SlotHashes.Kinetic],
+                items[ItemSlot.SlotHashes.Energy],
+                items[ItemSlot.SlotHashes.Power]) as ICollection;
         }
     }
 }

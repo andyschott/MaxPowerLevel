@@ -7,19 +7,23 @@ namespace MaxPowerLevel.Models
         public ItemSlot(DestinyInventoryBucketDefinition bucket)
         {
             Name = bucket.DisplayProperties.Name;
-            Order = bucket.BucketOrder;
-            Hash = bucket.Hash;
+            Hash = (SlotHashes)bucket.Hash;
+        }
+
+        public ItemSlot(string name, SlotHashes hash)
+        {
+            Name = name;
+            Hash = hash;
         }
 
         public string Name { get; }
-        public int Order { get; }
-        public uint Hash { get; }
+        public SlotHashes Hash { get; }
 
         public bool IsWeapon
         {
             get
             {
-                switch((SlotHashes)Hash)
+                switch(Hash)
                 {
                     case SlotHashes.Kinetic: return true;
                     case SlotHashes.Energy: return true;

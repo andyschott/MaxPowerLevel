@@ -38,8 +38,6 @@ namespace MaxPowerLevel.Services
 
         public async Task<IDictionary<ItemSlot.SlotHashes, Item>> ComputeMaxPowerAsync(BungieMembershipType type, long accountId, long characterId)
         {
-            // seems to be ignoring items in the vault
-            // info.ProfileInventory.Data.Items has 246 items (should be in the 150's)
             var info = await _destiny.GetProfileAsync(type, accountId, DestinyComponentType.ProfileInventories,
                 DestinyComponentType.Characters, DestinyComponentType.CharacterInventories,
                 DestinyComponentType.CharacterEquipment, DestinyComponentType.ItemInstances);
@@ -57,7 +55,7 @@ namespace MaxPowerLevel.Services
 
             var gearSlots = items.Where(item => item.ClassType == DestinyClass.Unknown || item.ClassType == classDef.ClassType)
                 .OrderByDescending(item => item.PowerLevel)
-                .ToLookup(item => (ItemSlot.SlotHashes)item.Slot.Hash);
+                .ToLookup(item => item.Slot.Hash);
 
             var maxWeapons = MaxPower.FindMax(gearSlots[ItemSlot.SlotHashes.Kinetic],
                 gearSlots[ItemSlot.SlotHashes.Energy],

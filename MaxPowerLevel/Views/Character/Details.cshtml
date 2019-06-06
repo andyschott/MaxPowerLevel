@@ -10,40 +10,40 @@
   </div>
   <div class="row mb-2">
     <div class="col-sm">
-      <img src="@Model.KineticWeapon.Icon">[@Model.KineticWeapon.PowerLevel] @Model.KineticWeapon.Name
+      @await Html.PartialAsync("ItemPartial", @Model.KineticWeapon)
     </div>
     <div class="col-sm">
-      <img src="@Model.Helmet.Icon">[@Model.Helmet.PowerLevel] @Model.Helmet.Name
-    </div>
-  </div>
-  <div class="row mb-2">
-    <div class="col-sm">
-      <img src="@Model.EnergyWeapon.Icon">[@Model.EnergyWeapon.PowerLevel] @Model.EnergyWeapon.Name
-    </div>
-    <div class="col-sm">
-      <img src="@Model.Gauntlet.Icon">[@Model.Gauntlet.PowerLevel] @Model.Gauntlet.Name
+      @await Html.PartialAsync("ItemPartial", @Model.Helmet)
     </div>
   </div>
   <div class="row mb-2">
     <div class="col-sm">
-      <img src="@Model.PowerWeapon.Icon">[@Model.PowerWeapon.PowerLevel] @Model.PowerWeapon.Name
+      @await Html.PartialAsync("ItemPartial", @Model.EnergyWeapon)
     </div>
     <div class="col-sm">
-      <img src="@Model.ChestArmor.Icon">[@Model.ChestArmor.PowerLevel] @Model.ChestArmor.Name
+      @await Html.PartialAsync("ItemPartial", @Model.Gauntlet)
     </div>
   </div>
   <div class="row mb-2">
     <div class="col-sm">
+      @await Html.PartialAsync("ItemPartial", @Model.PowerWeapon)
     </div>
     <div class="col-sm">
-      <img src="@Model.LegArmor.Icon">[@Model.LegArmor.PowerLevel] @Model.LegArmor.Name
+      @await Html.PartialAsync("ItemPartial", @Model.ChestArmor)
     </div>
   </div>
   <div class="row mb-2">
     <div class="col-sm">
     </div>
     <div class="col-sm">
-      <img src="@Model.ClassArmor.Icon">[@Model.ClassArmor.PowerLevel] @Model.ClassArmor.Name
+      @await Html.PartialAsync("ItemPartial", @Model.LegArmor)
+    </div>
+  </div>
+  <div class="row mb-2">
+    <div class="col-sm">
+    </div>
+    <div class="col-sm">
+      @await Html.PartialAsync("ItemPartial", @Model.ClassArmor)
     </div>
   </div>
 </div>

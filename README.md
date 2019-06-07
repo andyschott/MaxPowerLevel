@@ -19,7 +19,7 @@ In order to run the server, you will need to create an application using the [Bu
 
 When running locally in Development mode, .NET Secrets can be used to store the API keys. Run the following commands from the `MaxPowerLevel` directory:
 
-    dotnet user-secrets set Bugnei:ApiKey <API key>
+    dotnet user-secrets set Bungie:ApiKey <API key>
     dotnet user-secrets set Bungie:ClientId <client id>
     dotnet user-secrets set Bungie:ClientSecret <client secret>
 

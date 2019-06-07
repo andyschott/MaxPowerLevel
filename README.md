@@ -23,7 +23,7 @@ When running locally in Development mode, .NET Secrets can be used to store the 
     dotnet user-secrets set Bungie:ClientId <client id>
     dotnet user-secrets set Bungie:ClientSecret <client secret>
 
-Both the Client ID and Client Secret can be found in the Bungie Application Portal once you have created your application.
+The API key, Client ID and Client Secret can be found in the Bungie Application Portal once you have created your application.
 
 # Running
 

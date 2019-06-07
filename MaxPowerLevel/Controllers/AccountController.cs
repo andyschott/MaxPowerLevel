@@ -5,6 +5,7 @@ using Destiny2;
 using MaxPowerLevel.Models;
 using MaxPowerLevel.Services;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Configuration;
@@ -30,6 +31,7 @@ namespace MaxPowerLevel.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Index()
         {
 
@@ -57,6 +59,7 @@ namespace MaxPowerLevel.Controllers
         }
 
         [HttpGet("{type}/{id}", Name = "AccountDetails")]
+        [Authorize]
         public async Task<IActionResult> Details(int type, long id)
         {
             var membershipType = (BungieMembershipType)type;

@@ -6,12 +6,14 @@ using Destiny2.Entities.Items;
 using MaxPowerLevel.Models;
 using MaxPowerLevel.Services;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
 namespace MaxPowerLevel.Controllers
 {
     [Route("[controller]")]
+    [Authorize]
     public class CharacterController : Controller
     {
         private readonly IDestinyService _destiny;

@@ -134,7 +134,7 @@ namespace MaxPowerLevel.Helpers
                     {
                         maxItems[exoticIndex.Value] = prevMaxLegendary;
 
-                        maxItems[index] = maxItem;
+                        maxItems.Add(maxItem);
                         exoticIndex = index;
                         continue;
                     }

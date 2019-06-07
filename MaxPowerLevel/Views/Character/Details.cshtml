@@ -6,6 +6,10 @@
     ViewData["Title"] = "Character Gear";
 }
 
+<p>
+  <a asp-route="AccountDetails" asp-route-type="@((int)Model.Type)" asp-route-id="@Model.AccountId">&lt;&lt; Characters</a>
+</p>
+
 <picture class="float-right">
   <source media="(min-width: 992px)" srcset="@Model.EmblemBackgroundPath">
   <img src="@Model.EmblemPath" class="d-none d-md-block">

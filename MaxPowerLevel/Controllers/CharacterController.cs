@@ -42,6 +42,8 @@ namespace MaxPowerLevel.Controllers
 
             var model = new CharacterViewModel()
             {
+                Type = membershipType,
+                AccountId = id,
                 Items = maxGear.Values,
                 MaxPower = _maxPower.ComputePower(maxGear.Values),
                 EmblemPath = Destiny.BaseAddress + character.Character.Data.EmblemPath,

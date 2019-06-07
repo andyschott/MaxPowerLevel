@@ -6,6 +6,8 @@ namespace MaxPowerLevel.Models
 {
     public class CharacterViewModel
     {
+        public BungieMembershipType Type { get; set; }
+        public long AccountId { get; set; }
         public IEnumerable<Item> Items { get; set; } = new List<Item>();
         public int MaxPower { get; set; } = 0;
         public string EmblemPath { get; set; }

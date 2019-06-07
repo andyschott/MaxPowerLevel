@@ -17,17 +17,28 @@ namespace MaxPowerLevel.Controllers
     {
         private readonly IDestinyService _destiny;
         private readonly IManifestService _manifest;
+        private readonly IConfiguration _config;
 
-        public AccountController(IDestinyService destiny, IManifestService manifest)
+        public AccountController(IDestinyService destiny, IManifestService manifest, IConfiguration config)
         {
             _destiny = destiny;
             _manifest = manifest;
+            _config = config;
         }
 
         [HttpGet("login")]
         public IActionResult Login(string returnUrl = "/")
         {
             return Challenge(new AuthenticationProperties() { RedirectUri = returnUrl });
+        }
+
+        [HttpGet("logout")]
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete(_config["BungieLoginCookieName"]);
+
+            var url = Url.Action("Index", "Home");
+            return Redirect(url);
         }
 
         [HttpGet(Name = "AccountIndex")]

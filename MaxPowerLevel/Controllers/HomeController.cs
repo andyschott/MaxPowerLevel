@@ -18,7 +18,8 @@ namespace MaxPowerLevel.Controllers
         {
             if(User.Identity.IsAuthenticated)
             {
-                return Redirect("/Account");
+                var url = Url.RouteUrl("AccountIndex");
+                return Redirect(url);
             }
             return View();
         }

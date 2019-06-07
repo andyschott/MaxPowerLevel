@@ -60,6 +60,7 @@ namespace MaxPowerLevel
                 options.DefaultChallengeScheme = "Bungie";
             })
             .AddCookie(options => {
+                options.Cookie.Name = Configuration["BungieLoginCookieName"];
                 options.Events = new CookieAuthenticationEvents
                 {
                     OnValidatePrincipal = HandleRefreshToken

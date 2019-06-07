@@ -30,7 +30,7 @@ namespace MaxPowerLevel.Controllers
             return Challenge(new AuthenticationProperties() { RedirectUri = returnUrl });
         }
 
-        [HttpGet]
+        [HttpGet(Name = "AccountIndex")]
         [Authorize]
         public async Task<IActionResult> Index()
         {
@@ -66,6 +66,12 @@ namespace MaxPowerLevel.Controllers
             var model = new AccountDetailsViewModel(membershipType, id);
 
             var profileResponse = await _destiny.GetProfileAsync(membershipType, id, DestinyComponentType.Characters);
+            if(profileResponse == null)
+            {
+                var url = Url.RouteUrl("AccountIndex");
+                return Redirect(url);
+            }
+
             foreach(var item in profileResponse.Characters.Data)
             {
                 var classDef = await _manifest.LoadClassAsync(item.Value.ClassHash);

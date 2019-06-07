@@ -33,6 +33,11 @@ namespace MaxPowerLevel.Controllers
             var membershipType = (BungieMembershipType)type;
 
             var maxGear = await _maxPower.ComputeMaxPowerAsync(membershipType, id, characterId);
+            if(maxGear == null)
+            {
+                var url = Url.RouteUrl("AccountIndex");
+                return Redirect(url);
+            }
             var character = await _destiny.GetCharacterInfoAsync(membershipType, id, characterId, DestinyComponentType.Characters);
 
             var model = new CharacterViewModel()

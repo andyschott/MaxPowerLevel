@@ -41,8 +41,17 @@ namespace MaxPowerLevel.Services
             var info = await _destiny.GetProfileAsync(type, accountId, DestinyComponentType.ProfileInventories,
                 DestinyComponentType.Characters, DestinyComponentType.CharacterInventories,
                 DestinyComponentType.CharacterEquipment, DestinyComponentType.ItemInstances);
+            if(info == null)
+            {
+                return null;
+            }
 
-            var classDef = await _manifest.LoadClassAsync(info.Characters.Data[characterId].ClassHash);
+            if(!info.Characters.Data.TryGetValue(characterId, out var character))
+            {
+                return null;
+            }
+
+            var classDef = await _manifest.LoadClassAsync(character.ClassHash);
 
             var itemComponents = info.CharacterEquipment.Data.Values // Equipped items on all characters
                 .Concat(info.CharacterInventories.Data.Values) // Items in all character inventories

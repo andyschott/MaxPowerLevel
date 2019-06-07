@@ -12,6 +12,6 @@
     <PackageReference Include="Humanizer" Version="2.6.2"/>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Destiny2\Destiny2.csproj"/>
+    <ProjectReference Include="..\Destiny2\Destiny2.csproj"/>
   </ItemGroup>
 </Project>

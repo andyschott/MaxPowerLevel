@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MaxPowerLevel\MaxPowerLevel.csproj" />
-    <ProjectReference Include="..\..\Destiny2\Destiny2.csproj" />
+    <ProjectReference Include="..\Destiny2\Destiny2.csproj" />
   </ItemGroup>
 
 </Project>

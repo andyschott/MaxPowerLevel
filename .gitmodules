@@ -1,0 +1,3 @@
+[submodule "Destiny2"]
+	path = Destiny2
+	url = https://github.com/andyschott/Destiny2.git

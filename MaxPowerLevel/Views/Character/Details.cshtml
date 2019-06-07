@@ -1,4 +1,6 @@
 @model CharacterViewModel
+@using Humanizer
+@using System.Linq
 
 @{
     ViewData["Title"] = "Character Gear";
@@ -12,7 +14,7 @@
 
 <div class="container">
   <div class="row">
-    <h1>Lowest Items</h1>
+    <h1>@("Lowest Item".ToQuantity(Model.LowestItems.Count(), ShowQuantityAs.None))</h1>
   </div>
   <div class="row">
     @foreach(var item in Model.LowestItems)

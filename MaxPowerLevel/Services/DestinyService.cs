@@ -2,20 +2,22 @@ using System.Threading.Tasks;
 using Destiny2;
 using Destiny2.Responses;
 using Destiny2.User;
+using MaxPowerLevel.Helpers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace MaxPowerLevel.Services
 {
   public class DestinyService : IDestinyService
   {
-      private IConfiguration _config;
+      private IOptions<BungieSettings> _bungieConfig;
       private IHttpContextAccessor _contextAccessor;
 
-      public DestinyService(IConfiguration config, IHttpContextAccessor contextAccessor)
+      public DestinyService(IOptions<BungieSettings> bungieConfig, IHttpContextAccessor contextAccessor)
       {
-          _config = config;
+          _bungieConfig = bungieConfig;
           _contextAccessor = contextAccessor;
       }
 
@@ -64,7 +66,7 @@ namespace MaxPowerLevel.Services
       private async Task<Destiny> CreateDestinyAsync()
       {
           var accessToken = await _contextAccessor.HttpContext.GetTokenAsync("access_token");
-          return new Destiny(_config["Bungie:ApiKey"], accessToken);
+          return new Destiny(_bungieConfig.Value.ApiKey, accessToken);
       }
   }
 }

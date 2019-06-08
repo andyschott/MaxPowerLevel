@@ -54,6 +54,8 @@ namespace MaxPowerLevel
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            services.Configure<BungieSettings>(Configuration.GetSection("Bungie"));
+
             services.AddAuthentication(options => {
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -67,8 +69,10 @@ namespace MaxPowerLevel
                 };
             })
             .AddOAuth("Bungie", options => {
-                options.ClientId = Configuration["Bungie:ClientId"];
-                options.ClientSecret = Configuration["Bungie:ClientSecret"];
+                var bungie = Configuration.GetSection("Bungie").Get<BungieSettings>();
+
+                options.ClientId = bungie.ClientId;
+                options.ClientSecret = bungie.ClientSecret;
                 options.CallbackPath = new PathString("/signin-bungie/");
 
                 options.AuthorizationEndpoint = "https://www.bungie.net/en/oauth/authorize";
@@ -111,7 +115,9 @@ namespace MaxPowerLevel
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseCookiePolicy();
-            app.UseDownloadManifest(Configuration["Bungie:ApiKey"]);
+
+            var bungie = Configuration.GetSection("Bungie").Get<BungieSettings>();
+            app.UseDownloadManifest(bungie.ApiKey);
 
             app.UseMvc(routes =>
             {
@@ -139,12 +145,14 @@ namespace MaxPowerLevel
                 return;
             }
 
+            var bungie = Configuration.GetSection("Bungie").Get<BungieSettings>();
+
             // Token is expired. Attempt to renew it.
             var request = new RefreshTokenRequest
             {
                 Address = "https://www.bungie.net/platform/app/oauth/token/",
-                ClientId = Configuration["Bungie:ClientId"],
-                ClientSecret = Configuration["Bungie:ClientSecret"],
+                ClientId = bungie.ClientId,
+                ClientSecret = bungie.ClientSecret,
                 RefreshToken = refreshToken.Value
             };
             TokenResponse tokenResponse;

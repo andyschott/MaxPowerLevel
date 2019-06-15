@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Destiny2;
 using Destiny2.Entities.Items;
+using MaxPowerLevel.Helpers;
 using MaxPowerLevel.Models;
 using MaxPowerLevel.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace MaxPowerLevel.Controllers
 {
@@ -20,13 +22,15 @@ namespace MaxPowerLevel.Controllers
         private readonly IDestiny _destiny;
         private readonly IMaxPowerService _maxPower;
         private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IOptions<BungieSettings> _bungie;
 
         public CharacterController(IDestiny destiny, IMaxPowerService maxPower,
-            IHttpContextAccessor contextAccessor)
+            IHttpContextAccessor contextAccessor, IOptions<BungieSettings> bungie)
         {
             _destiny = destiny;
             _maxPower = maxPower;
             _contextAccessor = contextAccessor;
+            _bungie = bungie;
         }
         
         [HttpGet("{type}/{id}/{characterId}")]
@@ -51,8 +55,8 @@ namespace MaxPowerLevel.Controllers
                 AccountId = id,
                 Items = maxGear.Values,
                 MaxPower = _maxPower.ComputePower(maxGear.Values),
-                EmblemPath = "https://www.bungie.net/" + character.Character.Data.EmblemPath,
-                EmblemBackgroundPath = "htps://www.bungie.net/" + character.Character.Data.EmblemBackgroundPath
+                EmblemPath = _bungie.Value.BaseUrl + character.Character.Data.EmblemPath,
+                EmblemBackgroundPath = _bungie.Value.BaseUrl + character.Character.Data.EmblemBackgroundPath
             };
 
             return View(model);

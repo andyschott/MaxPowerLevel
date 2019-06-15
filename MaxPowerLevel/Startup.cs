@@ -55,7 +55,7 @@ namespace MaxPowerLevel
             services.AddScoped<IManifestService, ManifestService>();
             services.AddScoped<IMaxPowerService, MaxPowerService>();
 
-            services.AddDestiny(bungie.ApiKey);
+            services.AddDestiny(bungie.BaseUrl, bungie.ApiKey);
             services.AddManifestDownloader();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -66,10 +66,13 @@ namespace MaxPowerLevel
                 options.DefaultChallengeScheme = "Bungie";
             })
             .AddCookie(options => {
-                options.Cookie.Name = Configuration["BungieLoginCookieName"];
+                options.Cookie.Name = bungie.LoginCookieName;
                 options.Events = new CookieAuthenticationEvents
                 {
-                    OnValidatePrincipal = HandleRefreshToken
+                    OnValidatePrincipal = context =>
+                    {
+                        return HandleRefreshToken(context, bungie.TokenEndpoint);
+                    }
                 };
             })
             .AddOAuth("Bungie", options => {
@@ -77,8 +80,8 @@ namespace MaxPowerLevel
                 options.ClientSecret = bungie.ClientSecret;
                 options.CallbackPath = new PathString("/signin-bungie/");
 
-                options.AuthorizationEndpoint = "https://www.bungie.net/en/oauth/authorize";
-                options.TokenEndpoint = "https://www.bungie.net/platform/app/oauth/token/";
+                options.AuthorizationEndpoint = bungie.AuthorizationEndpoint;
+                options.TokenEndpoint = bungie.TokenEndpoint;
 
                 options.SaveTokens = true;
 
@@ -129,7 +132,7 @@ namespace MaxPowerLevel
         }
 
         // https://stackoverflow.com/q/52175302/3857
-        private async Task HandleRefreshToken(CookieValidatePrincipalContext context)
+        private async Task HandleRefreshToken(CookieValidatePrincipalContext context, string tokenEndpoint)
         {
             if(!context.Principal.Identity.IsAuthenticated)
             {
@@ -151,7 +154,7 @@ namespace MaxPowerLevel
             // Token is expired. Attempt to renew it.
             var request = new RefreshTokenRequest
             {
-                Address = "https://www.bungie.net/platform/app/oauth/token/",
+                Address = tokenEndpoint,
                 ClientId = bungie.ClientId,
                 ClientSecret = bungie.ClientSecret,
                 RefreshToken = refreshToken.Value

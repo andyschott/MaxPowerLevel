@@ -9,6 +9,7 @@ using MaxPowerLevel.Helpers;
 using MaxPowerLevel.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 
 namespace MaxPowerLevel.Services
 {
@@ -17,8 +18,7 @@ namespace MaxPowerLevel.Services
         private readonly IDestiny _destiny;
         private readonly IManifestService _manifest;
         private readonly IHttpContextAccessor _contextAccessor;
-
-        private readonly TaskFactory _factory = new TaskFactory();
+        private readonly IOptions<BungieSettings> _bungie;
 
         private static readonly ISet<ItemSlot.SlotHashes> _includedBuckets =
             new HashSet<ItemSlot.SlotHashes>
@@ -33,11 +33,13 @@ namespace MaxPowerLevel.Services
                 ItemSlot.SlotHashes.ClassArmor,
             };
 
-        public MaxPowerService(IDestiny destiny, IManifestService manifest, IHttpContextAccessor contextAccessor)
+        public MaxPowerService(IDestiny destiny, IManifestService manifest, IHttpContextAccessor contextAccessor,
+            IOptions<BungieSettings> bungie)
         {
             _destiny = destiny;
             _manifest = manifest;
             _contextAccessor = contextAccessor;
+            _bungie = bungie;
         }
 
         public async Task<IDictionary<ItemSlot.SlotHashes, Item>> ComputeMaxPowerAsync(BungieMembershipType type, long accountId, long characterId)
@@ -110,7 +112,7 @@ namespace MaxPowerLevel.Services
                 }
 
                 itemInstances.TryGetValue(itemComponent.ItemInstanceId, out DestinyItemInstanceComponent instance);
-                items.Add(new Item(itemComponent, itemDef, bucket, instance));
+                items.Add(new Item(_bungie.Value.BaseUrl, itemComponent, itemDef, bucket, instance));
             }
 
             return items;

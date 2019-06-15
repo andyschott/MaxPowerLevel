@@ -6,14 +6,15 @@ namespace MaxPowerLevel.Models
 {
     public class Character
     {
-        public Character(long characterId, DestinyCharacterComponent character, DestinyClassDefinition classDefinition)
+        public Character(long characterId, DestinyCharacterComponent character, DestinyClassDefinition classDefinition,
+            string baseUrl)
         {
             Id = characterId;
             Level = character.Level;
             PowerLevel = character.Light;
             ClassName = classDefinition.DisplayProperties.Name;
             ClassType = classDefinition.ClassType;
-            EmblemPath = "https://www.bungie.net/" + character.EmblemPath;
+            EmblemPath = baseUrl + character.EmblemPath;
         }
 
         public long Id { get; }

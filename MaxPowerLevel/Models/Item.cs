@@ -8,7 +8,7 @@ namespace MaxPowerLevel.Models
 {
     public class Item
     {
-        public Item(DestinyItemComponent itemComponent, DestinyInventoryItemDefinition itemDef,
+        public Item(string baseUrl, DestinyItemComponent itemComponent, DestinyInventoryItemDefinition itemDef,
             DestinyInventoryBucketDefinition bucket, DestinyItemInstanceComponent instance = null)
         {
             Name = itemDef.DisplayProperties.Name;
@@ -16,7 +16,7 @@ namespace MaxPowerLevel.Models
             Slot = new ItemSlot(bucket);
             Tier = itemDef.Inventory.TierType;
             ClassType = itemDef.ClassType;
-            Icon = "https://www.bungie.net/" + itemDef.DisplayProperties.Icon;
+            Icon = baseUrl + itemDef.DisplayProperties.Icon;
         }
 
         public Item(string name, ItemSlot.SlotHashes slot, int powerLevel,

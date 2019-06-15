@@ -24,8 +24,14 @@ namespace MaxPowerLevel.Models
             get
             {
                 var minPower = Items.Min(item => item.PowerLevel);
-                return Items.OrderBy(item => item.PowerLevel)
-                            .TakeWhile(item => item.PowerLevel == minPower);
+                var lowestItems = Items.OrderBy(item => item.PowerLevel)
+                                       .TakeWhile(item => item.PowerLevel == minPower);
+                if(lowestItems.Count() == Items.Count())
+                {
+                    return Enumerable.Empty<Item>();
+                }
+
+                return lowestItems;
             }
         }
     }

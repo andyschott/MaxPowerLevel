@@ -17,17 +17,23 @@
 <h1>Max Power: @Model.MaxPower</h1>
 
 <div class="container">
-  <div class="row">
-    <h1>@("Lowest Item".ToQuantity(Model.LowestItems.Count(), ShowQuantityAs.None))</h1>
-  </div>
-  <div class="row">
-    @foreach(var item in Model.LowestItems)
-    {
-      <div class="col-auto">
-        @await Html.PartialAsync("ItemPartial", item)
-      </div>
-    }
-  </div>
+  @{
+    var lowestItems = Model.LowestItems;
+  }
+  @if(lowestItems.Any())
+  {
+    <div class="row">
+      <h1>@("Lowest Item".ToQuantity(lowestItems.Count(), ShowQuantityAs.None))</h1>
+    </div>
+    <div class="row">
+      @foreach(var item in lowestItems)
+      {
+        <div class="col-auto">
+          @await Html.PartialAsync("ItemPartial", item)
+        </div>
+      }
+    </div>
+  }
   <div class="row">
     <h1>Highest Power Items</h1>
   </div>

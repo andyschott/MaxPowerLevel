@@ -7,13 +7,16 @@ using Destiny2.Entities.Items;
 using Destiny2.Responses;
 using MaxPowerLevel.Helpers;
 using MaxPowerLevel.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 
 namespace MaxPowerLevel.Services
 {
     public class MaxPowerService : IMaxPowerService
     {
-        private readonly IDestinyService _destiny;
+        private readonly IDestiny _destiny;
         private readonly IManifestService _manifest;
+        private readonly IHttpContextAccessor _contextAccessor;
 
         private readonly TaskFactory _factory = new TaskFactory();
 
@@ -30,17 +33,20 @@ namespace MaxPowerLevel.Services
                 ItemSlot.SlotHashes.ClassArmor,
             };
 
-        public MaxPowerService(IDestinyService destiny, IManifestService manifest)
+        public MaxPowerService(IDestiny destiny, IManifestService manifest, IHttpContextAccessor contextAccessor)
         {
             _destiny = destiny;
             _manifest = manifest;
+            _contextAccessor = contextAccessor;
         }
 
         public async Task<IDictionary<ItemSlot.SlotHashes, Item>> ComputeMaxPowerAsync(BungieMembershipType type, long accountId, long characterId)
         {
-            var info = await _destiny.GetProfileAsync(type, accountId, DestinyComponentType.ProfileInventories,
-                DestinyComponentType.Characters, DestinyComponentType.CharacterInventories,
-                DestinyComponentType.CharacterEquipment, DestinyComponentType.ItemInstances);
+            var accessToken = await _contextAccessor.HttpContext.GetTokenAsync("access_token");
+            var info = await _destiny.GetProfile(accessToken, type, accountId,
+                DestinyComponentType.ProfileInventories, DestinyComponentType.Characters,
+                DestinyComponentType.CharacterInventories, DestinyComponentType.CharacterEquipment,
+                DestinyComponentType.ItemInstances);
             if(info == null)
             {
                 return null;

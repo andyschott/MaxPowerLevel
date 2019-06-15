@@ -11,8 +11,6 @@ namespace MaxPowerLevel.Middleware
     public class DownloadManifestMiddleware
     {
         private readonly RequestDelegate _next;
-        private ManifestDownloader _downloader = null;
-        private string _apiKey;
 
         private static readonly FileInfo _manifestVersionPath;
         private static readonly FileInfo _manifestDbPath;
@@ -30,22 +28,17 @@ namespace MaxPowerLevel.Middleware
             _manifestDbPath = new FileInfo(Path.Combine(dir, "Manifest.db"));
         }
 
-        public DownloadManifestMiddleware(RequestDelegate next, string apiKey)
+        public DownloadManifestMiddleware(RequestDelegate next)
         {
             _next = next;
-            _apiKey = apiKey;
         }
 
         public async Task InvokeAsync(HttpContext context)
         {
-            if (null == _downloader)
-            {
-                var currentVersion = await GetCurrentManifestVersion();
-                _downloader = new ManifestDownloader(_apiKey, _manifestDbPath.FullName, currentVersion);
-                _apiKey = null;
-            }
+            var downloader = (IManifestDownloader)context.RequestServices.GetService(typeof(IManifestDownloader));
 
-            var updatedVersion = await _downloader.DownloadManifest();
+            var currentVersion = await GetCurrentManifestVersion();
+            var updatedVersion = await downloader.DownloadManifest(_manifestDbPath.FullName, currentVersion);
             if(!string.IsNullOrEmpty(updatedVersion))
             {
                 Task t = UpdateCurrentManifestVersion(updatedVersion);
@@ -74,9 +67,9 @@ namespace MaxPowerLevel.Middleware
 
     public static class DownloadManifestMiddlewareExtensions
     {
-        public static IApplicationBuilder UseDownloadManifest(this IApplicationBuilder builder, string apiKey)
+        public static IApplicationBuilder UseDownloadManifest(this IApplicationBuilder builder)
         {
-            return builder.UseMiddleware<DownloadManifestMiddleware>(apiKey);
+            return builder.UseMiddleware<DownloadManifestMiddleware>();
         }
     }
 }

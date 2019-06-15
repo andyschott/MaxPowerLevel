@@ -7,6 +7,7 @@ using MaxPowerLevel.Models;
 using MaxPowerLevel.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 
@@ -16,20 +17,23 @@ namespace MaxPowerLevel.Controllers
     [Authorize]
     public class CharacterController : Controller
     {
-        private readonly IDestinyService _destiny;
-        private readonly IManifestService _manifest;
+        private readonly IDestiny _destiny;
         private readonly IMaxPowerService _maxPower;
+        private readonly IHttpContextAccessor _contextAccessor;
 
-        public CharacterController(IDestinyService destiny, IManifestService manifest, IMaxPowerService maxPower)
+        public CharacterController(IDestiny destiny, IMaxPowerService maxPower,
+            IHttpContextAccessor contextAccessor)
         {
             _destiny = destiny;
-            _manifest = manifest;
             _maxPower = maxPower;
+            _contextAccessor = contextAccessor;
         }
         
         [HttpGet("{type}/{id}/{characterId}")]
         public async Task<IActionResult> Details(int type, long id, long characterId)
         {
+            var accessToken = await _contextAccessor.HttpContext.GetTokenAsync("access_token");
+
             var membershipType = (BungieMembershipType)type;
 
             var maxGear = await _maxPower.ComputeMaxPowerAsync(membershipType, id, characterId);
@@ -38,7 +42,8 @@ namespace MaxPowerLevel.Controllers
                 var url = Url.RouteUrl("AccountIndex");
                 return Redirect(url);
             }
-            var character = await _destiny.GetCharacterInfoAsync(membershipType, id, characterId, DestinyComponentType.Characters);
+            var character = await _destiny.GetCharacterInfo(accessToken, membershipType, id, characterId,
+                DestinyComponentType.Characters);
 
             var model = new CharacterViewModel()
             {
@@ -46,8 +51,8 @@ namespace MaxPowerLevel.Controllers
                 AccountId = id,
                 Items = maxGear.Values,
                 MaxPower = _maxPower.ComputePower(maxGear.Values),
-                EmblemPath = Destiny.BaseAddress + character.Character.Data.EmblemPath,
-                EmblemBackgroundPath = Destiny.BaseAddress + character.Character.Data.EmblemBackgroundPath
+                EmblemPath = "https://www.bungie.net/" + character.Character.Data.EmblemPath,
+                EmblemBackgroundPath = "htps://www.bungie.net/" + character.Character.Data.EmblemBackgroundPath
             };
 
             return View(model);

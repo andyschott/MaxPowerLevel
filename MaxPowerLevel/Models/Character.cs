@@ -13,7 +13,7 @@ namespace MaxPowerLevel.Models
             PowerLevel = character.Light;
             ClassName = classDefinition.DisplayProperties.Name;
             ClassType = classDefinition.ClassType;
-            EmblemPath = Destiny.BaseAddress + character.EmblemPath;
+            EmblemPath = "https://www.bungie.net/" + character.EmblemPath;
         }
 
         public long Id { get; }

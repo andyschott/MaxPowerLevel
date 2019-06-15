@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using Destiny2.Extensions;
 using IdentityModel.Client;
 using MaxPowerLevel.Helpers;
 using MaxPowerLevel.Middleware;
@@ -46,15 +47,18 @@ namespace MaxPowerLevel
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.Configure<BungieSettings>(Configuration.GetSection("Bungie"));
+            var bungie = Configuration.GetSection("Bungie").Get<BungieSettings>();
+
             services.AddHttpContextAccessor();
 
-            services.AddScoped<IDestinyService, DestinyService>();
             services.AddScoped<IManifestService, ManifestService>();
             services.AddScoped<IMaxPowerService, MaxPowerService>();
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddDestiny(bungie.ApiKey);
+            services.AddManifestDownloader();
 
-            services.Configure<BungieSettings>(Configuration.GetSection("Bungie"));
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddAuthentication(options => {
                 options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -69,8 +73,6 @@ namespace MaxPowerLevel
                 };
             })
             .AddOAuth("Bungie", options => {
-                var bungie = Configuration.GetSection("Bungie").Get<BungieSettings>();
-
                 options.ClientId = bungie.ClientId;
                 options.ClientSecret = bungie.ClientSecret;
                 options.CallbackPath = new PathString("/signin-bungie/");
@@ -116,8 +118,7 @@ namespace MaxPowerLevel
             app.UseAuthentication();
             app.UseCookiePolicy();
 
-            var bungie = Configuration.GetSection("Bungie").Get<BungieSettings>();
-            app.UseDownloadManifest(bungie.ApiKey);
+            app.UseDownloadManifest();
 
             app.UseMvc(routes =>
             {

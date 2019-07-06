@@ -58,10 +58,10 @@ namespace MaxPowerLevel.Controllers
         var value = User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
         long.TryParse(value, out long membershipId);
 
-        var membershipData = await _destiny.GetMembershipData(await accessToken, membershipId);
-        var accounts = (from membership in membershipData.Memberships
-                        select new Account(membership.MembershipType, membership.MembershipId))
-                       .ToList();
+        var linkedProfiles = await _destiny.GetLinkedProfiles(await accessToken, membershipId);
+
+        var accounts = linkedProfiles.Profiles.Select(profile => new Account(profile.MembershipType, profile.MembershipId))
+                                              .ToList();
 
         if (1 == accounts.Count)
         {

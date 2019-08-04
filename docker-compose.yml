@@ -1,0 +1,12 @@
+version: '3'
+services:
+  web:
+    build: .
+    ports:
+      - "5000:80"
+      - "5001:443"
+    env_file:
+      - environment.txt
+    volumes:
+      - ./cert:/.dotnet/https
+      - ./docker_data:/root/MaxPowerLevel

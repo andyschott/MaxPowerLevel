@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Destiny2;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace MaxPowerLevel.Services
@@ -13,22 +14,35 @@ namespace MaxPowerLevel.Services
   {
     private readonly IServiceProvider _services;
     private readonly ManifestSettings _manifestSettings;
-
+    private readonly ILogger _logger;
     private const int ManifestCheckTimeout = 5 * 60 * 1000; // 5 minutes
 
-    public DownloadManifestService(IServiceProvider services, ManifestSettings manifestSettings)
+    public DownloadManifestService(IServiceProvider services, ManifestSettings manifestSettings,
+        ILogger<DownloadManifestService> logger)
     {
         _services = services;
         _manifestSettings = manifestSettings;
+        _logger = logger;
     }
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         while(!cancellationToken.IsCancellationRequested)
         {
-            await CheckManifest(cancellationToken);
-            await Task.Delay(ManifestCheckTimeout, cancellationToken);
+            try
+            {
+                _logger?.LogInformation("Checking for an updated manifest");
+                await CheckManifest(cancellationToken);
+                _logger?.LogInformation($"Finshed checking for the manifest. Waiting {ManifestCheckTimeout} ms to try again.");
+                await Task.Delay(ManifestCheckTimeout, cancellationToken);
+            }
+            catch(TaskCanceledException)
+            {
+                _logger?.LogInformation("Canceling checking for an updated manifest.");
+            }
         }
+
+        _logger?.LogInformation("Exiting the method to check for an updated manifest.");
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

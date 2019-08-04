@@ -20,18 +20,16 @@ namespace MaxPowerLevel.Controllers
   {
     private readonly IDestiny _destiny;
     private readonly IManifestService _manifest;
-    private readonly IConfiguration _config;
     private readonly IHttpContextAccessor _contextAccessor;
     private readonly IOptions<BungieSettings> _bungie;
     private readonly ILogger _logger;
 
-    public AccountController(IDestiny destiny, IManifestService manifest, IConfiguration config,
+    public AccountController(IDestiny destiny, IManifestService manifest,
         IHttpContextAccessor contextAccessor, IOptions<BungieSettings> bungie,
         ILogger<AccountController> logger)
     {
         _destiny = destiny;
         _manifest = manifest;
-        _config = config;
         _contextAccessor = contextAccessor;
         _bungie = bungie;
         _logger = logger;
@@ -48,7 +46,7 @@ namespace MaxPowerLevel.Controllers
     public IActionResult Logout()
     {
         _logger.LogInformation("Logut");
-        Response.Cookies.Delete(_config["BungieLoginCookieName"]);
+        Response.Cookies.Delete(_bungie.Value.LoginCookieName);
 
         var url = Url.Action("Index", "Home");
         return Redirect(url);

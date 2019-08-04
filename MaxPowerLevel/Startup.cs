@@ -1,30 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 using Destiny2.Extensions;
 using IdentityModel.Client;
 using MaxPowerLevel.Helpers;
-using MaxPowerLevel.Middleware;
 using MaxPowerLevel.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json.Linq;
 
 namespace MaxPowerLevel
 {
@@ -47,6 +39,8 @@ namespace MaxPowerLevel
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddSingleton<ManifestSettings>();
+
             services.Configure<BungieSettings>(Configuration.GetSection("Bungie"));
             var bungie = Configuration.GetSection("Bungie").Get<BungieSettings>();
 
@@ -57,6 +51,8 @@ namespace MaxPowerLevel
 
             services.AddDestiny(bungie.BaseUrl, bungie.ApiKey);
             services.AddManifestDownloader();
+
+            services.AddHostedService<DownloadManifestService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
@@ -120,8 +116,6 @@ namespace MaxPowerLevel
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseCookiePolicy();
-
-            app.UseDownloadManifest();
 
             app.UseMvc(routes =>
             {

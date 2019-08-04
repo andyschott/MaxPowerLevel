@@ -1,8 +1,6 @@
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Destiny2;
 using Destiny2.Definitions;
-using Microsoft.AspNetCore.Http;
 
 namespace MaxPowerLevel.Services
 {
@@ -10,10 +8,9 @@ namespace MaxPowerLevel.Services
     {
         private readonly ManifestDb _db;
         
-        public ManifestService(IHttpContextAccessor contextAccessor)
+        public ManifestService(ManifestSettings manifestSettings)
         {
-            var dbPath = (string)contextAccessor.HttpContext.Items["ManifestDbPath"];
-            _db = new ManifestDb(dbPath);
+            _db = new ManifestDb(manifestSettings.DbPath.FullName);
         }
         
         public Task<DestinyClassDefinition> LoadClassAsync(uint hash)

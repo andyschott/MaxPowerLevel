@@ -8,7 +8,9 @@ WORKDIR /src
 COPY Destiny2/Destiny2.csproj Destiny2/
 COPY MaxPowerLevel/MaxPowerLevel.csproj MaxPowerLevel/
 RUN dotnet restore MaxPowerLevel/MaxPowerLevel.csproj
-COPY . .
+COPY Destiny2/ Destiny2/
+COPY MaxPowerLevel/ MaxPowerLevel/
+
 WORKDIR /src/MaxPowerLevel/
 RUN dotnet build MaxPowerLevel.csproj -c Release -o /app
 

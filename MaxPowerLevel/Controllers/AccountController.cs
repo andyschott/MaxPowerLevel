@@ -9,8 +9,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace MaxPowerLevel.Controllers
@@ -23,26 +23,31 @@ namespace MaxPowerLevel.Controllers
     private readonly IConfiguration _config;
     private readonly IHttpContextAccessor _contextAccessor;
     private readonly IOptions<BungieSettings> _bungie;
+    private readonly ILogger _logger;
 
     public AccountController(IDestiny destiny, IManifestService manifest, IConfiguration config,
-        IHttpContextAccessor contextAccessor, IOptions<BungieSettings> bungie)
+        IHttpContextAccessor contextAccessor, IOptions<BungieSettings> bungie,
+        ILogger<AccountController> logger)
     {
         _destiny = destiny;
         _manifest = manifest;
         _config = config;
         _contextAccessor = contextAccessor;
         _bungie = bungie;
+        _logger = logger;
     }
 
     [HttpGet("login")]
     public IActionResult Login(string returnUrl = "/")
     {
+        _logger.LogInformation("Login");
         return Challenge(new AuthenticationProperties() { RedirectUri = returnUrl });
     }
 
     [HttpGet("logout")]
     public IActionResult Logout()
     {
+        _logger.LogInformation("Logut");
         Response.Cookies.Delete(_config["BungieLoginCookieName"]);
 
         var url = Url.Action("Index", "Home");
@@ -53,6 +58,7 @@ namespace MaxPowerLevel.Controllers
     [Authorize]
     public async Task<IActionResult> Index()
     {
+        _logger.LogInformation("Index");
         var accessToken = _contextAccessor.HttpContext.GetTokenAsync("access_token");
 
         var value = User.FindFirst(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
@@ -65,6 +71,8 @@ namespace MaxPowerLevel.Controllers
 
         if (1 == accounts.Count)
         {
+          _logger.LogInformation("Only one account - redirecting to account page");
+
           // If there is only one account, redirect to the page for it.
           var url = Url.RouteUrl("AccountDetails", new
           {
@@ -83,9 +91,11 @@ namespace MaxPowerLevel.Controllers
     [Authorize]
     public async Task<IActionResult> Details(int type, long id)
     {
+        var membershipType = (BungieMembershipType)type;
+        _logger.LogInformation($"{membershipType}/{id}");
+
         var accessToken = _contextAccessor.HttpContext.GetTokenAsync("access_token");
 
-        var membershipType = (BungieMembershipType)type;
         var model = new AccountDetailsViewModel(membershipType, id);
 
         var profileResponse = await _destiny.GetProfile(await accessToken, membershipType, id, DestinyComponentType.Characters);

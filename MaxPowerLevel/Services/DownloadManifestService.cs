@@ -62,6 +62,7 @@ namespace MaxPowerLevel.Services
 
             if(!string.IsNullOrEmpty(updatedVersion))
             {
+                _logger.LogInformation("Downloaded an updated manifest. Updating the local verison number.");
                 Task t = UpdateCurrentManifestVersion(updatedVersion, cancellationToken);
             }
         }
@@ -71,6 +72,7 @@ namespace MaxPowerLevel.Services
     {
         if (!_manifestSettings.VersionPath.Exists)
         {
+            _logger?.LogInformation("VersionPath doesn't exist. Returning an empty string.");
             return string.Empty;
         }
 

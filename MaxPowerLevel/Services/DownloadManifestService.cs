@@ -10,11 +10,14 @@ using Microsoft.Extensions.Options;
 
 namespace MaxPowerLevel.Services
 {
-  public class DownloadManifestService : IHostedService
+  public class DownloadManifestService : IHostedService, IDisposable
   {
     private readonly IServiceProvider _services;
     private readonly ManifestSettings _manifestSettings;
     private readonly ILogger _logger;
+
+    private Timer _timer = null;
+
     private const int ManifestCheckTimeout = 5 * 60 * 1000; // 5 minutes
 
     public DownloadManifestService(IServiceProvider services, ManifestSettings manifestSettings,
@@ -25,33 +28,32 @@ namespace MaxPowerLevel.Services
         _logger = logger;
     }
 
-    public async Task StartAsync(CancellationToken cancellationToken)
+    public void Dispose()
     {
-        while(!cancellationToken.IsCancellationRequested)
-        {
-            try
-            {
-                _logger?.LogInformation("Checking for an updated manifest");
-                await CheckManifest(cancellationToken);
-                _logger?.LogInformation($"Finshed checking for the manifest. Waiting {ManifestCheckTimeout} ms to try again.");
-                await Task.Delay(ManifestCheckTimeout, cancellationToken);
-            }
-            catch(TaskCanceledException)
-            {
-                _logger?.LogInformation("Canceling checking for an updated manifest.");
-            }
-        }
+        _timer.Dispose();
+        _timer = null;
+    }
 
-        _logger?.LogInformation("Exiting the method to check for an updated manifest.");
+    public Task StartAsync(CancellationToken cancellationToken)
+    {
+        _timer = new Timer(async (state) => await CheckManifest(state), cancellationToken,
+            TimeSpan.Zero, TimeSpan.FromMilliseconds(ManifestCheckTimeout));
+
+        return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
+        _timer?.Change(Timeout.Infinite, 0);
         return Task.CompletedTask;
     }
 
-    private async Task CheckManifest(CancellationToken cancellationToken)
+    private async Task CheckManifest(object state)
     {
+        _logger?.LogInformation("Checking for an updated manifest.");
+
+        var cancellationToken = (CancellationToken)state;
+
         using(var scope = _services.CreateScope())
         {
             var downloader = (IManifestDownloader)scope.ServiceProvider.GetRequiredService(typeof(IManifestDownloader));

@@ -15,8 +15,8 @@ namespace MaxPowerLevel.Services
 {
     public class MaxPowerService : IMaxPowerService
     {
-        private readonly IDestiny _destiny;
-        private readonly IManifestService _manifest;
+        private readonly IDestiny2 _destiny;
+        private readonly IManifest _manifest;
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IOptions<BungieSettings> _bungie;
         private readonly ILogger _logger;
@@ -34,7 +34,7 @@ namespace MaxPowerLevel.Services
                 ItemSlot.SlotHashes.ClassArmor,
             };
 
-        public MaxPowerService(IDestiny destiny, IManifestService manifest, IHttpContextAccessor contextAccessor,
+        public MaxPowerService(IDestiny2 destiny, IManifest manifest, IHttpContextAccessor contextAccessor,
             IOptions<BungieSettings> bungie, ILogger<MaxPowerService> logger)
         {
             _destiny = destiny;
@@ -65,7 +65,7 @@ namespace MaxPowerLevel.Services
                 return null;
             }
 
-            var classDef = await _manifest.LoadClassAsync(character.ClassHash);
+            var classDef = await _manifest.LoadClass(character.ClassHash);
 
             var itemComponents = info.CharacterEquipment.Data.Values // Equipped items on all characters
                 .Concat(info.CharacterInventories.Data.Values) // Items in all character inventories
@@ -111,7 +111,7 @@ namespace MaxPowerLevel.Services
             var items = new List<Item>();
             foreach(var itemComponent in itemComponents)
             {
-                var itemDef = await _manifest.LoadInventoryItemAsync(itemComponent.ItemHash);
+                var itemDef = await _manifest.LoadInventoryItem(itemComponent.ItemHash);
                 var bucket = await _manifest.LoadBucket(itemDef.Inventory.BucketTypeHash);
                 if(!ShouldInclude(bucket))
                 {

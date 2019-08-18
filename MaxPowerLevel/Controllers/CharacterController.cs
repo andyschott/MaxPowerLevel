@@ -16,13 +16,13 @@ namespace MaxPowerLevel.Controllers
     [Authorize]
     public class CharacterController : Controller
     {
-        private readonly IDestiny _destiny;
+        private readonly IDestiny2 _destiny;
         private readonly IMaxPowerService _maxPower;
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IOptions<BungieSettings> _bungie;
         private readonly ILogger _logger;
 
-        public CharacterController(IDestiny destiny, IMaxPowerService maxPower,
+        public CharacterController(IDestiny2 destiny, IMaxPowerService maxPower,
             IHttpContextAccessor contextAccessor, IOptions<BungieSettings> bungie,
             ILogger<CharacterController> logger)
         {

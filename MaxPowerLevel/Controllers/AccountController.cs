@@ -4,12 +4,10 @@ using System.Threading.Tasks;
 using Destiny2;
 using MaxPowerLevel.Helpers;
 using MaxPowerLevel.Models;
-using MaxPowerLevel.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -18,13 +16,13 @@ namespace MaxPowerLevel.Controllers
   [Route("[controller]")]
   public class AccountController : Controller
   {
-    private readonly IDestiny _destiny;
-    private readonly IManifestService _manifest;
+    private readonly IDestiny2 _destiny;
+    private readonly IManifest _manifest;
     private readonly IHttpContextAccessor _contextAccessor;
     private readonly IOptions<BungieSettings> _bungie;
     private readonly ILogger _logger;
 
-    public AccountController(IDestiny destiny, IManifestService manifest,
+    public AccountController(IDestiny2 destiny, IManifest manifest,
         IHttpContextAccessor contextAccessor, IOptions<BungieSettings> bungie,
         ILogger<AccountController> logger)
     {
@@ -105,7 +103,7 @@ namespace MaxPowerLevel.Controllers
 
         foreach (var item in profileResponse.Characters.Data)
         {
-            var classDef = await _manifest.LoadClassAsync(item.Value.ClassHash);
+            var classDef = await _manifest.LoadClass(item.Value.ClassHash);
             model.Characters.Add(new Character(item.Key, item.Value, classDef, _bungie.Value.BaseUrl));
         }
 

@@ -8,8 +8,6 @@
     <PackageReference Include="Microsoft.AspNetCore.App"/>
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All"/>
     <PackageReference Include="Humanizer" Version="2.6.2"/>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Destiny2\Destiny2.csproj"/>
+    <PackageReference Include="Destiny2" Version="1.0.0"/>
   </ItemGroup>
 </Project>

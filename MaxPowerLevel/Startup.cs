@@ -35,12 +35,13 @@ namespace MaxPowerLevel
 
             services.AddScoped<IMaxPowerService, MaxPowerService>();
 
-            // services.AddDestiny2(bungie.BaseUrl, bungie.ApiKey);
-            services.AddDestiny2(new Destiny2Config
+            var config = new Destiny2Config(Configuration["AppName"], Configuration["AppVersion"],
+                Configuration["AppId"], "http://andyschott.com", "dev@andyschott.com")
             {
                 BaseUrl = bungie.BaseUrl,
                 ApiKey = bungie.ApiKey,
-            });
+            };
+            services.AddDestiny2(config);
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 

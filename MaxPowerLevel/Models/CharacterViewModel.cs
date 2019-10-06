@@ -10,6 +10,7 @@ namespace MaxPowerLevel.Models
         public long AccountId { get; set; }
         public IEnumerable<Item> Items { get; set; } = new List<Item>();
         public int MaxPower { get; set; } = 0;
+        public int BonusPower { get; set; } = 0;
         public string EmblemPath { get; set; }
         public string EmblemBackgroundPath {get; set; }
 

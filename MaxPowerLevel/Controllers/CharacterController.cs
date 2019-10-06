@@ -48,8 +48,15 @@ namespace MaxPowerLevel.Controllers
                 var url = Url.RouteUrl("AccountIndex");
                 return Redirect(url);
             }
-            var character = await _destiny.GetCharacterInfo(accessToken, membershipType, id, characterId,
+            var characterTask = _destiny.GetCharacterInfo(accessToken, membershipType, id, characterId,
                 DestinyComponentType.Characters);
+            var profileTask = _destiny.GetProfile(accessToken, membershipType, id,
+                DestinyComponentType.ProfileProgression);
+
+            await Task.WhenAll(characterTask, profileTask);
+
+            var character = characterTask.Result;
+            var profile = profileTask.Result;
 
             var model = new CharacterViewModel()
             {
@@ -57,6 +64,7 @@ namespace MaxPowerLevel.Controllers
                 AccountId = id,
                 Items = maxGear.Values,
                 MaxPower = _maxPower.ComputePower(maxGear.Values),
+                BonusPower = profile.ProfileProgression.Data.SeasonalArtifact.PowerBonus,
                 EmblemPath = _bungie.Value.BaseUrl + character.Character.Data.EmblemPath,
                 EmblemBackgroundPath = _bungie.Value.BaseUrl + character.Character.Data.EmblemBackgroundPath
             };

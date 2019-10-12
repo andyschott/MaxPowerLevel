@@ -35,6 +35,7 @@ namespace MaxPowerLevel
             services.AddHttpContextAccessor();
 
             services.AddScoped<IMaxPowerService, MaxPowerService>();
+            services.AddSingleton<IRecommendations, Season8Recommendations>();
 
             var config = new Destiny2Config(Configuration["AppName"], Configuration["AppVersion"],
                 Configuration["AppId"], Configuration["Url"], Configuration["Email"])

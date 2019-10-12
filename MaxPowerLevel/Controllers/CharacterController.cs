@@ -20,16 +20,18 @@ namespace MaxPowerLevel.Controllers
     {
         private readonly IDestiny2 _destiny;
         private readonly IMaxPowerService _maxPower;
+        private readonly IRecommendations _recommendations;
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IOptions<BungieSettings> _bungie;
         private readonly ILogger _logger;
 
         public CharacterController(IDestiny2 destiny, IMaxPowerService maxPower,
-            IHttpContextAccessor contextAccessor, IOptions<BungieSettings> bungie,
-            ILogger<CharacterController> logger)
+            IRecommendations recommendations,  IHttpContextAccessor contextAccessor,
+            IOptions<BungieSettings> bungie, ILogger<CharacterController> logger)
         {
             _destiny = destiny;
             _maxPower = maxPower;
+            _recommendations = recommendations;
             _contextAccessor = contextAccessor;
             _bungie = bungie;
             _logger = logger;
@@ -72,7 +74,7 @@ namespace MaxPowerLevel.Controllers
                 BonusPower = profile.ProfileProgression.Data.SeasonalArtifact.PowerBonus,
                 EmblemPath = _bungie.Value.BaseUrl + character.Character.Data.EmblemPath,
                 EmblemBackgroundPath = _bungie.Value.BaseUrl + character.Character.Data.EmblemBackgroundPath,
-                Recommendations = BuildRecommendations(maxGear.Values, maxPower)
+                Recommendations = _recommendations.GetRecommendations(maxGear.Values, maxPower)
             };
 
             return View(model);
@@ -90,21 +92,6 @@ namespace MaxPowerLevel.Controllers
                 }
 
                 return lowestItems;
-        }
-
-        private IEnumerable<string> BuildRecommendations(IEnumerable<Item> allItems, int maxPower)
-        {
-            var recommendations = allItems.Where(item => item.PowerLevel <= maxPower - 2)
-                .OrderBy(item => item.PowerLevel)
-                .GroupBy(item => item.PowerLevel)
-                .Select(items => 
-                {
-                    var slotNames = items.Select(item => item.Slot.Name)
-                        .OrderBy(slotName => slotName);
-                    return $"Legendary Engram: {string.Join(", ", slotNames)}";
-                })
-                .Concat(new[] { "Powerful Engram"});
-            return recommendations;
         }
     }
 }

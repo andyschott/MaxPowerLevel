@@ -37,7 +37,7 @@ namespace MaxPowerLevel
             services.AddScoped<IMaxPowerService, MaxPowerService>();
 
             var config = new Destiny2Config(Configuration["AppName"], Configuration["AppVersion"],
-                Configuration["AppId"], "http://andyschott.com", "dev@andyschott.com")
+                Configuration["AppId"], Configuration["Url"], Configuration["Email"])
             {
                 BaseUrl = bungie.BaseUrl,
                 ApiKey = bungie.ApiKey,

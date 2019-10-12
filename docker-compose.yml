@@ -9,7 +9,6 @@ services:
     env_file:
       - environment.txt
     volumes:
-      - ./cert:/.dotnet/https
       - ./docker_data:/root/Destiny2Manifest
     networks:
       - my-network

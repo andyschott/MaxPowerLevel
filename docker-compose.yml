@@ -1,12 +1,27 @@
 version: '3'
 services:
-  web:
+  backend:
     build: .
-    ports:
-      - "5000:80"
-      - "5001:443"
+    expose:
+      - "80"
+      - "443"
     env_file:
       - environment.txt
     volumes:
       - ./cert:/.dotnet/https
-      - ./docker_data:/root/MaxPowerLevel
+      - ./docker_data:/root/Destiny2Manifest
+    networks:
+      - my-network
+  nginx:
+    depends_on:
+      - backend
+    image: nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    networks:
+      - my-network
+networks:
+  my-network:

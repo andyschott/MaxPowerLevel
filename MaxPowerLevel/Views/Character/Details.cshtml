@@ -14,7 +14,7 @@
   <source media="(min-width: 992px)" srcset="@Model.EmblemBackgroundPath">
   <img src="@Model.EmblemPath" class="d-none d-md-block">
 </picture>
-<h1>Max Power: @(Model.MaxPower + Model.BonusPower)</h1>
+<h1>Max Power: @(Model.MaxPower + Model.BonusPower) (@(Model.MaxPower) + @(Model.BonusPower))</h1>
 <ul>
   <li>Normal Engrams: @Model.NormalEngrams.low - @Model.NormalEngrams.high</li>
   <li>Powerful Tier 1 Engrams: @Model.PowerfulTier1Engrams</li>

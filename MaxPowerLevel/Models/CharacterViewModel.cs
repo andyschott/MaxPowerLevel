@@ -8,7 +8,7 @@ namespace MaxPowerLevel.Models
     {
         public BungieMembershipType Type { get; set; }
         public long AccountId { get; set; }
-        public IEnumerable<Item> Items { get; set; } = new List<Item>();
+        public IEnumerable<Item> Items { get; set; } = Enumerable.Empty<Item>();
         public int MaxPower { get; set; } = 0;
         public int BonusPower { get; set; } = 0;
         public string EmblemPath { get; set; }
@@ -25,20 +25,7 @@ namespace MaxPowerLevel.Models
         public IEnumerable<Item> Armor => Items.Where(item => item.IsArmor)
                                                .OrderBy(item => item.Slot.Order);
 
-        public IEnumerable<Item> LowestItems
-        {
-            get
-            {
-                var minPower = Items.Min(item => item.PowerLevel);
-                var lowestItems = Items.OrderBy(item => item.PowerLevel)
-                                       .TakeWhile(item => item.PowerLevel == minPower);
-                if(lowestItems.Count() == Items.Count())
-                {
-                    return Enumerable.Empty<Item>();
-                }
-
-                return lowestItems;
-            }
-        }
+        public IEnumerable<Item> LowestItems { get; set; } = Enumerable.Empty<Item>();
+        public IEnumerable<string> Recommendations { get; set; } = Enumerable.Empty<string>();
     }
 }

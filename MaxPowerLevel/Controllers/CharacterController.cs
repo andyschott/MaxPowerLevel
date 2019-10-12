@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Destiny2;
 using MaxPowerLevel.Helpers;
@@ -57,19 +59,52 @@ namespace MaxPowerLevel.Controllers
 
             var character = characterTask.Result;
             var profile = profileTask.Result;
+            var lowestItems = FindLowestItems(maxGear.Values).ToList();
 
+            int maxPower = _maxPower.ComputePower(maxGear.Values);
             var model = new CharacterViewModel()
             {
                 Type = membershipType,
                 AccountId = id,
                 Items = maxGear.Values,
-                MaxPower = _maxPower.ComputePower(maxGear.Values),
+                LowestItems = lowestItems,
+                MaxPower = maxPower,
                 BonusPower = profile.ProfileProgression.Data.SeasonalArtifact.PowerBonus,
                 EmblemPath = _bungie.Value.BaseUrl + character.Character.Data.EmblemPath,
-                EmblemBackgroundPath = _bungie.Value.BaseUrl + character.Character.Data.EmblemBackgroundPath
+                EmblemBackgroundPath = _bungie.Value.BaseUrl + character.Character.Data.EmblemBackgroundPath,
+                Recommendations = BuildRecommendations(maxGear.Values, maxPower)
             };
 
             return View(model);
+        }
+
+        private IEnumerable<Item> FindLowestItems(IEnumerable<Item> items)
+        {
+                var minPower = items.Min(item => item.PowerLevel);
+                var lowestItems = items.OrderBy(item => item.PowerLevel)
+                                       .TakeWhile(item => item.PowerLevel == minPower);
+                if(lowestItems.Count() == items.Count())
+                {
+                    // All items are max power.
+                    return Enumerable.Empty<Item>();
+                }
+
+                return lowestItems;
+        }
+
+        private IEnumerable<string> BuildRecommendations(IEnumerable<Item> allItems, int maxPower)
+        {
+            var recommendations = allItems.Where(item => item.PowerLevel <= maxPower - 2)
+                .OrderBy(item => item.PowerLevel)
+                .GroupBy(item => item.PowerLevel)
+                .Select(items => 
+                {
+                    var slotNames = items.Select(item => item.Slot.Name)
+                        .OrderBy(slotName => slotName);
+                    return $"Legendary Engram: {string.Join(", ", slotNames)}";
+                })
+                .Concat(new[] { "Powerful Engram"});
+            return recommendations;
         }
     }
 }

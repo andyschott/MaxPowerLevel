@@ -25,7 +25,24 @@
 <div class="container">
   @{
     var lowestItems = Model.LowestItems;
+    var recommendations = Model.Recommendations;
   }
+
+  @if(Model.Recommendations.Any())
+  {
+    <div class="row">
+      <h1>Recommendations</h1>
+    </div>
+    <div class="row">
+      <ol>
+        @foreach(var recommendation in recommendations)
+        {
+          <li>@recommendation</li>
+        }
+      </ol>
+    </div>
+  }
+
   @if(lowestItems.Any())
   {
     <div class="row">
@@ -40,6 +57,7 @@
       }
     </div>
   }
+
   <div class="row">
     <h1>Highest Power Items</h1>
   </div>

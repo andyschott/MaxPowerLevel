@@ -16,10 +16,10 @@
 </picture>
 <h1>Max Power: @(Model.MaxPower + Model.BonusPower) (@(Model.MaxPower) + @(Model.BonusPower))</h1>
 <ul>
-  <li>Normal Engrams: @Model.NormalEngrams.low - @Model.NormalEngrams.high</li>
-  <li>Powerful Tier 1 Engrams: @Model.PowerfulTier1Engrams</li>
-  <li>Powerful Tier 2 Engrams: @Model.PowerfulTier2Engrams</li>
-  <li>Powerful Tier 3 Engrams: @Model.PowerfulTier3Engrams</li>
+    @foreach(var engram in Model.Engrams)
+    {
+        <li>@engram.Description</li>
+    }
 </ul>
 
 <div class="container">

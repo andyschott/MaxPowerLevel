@@ -74,7 +74,8 @@ namespace MaxPowerLevel.Controllers
                 BonusPower = profile.ProfileProgression.Data.SeasonalArtifact.PowerBonus,
                 EmblemPath = _bungie.Value.BaseUrl + character.Character.Data.EmblemPath,
                 EmblemBackgroundPath = _bungie.Value.BaseUrl + character.Character.Data.EmblemBackgroundPath,
-                Recommendations = _recommendations.GetRecommendations(maxGear.Values, maxPower)
+                Recommendations = _recommendations.GetRecommendations(maxGear.Values, maxPower),
+                Engrams = _recommendations.GetEngramPowerLevels(maxPower)
             };
 
             return View(model);

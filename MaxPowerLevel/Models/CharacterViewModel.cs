@@ -14,11 +14,6 @@ namespace MaxPowerLevel.Models
         public string EmblemPath { get; set; }
         public string EmblemBackgroundPath {get; set; }
 
-        public (int low, int high) NormalEngrams => (MaxPower - 3, MaxPower);
-        public int PowerfulTier1Engrams => MaxPower + 3;
-        public int PowerfulTier2Engrams => MaxPower + 5;
-        public int PowerfulTier3Engrams => MaxPower + 6;
-
         public IEnumerable<Item> Weapons => Items.Where(item => item.IsWeapon)
                                                  .OrderBy(item => item.Slot.Order);
         
@@ -27,5 +22,6 @@ namespace MaxPowerLevel.Models
 
         public IEnumerable<Item> LowestItems { get; set; } = Enumerable.Empty<Item>();
         public IEnumerable<string> Recommendations { get; set; } = Enumerable.Empty<string>();
+        public IEnumerable<Engram> Engrams { get; set; }
     }
 }

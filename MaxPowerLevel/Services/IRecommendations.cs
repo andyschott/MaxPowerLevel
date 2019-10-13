@@ -5,6 +5,7 @@ namespace MaxPowerLevel.Services
 {
     public interface IRecommendations
     {
-         IEnumerable<string> GetRecommendations(IEnumerable<Item> items, int powerLevel);
+        IEnumerable<string> GetRecommendations(IEnumerable<Item> items, int powerLevel);
+        IEnumerable<Engram> GetEngramPowerLevels(int powerLevel);
     }
 }

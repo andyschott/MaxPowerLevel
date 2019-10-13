@@ -1,3 +1,3 @@
 #!/bin/sh
 
-docker-compose up --detach
+docker-compose up -d

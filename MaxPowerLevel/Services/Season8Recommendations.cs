@@ -67,7 +67,7 @@ namespace MaxPowerLevel.Services
                     new Engram("Powerful Engram (Tier 2)", powerLevel + 5),
                     new Engram("Powerful Engram (Tier 3)", powerLevel + 6),
                     // TODO: Verify power level of Pinnacle engrams
-                    new Engram("Pinnale Engram", powerLevel + 6)
+                    new Engram("Pinnacle Engram", powerLevel + 6)
                 };
             }
 
@@ -81,7 +81,7 @@ namespace MaxPowerLevel.Services
                     new Engram("Powerful Engram (Tier 2)", powerLevel),
                     new Engram("Powerful Engram (Tier 3)", powerLevel),
                     // TODO: Verify power level of Pinnacle engrams
-                    new Engram("Pinnale Engram", powerLevel + 1)
+                    new Engram("Pinnacle Engram", powerLevel + 1)
                 };
             }
 

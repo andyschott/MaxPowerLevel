@@ -2,7 +2,7 @@ version: '3'
 services:
   backend:
     build: .
-    restart: always
+    restart: unless-stopped
     expose:
       - "80"
       - "443"
@@ -16,7 +16,7 @@ services:
     depends_on:
       - backend
     image: nginx
-    restart: always
+    restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
@@ -28,6 +28,7 @@ services:
       - my-network
   certbot:
     image: certbot/certbot
+    restart: unless-stopped
     volumes:
       - ./data/certbot/conf:/etc/letsencrypt
       - ./data/certbot/www:/var/www/certbot

@@ -69,8 +69,10 @@ namespace MaxPowerLevel
                 app.UseExceptionHandler("/Home/Error");
             }
 
+            // https://stackoverflow.com/a/43878365/3857
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
+                RequireHeaderSymmetry = false,
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
 

@@ -70,11 +70,14 @@ namespace MaxPowerLevel
             }
 
             // https://stackoverflow.com/a/43878365/3857
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            var options = new ForwardedHeadersOptions
             {
                 RequireHeaderSymmetry = false,
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-            });
+            };
+            options.KnownNetworks.Clear();
+            options.KnownProxies.Clear();
+            app.UseForwardedHeaders(options);
 
             app.UseStaticFiles();
             app.UseAuthentication();

@@ -49,6 +49,7 @@ namespace MaxPowerLevel.Services
 
         public IEnumerable<Engram> GetEngramPowerLevels(int powerLevel)
         {
+            powerLevel = 948;
             if (powerLevel < SoftCap)
             {
                 return new[]
@@ -62,12 +63,12 @@ namespace MaxPowerLevel.Services
             {
                 return new[]
                 {
-                    new Engram("Legendary Engram", powerLevel - 3, powerLevel),
-                    new Engram("Powerful Engram (Tier 1)", powerLevel + 3),
-                    new Engram("Powerful Engram (Tier 2)", powerLevel + 5),
-                    new Engram("Powerful Engram (Tier 3)", powerLevel + 6),
+                    new Engram("Legendary Engram", powerLevel - 3, Math.Min(powerLevel, PowerfulCap)),
+                    new Engram("Powerful Engram (Tier 1)", Math.Min(powerLevel + 3, PowerfulCap)),
+                    new Engram("Powerful Engram (Tier 2)", Math.Min(powerLevel + 5, PowerfulCap)),
+                    new Engram("Powerful Engram (Tier 3)", Math.Min(powerLevel + 6, PowerfulCap)),
                     // TODO: Verify power level of Pinnacle engrams
-                    new Engram("Pinnacle Engram", powerLevel + 6)
+                    new Engram("Pinnacle Engram", Math.Min(powerLevel + 6, PowerfulCap + 1))
                 };
             }
 

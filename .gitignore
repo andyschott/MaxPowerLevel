@@ -4,3 +4,4 @@ obj/
 environment.txt
 docker_data/
 cert/
+data/

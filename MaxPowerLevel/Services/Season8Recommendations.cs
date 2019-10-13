@@ -49,7 +49,6 @@ namespace MaxPowerLevel.Services
 
         public IEnumerable<Engram> GetEngramPowerLevels(int powerLevel)
         {
-            powerLevel = 948;
             if (powerLevel < SoftCap)
             {
                 return new[]

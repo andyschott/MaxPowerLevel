@@ -17,7 +17,7 @@ namespace MaxPowerLevel.Services
             {
                 return new[]
                 {
-                    $"Legendary Engrams to increase your power level to {SoftCap}"
+                    $"Rare/Legendary Engrams to increase your power level to {SoftCap}"
                 };
             }
 
@@ -31,7 +31,7 @@ namespace MaxPowerLevel.Services
                     {
                         var slotNames = items.Select(item => item.Slot.Name)
                             .OrderBy(slotName => slotName);
-                        return $"Legendary Engrams: {string.Join(", ", slotNames)}";
+                        return $"Rare/Legendary Engrams: {string.Join(", ", slotNames)}";
                     })
                     .Concat(new[] { "Powerful Engrams"})
                     .Concat(new[] { "Pinnacle Engrams" });
@@ -54,7 +54,7 @@ namespace MaxPowerLevel.Services
                 return new[]
                 {
                     // TODO: Verify power level of engrams before the soft cap
-                    new Engram("Legendary Engram",  powerLevel + 1, powerLevel + 2)
+                    new Engram("Rare/Legendary Engram",  powerLevel + 1, powerLevel + 2)
                 };
             }
 
@@ -62,7 +62,7 @@ namespace MaxPowerLevel.Services
             {
                 return new[]
                 {
-                    new Engram("Legendary Engram", powerLevel - 3, Math.Min(powerLevel, PowerfulCap)),
+                    new Engram("Rare/Legendary Engram", powerLevel - 3, Math.Min(powerLevel, PowerfulCap)),
                     new Engram("Powerful Engram (Tier 1)", Math.Min(powerLevel + 3, PowerfulCap)),
                     new Engram("Powerful Engram (Tier 2)", Math.Min(powerLevel + 5, PowerfulCap)),
                     new Engram("Powerful Engram (Tier 3)", Math.Min(powerLevel + 6, PowerfulCap)),
@@ -76,7 +76,7 @@ namespace MaxPowerLevel.Services
                 // TODO: Verify power levels of engrams at the hard cap
                 return new[]
                 {
-                    new Engram("Legendary Engram", powerLevel - 3, powerLevel),
+                    new Engram("Rare/Legendary Engram", powerLevel - 3, powerLevel),
                     new Engram("Powerful Engram (Tier 1)", powerLevel),
                     new Engram("Powerful Engram (Tier 2)", powerLevel),
                     new Engram("Powerful Engram (Tier 3)", powerLevel),

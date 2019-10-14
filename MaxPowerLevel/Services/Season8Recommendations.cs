@@ -11,36 +11,33 @@ namespace MaxPowerLevel.Services
         private const int PowerfulCap = 950;
         private const int HardCap = 960;
 
+        // Items pulled from Collections are 20 power levels below the character's max
+        private const int CollectionsPowerLevelDifference = 20;
+
         public IEnumerable<string> GetRecommendations(IEnumerable<Item> allItems, int powerLevel)
         {
+            var collections = GetCollectionsRecommendations(allItems, powerLevel);
+
             if(powerLevel < SoftCap)
             {
-                return new[]
+                return collections.Concat(new[]
                 {
                     $"Rare/Legendary Engrams to increase your power level to {SoftCap}"
-                };
+                });
             }
 
             if(powerLevel < PowerfulCap)
             {
                 // Recommmend legendary engrams for any slots that could easily be upgraded
-                var recommendations = allItems.Where(item => item.PowerLevel <= powerLevel - 2)
-                    .OrderBy(item => item.PowerLevel)
-                    .GroupBy(item => item.PowerLevel)
-                    .Select(items => 
-                    {
-                        var slotNames = items.Select(item => item.Slot.Name)
-                            .OrderBy(slotName => slotName);
-                        return $"Rare/Legendary Engrams: {string.Join(", ", slotNames)}";
-                    })
-                    .Concat(new[] { "Powerful Engrams"})
+                var recommendations = CombineItems(allItems, powerLevel - 2, "Rare/Legendary Engrams")
+                    .Concat(new[] { "Powerful Engrams" })
                     .Concat(new[] { "Pinnacle Engrams" });
-                return recommendations;
+                return collections.Concat(recommendations);
             }
 
             if(powerLevel < HardCap)
             {
-                return new[] { "Pinnacle Engrams" };
+                return collections.Concat(new[] { "Pinnacle Engrams" });
             }
 
             // At the hard cap. Nothing to do.
@@ -86,6 +83,26 @@ namespace MaxPowerLevel.Services
             }
 
             throw new Exception($"Unknown power level {powerLevel}");
+        }
+
+        private static IEnumerable<string> GetCollectionsRecommendations(IEnumerable<Item> allItems, int powerLevel)
+        {
+            return CombineItems(allItems, powerLevel - CollectionsPowerLevelDifference,
+                "Pull from Collections");
+        }
+
+        private static IEnumerable<string> CombineItems(IEnumerable<Item> allItems,
+            int powerLevel, string description)
+        {
+            return allItems.Where(item => item.PowerLevel <= powerLevel)
+                .OrderBy(item => item.PowerLevel)
+                .GroupBy(item => item.PowerLevel)
+                .Select(items =>
+                {
+                    var slotNames = items.Select(item => item.Slot.Name)
+                        .OrderBy(slotName => slotName);
+                    return $"{description}: {string.Join(", ", slotNames)}";
+                });
         }
     }
 }

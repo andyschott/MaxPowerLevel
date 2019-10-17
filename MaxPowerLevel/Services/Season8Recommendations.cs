@@ -35,8 +35,8 @@ namespace MaxPowerLevel.Services
                 // Recommend pinnacles once at 947
                 if (powerLevel >= 947)
                 {
-                    return collections.Concat(pinnacle)
-                        .Concat(legendary)
+                    return collections.Concat(legendary)
+                        .Concat(pinnacle)
                         .Concat(powerful);
                 }
 

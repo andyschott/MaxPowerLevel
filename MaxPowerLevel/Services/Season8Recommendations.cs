@@ -28,11 +28,22 @@ namespace MaxPowerLevel.Services
 
             if(powerLevel < PowerfulCap)
             {
+                var legendary = CombineItems(allItems, powerLevel - 2, "Rare/Legendary Engrams");
+                var powerful = new[] { "Powerful Engrams" };
+                var pinnacle = new[] { "Pinnacle Engrams" };
+
+                // Recommend pinnacles once at 947
+                if (powerLevel >= 947)
+                {
+                    return collections.Concat(pinnacle)
+                        .Concat(legendary)
+                        .Concat(powerful);
+                }
+
                 // Recommmend legendary engrams for any slots that could easily be upgraded
-                var recommendations = CombineItems(allItems, powerLevel - 2, "Rare/Legendary Engrams")
+                return collections.Concat(CombineItems(allItems, powerLevel - 2, "Rare/Legendary Engrams"))
                     .Concat(new[] { "Powerful Engrams" })
                     .Concat(new[] { "Pinnacle Engrams" });
-                return collections.Concat(recommendations);
             }
 
             if(powerLevel < HardCap)
@@ -62,9 +73,9 @@ namespace MaxPowerLevel.Services
                     new Engram("Rare/Legendary Engram", powerLevel - 3, Math.Min(powerLevel, PowerfulCap)),
                     new Engram("Powerful Engram (Tier 1)", Math.Min(powerLevel + 3, PowerfulCap)),
                     new Engram("Powerful Engram (Tier 2)", Math.Min(powerLevel + 5, PowerfulCap)),
-                    new Engram("Powerful Engram (Tier 3)", Math.Min(powerLevel + 6, PowerfulCap)),
+                    new Engram("Powerful Engram (Tier 3)", Math.Min(powerLevel + 6, PowerfulCap + 1)),
                     // TODO: Verify power level of Pinnacle engrams
-                    new Engram("Pinnacle Engram", Math.Min(powerLevel + 6, PowerfulCap + 1))
+                    new Engram("Pinnacle Engram", Math.Min(powerLevel + 4, PowerfulCap + 1), Math.Min(powerLevel + 5, PowerfulCap + 1))
                 };
             }
 

@@ -10,7 +10,7 @@
       <Publish Condition="'%(PackageReference.Version)' == ''">true</Publish>
     </PackageReference>
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
-    <PackageReference Include="Humanizer" Version="2.6.2" />
+    <PackageReference Include="Humanizer" Version="2.7.9" />
     <PackageReference Include="Destiny2" Version="1.4.2" />
   </ItemGroup>
 </Project>

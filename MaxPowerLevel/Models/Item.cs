@@ -9,14 +9,15 @@ namespace MaxPowerLevel.Models
     public class Item
     {
         public Item(string baseUrl, DestinyItemComponent itemComponent, DestinyInventoryItemDefinition itemDef,
-            DestinyInventoryBucketDefinition bucket, DestinyItemInstanceComponent instance = null)
+            DestinyInventoryBucketDefinition bucket, DestinyItemInstanceComponent instance = null,
+            string overrideIconUrl = null)
         {
             Name = itemDef.DisplayProperties.Name;
             PowerLevel = instance?.PrimaryStat?.Value ?? 0;
             Slot = new ItemSlot(bucket);
             Tier = itemDef.Inventory.TierType;
             ClassType = itemDef.ClassType;
-            Icon = baseUrl + itemDef.DisplayProperties.Icon;
+            Icon = baseUrl + (overrideIconUrl ?? itemDef.DisplayProperties.Icon);
         }
 
         public Item(string name, ItemSlot.SlotHashes slot, int powerLevel,

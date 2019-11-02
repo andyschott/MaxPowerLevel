@@ -21,6 +21,13 @@ namespace MaxPowerLevel.Services
         private readonly IOptions<BungieSettings> _bungie;
         private readonly ILogger _logger;
 
+        private static readonly ISet<uint> _defaultOrnaments = new HashSet<uint>
+        {
+            2931483505,
+            702981643,
+            1959648454,
+        };
+
         private static readonly ISet<ItemSlot.SlotHashes> _includedBuckets =
             new HashSet<ItemSlot.SlotHashes>
             {
@@ -118,8 +125,15 @@ namespace MaxPowerLevel.Services
                     continue;
                 }
 
+                string iconUrl = null;
+                if(itemComponent.OverrideStyleItemHash != null && !_defaultOrnaments.Contains(itemComponent.OverrideStyleItemHash.Value))
+                {
+                    var overrideIcon = await _manifest.LoadInventoryItem(itemComponent.OverrideStyleItemHash.Value);
+                    iconUrl = overrideIcon.DisplayProperties.Icon;
+                }
+
                 itemInstances.TryGetValue(itemComponent.ItemInstanceId, out DestinyItemInstanceComponent instance);
-                items.Add(new Item(_bungie.Value.BaseUrl, itemComponent, itemDef, bucket, instance));
+                items.Add(new Item(_bungie.Value.BaseUrl, itemComponent, itemDef, bucket, instance, iconUrl));
             }
 
             return items;

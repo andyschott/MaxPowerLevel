@@ -74,22 +74,19 @@ namespace MaxPowerLevel.Services
                     new Engram("Powerful Engram (Tier 1)", Math.Min(powerLevel + 3, PowerfulCap)),
                     new Engram("Powerful Engram (Tier 2)", Math.Min(powerLevel + 5, PowerfulCap)),
                     new Engram("Powerful Engram (Tier 3)", Math.Min(powerLevel + 6, PowerfulCap + 1)),
-                    // TODO: Verify power level of Pinnacle engrams
                     new Engram("Pinnacle Engram", Math.Min(powerLevel + 4, PowerfulCap + 1), Math.Min(powerLevel + 5, PowerfulCap + 1))
                 };
             }
 
             if (powerLevel <= HardCap)
             {
-                // TODO: Verify power levels of engrams at the hard cap
                 return new[]
                 {
                     new Engram("Rare/Legendary Engram", PowerfulCap - 3, PowerfulCap),
                     new Engram("Powerful Engram (Tier 1)", PowerfulCap),
                     new Engram("Powerful Engram (Tier 2)", PowerfulCap),
                     new Engram("Powerful Engram (Tier 3)", PowerfulCap),
-                    // TODO: Verify power level of Pinnacle engrams
-                    new Engram("Pinnacle Engram", powerLevel + 1)
+                    new Engram("Pinnacle Engram", powerLevel + 2)
                 };
             }
 

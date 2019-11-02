@@ -3,7 +3,6 @@ using MaxPowerLevel.Helpers;
 using MaxPowerLevel.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,13 +21,6 @@ namespace MaxPowerLevel
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<CookiePolicyOptions>(options =>
-            {
-                // This lambda determines whether user consent for non-essential cookies is needed for a given request.
-                options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
-            });
-
             services.Configure<BungieSettings>(Configuration.GetSection("Bungie"));
             var bungie = Configuration.GetSection("Bungie").Get<BungieSettings>();
 
@@ -80,7 +72,6 @@ namespace MaxPowerLevel
             app.UseForwardedHeaders(options);
 
             app.UseStaticFiles();
-            app.UseCookiePolicy();
 
             app.UseRouting();
 

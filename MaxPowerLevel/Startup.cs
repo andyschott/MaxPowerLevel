@@ -37,8 +37,7 @@ namespace MaxPowerLevel
             };
             services.AddDestiny2(config);
 
-            services.AddRazorPages()
-                .AddNewtonsoftJson();
+            services.AddRazorPages();
 
             services.AddBungieAuthentication(new AuthenticationConfiguration
             {

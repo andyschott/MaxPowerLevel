@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Humanizer" Version="2.7.9" />
-    <PackageReference Include="Destiny2" Version="1.4.2" />
+    <PackageReference Include="Destiny2" Version="1.5.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.0.0" />
   </ItemGroup>
 </Project>

@@ -1,19 +1,16 @@
-FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 AS base
-WORKDIR /app
-EXPOSE 80
-
 FROM mcr.microsoft.com/dotnet/core/sdk:3.0 AS build
-WORKDIR /src
+WORKDIR /app
+
+# copy csproj and restore as distinct layers
 COPY MaxPowerLevel/MaxPowerLevel.csproj MaxPowerLevel/
 RUN dotnet restore MaxPowerLevel/MaxPowerLevel.csproj
-COPY MaxPowerLevel/ MaxPowerLevel/
 
-WORKDIR /src/MaxPowerLevel/
-RUN dotnet build MaxPowerLevel.csproj -c Release -o /app
+# copy everything else and build app
+COPY MaxPowerLevel/. ./MaxPowerLevel/
+WORKDIR /app/MaxPowerLevel
+RUN dotnet publish MaxPowerLevel/MaxPowerLevel.csproj -c Release -o out
 
-FROM build as publish
-RUN dotnet publish MaxPowerLevel.csproj -c Release -o /app
-
-FROM base AS final
-COPY --from=publish /app .
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0 AS runtime
+WORKDIR /app
+COPY --from=build /app/out ./
 ENTRYPOINT ["dotnet", "MaxPowerLevel.dll"]

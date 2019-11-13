@@ -83,7 +83,7 @@ namespace MaxPowerLevel.Services
                 return new[]
                 {
                     new Engram("Rare/Legendary Engram", PowerfulCap - 3, PowerfulCap),
-                    new Engram("Powerful Engram (Tier 1)", PowerfulCap),
+                    new Engram("Powerful Engram (Tier 1)", powerLevel),
                     new Engram("Powerful Engram (Tier 2)", powerLevel),
                     new Engram("Powerful Engram (Tier 3)", powerLevel),
                     new Engram("Pinnacle Engram", powerLevel + 2)

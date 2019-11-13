@@ -19,6 +19,7 @@ namespace MaxPowerLevel.Controllers
     public class CharacterController : Controller
     {
         private readonly IDestiny2 _destiny;
+        private readonly IManifest _manifest;
         private readonly IMaxPowerService _maxPower;
         private readonly IRecommendations _recommendations;
         private readonly IHttpContextAccessor _contextAccessor;
@@ -26,11 +27,13 @@ namespace MaxPowerLevel.Controllers
         private readonly ILogger _logger;
 
         public CharacterController(IDestiny2 destiny, IMaxPowerService maxPower,
-            IRecommendations recommendations,  IHttpContextAccessor contextAccessor,
-            IOptions<BungieSettings> bungie, ILogger<CharacterController> logger)
+            IManifest manifest, IRecommendations recommendations,
+            IHttpContextAccessor contextAccessor, IOptions<BungieSettings> bungie,
+            ILogger<CharacterController> logger)
         {
             _destiny = destiny;
             _maxPower = maxPower;
+            _manifest = manifest;
             _recommendations = recommendations;
             _contextAccessor = contextAccessor;
             _bungie = bungie;
@@ -63,9 +66,14 @@ namespace MaxPowerLevel.Controllers
             var profile = profileTask.Result;
             var lowestItems = FindLowestItems(maxGear.Values).ToList();
 
+            var classTask = _manifest.LoadClass(character.Character.Data.ClassHash);
+
             var maxPower = _maxPower.ComputePower(maxGear.Values);
-            var recommendations = await _recommendations.GetRecommendations(maxGear.Values,
+            var recommendationsTask = _recommendations.GetRecommendations(maxGear.Values,
                 maxPower, character.Progressions.Data.Progressions);
+
+            await Task.WhenAll(classTask, recommendationsTask);
+            
             var model = new CharacterViewModel()
             {
                 Type = membershipType,
@@ -76,8 +84,9 @@ namespace MaxPowerLevel.Controllers
                 BonusPower = profile.ProfileProgression.Data.SeasonalArtifact.PowerBonus,
                 EmblemPath = _bungie.Value.BaseUrl + character.Character.Data.EmblemPath,
                 EmblemBackgroundPath = _bungie.Value.BaseUrl + character.Character.Data.EmblemBackgroundPath,
-                Recommendations = recommendations,
-                Engrams = _recommendations.GetEngramPowerLevels(maxPower)
+                Recommendations = recommendationsTask.Result,
+                Engrams = _recommendations.GetEngramPowerLevels(maxPower),
+                ClassName = classTask.Result.DisplayProperties.Name
             };
 
             return View(model);

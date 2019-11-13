@@ -16,6 +16,7 @@ namespace MaxPowerLevel.Models
         public string BasePowerHuman => Fraction.FromDecimal(BasePower).ToString("m");
         public string EmblemPath { get; set; }
         public string EmblemBackgroundPath {get; set; }
+        public string ClassName { get; set; }
 
         public IEnumerable<Item> Weapons => Items.Where(item => item.IsWeapon)
                                                  .OrderBy(item => item.Slot.Order);

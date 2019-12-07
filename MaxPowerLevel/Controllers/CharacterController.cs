@@ -70,7 +70,7 @@ namespace MaxPowerLevel.Controllers
                 AccountId = id,
                 Items = maxGear.Values,
                 LowestItems = lowestItems,
-                MaxPower = maxPower,
+                BasePower = maxPower,
                 BonusPower = profile.ProfileProgression.Data.SeasonalArtifact.PowerBonus,
                 EmblemPath = _bungie.Value.BaseUrl + character.Character.Data.EmblemPath,
                 EmblemBackgroundPath = _bungie.Value.BaseUrl + character.Character.Data.EmblemBackgroundPath,

@@ -48,7 +48,22 @@ namespace MaxPowerLevel.Services
 
             if(powerLevel < HardCap)
             {
-                return collections.Concat(new[] { "Pinnacle Engrams" });
+                // If any slot is at least two power levels behind,
+                // a Powerful Engram would increase the max power level.
+                var powerfulEngrams = Enumerable.Empty<string>();
+
+                var trailingSlots = allItems.Where(item => powerLevel - item.PowerLevel >= 2);
+                if(trailingSlots.Any())
+                {
+                    var slotNames = trailingSlots.Select(item => item.Slot.Name);
+                    powerfulEngrams = new[]
+                    {
+                        $"Powerful Engrams ({string.Join(", ", slotNames)})"
+                    };
+                }
+                return collections
+                    .Concat(powerfulEngrams)
+                    .Concat(new[] { "Pinnacle Engrams" });
             }
 
             // At the hard cap. Nothing to do.

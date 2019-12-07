@@ -14,11 +14,13 @@ namespace MaxPowerLevel.Services
         // Items pulled from Collections are 20 power levels below the character's max
         protected virtual int CollectionsPowerLevelDifference { get; }= 20;
 
-        public IEnumerable<string> GetRecommendations(IEnumerable<Item> allItems, int powerLevel)
+        public IEnumerable<string> GetRecommendations(IEnumerable<Item> allItems, decimal powerLevel)
         {
-            var collections = GetCollectionsRecommendations(allItems, powerLevel);
+            var intPowerLevel = (int)Math.Floor(powerLevel);
 
-            if(powerLevel < SoftCap)
+            var collections = GetCollectionsRecommendations(allItems, intPowerLevel);
+
+            if(intPowerLevel < SoftCap)
             {
                 return collections.Concat(new[]
                 {
@@ -26,9 +28,9 @@ namespace MaxPowerLevel.Services
                 });
             }
 
-            if(powerLevel < PowerfulCap)
+            if(intPowerLevel < PowerfulCap)
             {
-                var legendary = CombineItems(allItems, powerLevel - 2, "Rare/Legendary Engrams");
+                var legendary = CombineItems(allItems, intPowerLevel - 2, "Rare/Legendary Engrams");
                 var powerful = new[] { "Powerful Engrams" };
                 var pinnacle = new[] { "Pinnacle Engrams" };
 
@@ -41,18 +43,18 @@ namespace MaxPowerLevel.Services
                 }
 
                 // Recommmend legendary engrams for any slots that could easily be upgraded
-                return collections.Concat(CombineItems(allItems, powerLevel - 2, "Rare/Legendary Engrams"))
+                return collections.Concat(CombineItems(allItems, intPowerLevel - 2, "Rare/Legendary Engrams"))
                     .Concat(new[] { "Powerful Engrams" })
                     .Concat(new[] { "Pinnacle Engrams" });
             }
 
-            if(powerLevel < HardCap)
+            if(intPowerLevel < HardCap)
             {
                 // If any slot is at least two power levels behind,
                 // a Powerful Engram would increase the max power level.
                 var powerfulEngrams = Enumerable.Empty<string>();
 
-                var trailingSlots = allItems.Where(item => powerLevel - item.PowerLevel >= 2);
+                var trailingSlots = allItems.Where(item => intPowerLevel - item.PowerLevel >= 2);
                 if(trailingSlots.Any())
                 {
                     var slotNames = trailingSlots.Select(item => item.Slot.Name);
@@ -70,14 +72,16 @@ namespace MaxPowerLevel.Services
             return Enumerable.Empty<string>();
         }
 
-        public IEnumerable<Engram> GetEngramPowerLevels(int powerLevel)
+        public IEnumerable<Engram> GetEngramPowerLevels(decimal powerLevel)
         {
-            if (powerLevel < SoftCap)
+            var intPowerLevel = (int)Math.Floor(powerLevel);
+
+            if (intPowerLevel < SoftCap)
             {
                 return new[]
                 {
                     // TODO: Verify power level of engrams before the soft cap
-                    new Engram("Rare/Legendary Engram",  powerLevel + 1, powerLevel + 2)
+                    new Engram("Rare/Legendary Engram",  intPowerLevel + 1, intPowerLevel + 2)
                 };
             }
 
@@ -85,11 +89,11 @@ namespace MaxPowerLevel.Services
             {
                 return new[]
                 {
-                    new Engram("Rare/Legendary Engram", powerLevel - 3, Math.Min(powerLevel, PowerfulCap)),
-                    new Engram("Powerful Engram (Tier 1)", Math.Min(powerLevel + 3, PowerfulCap)),
-                    new Engram("Powerful Engram (Tier 2)", Math.Min(powerLevel + 5, PowerfulCap)),
-                    new Engram("Powerful Engram (Tier 3)", Math.Min(powerLevel + 6, PowerfulCap + 1)),
-                    new Engram("Pinnacle Engram", Math.Min(powerLevel + 4, PowerfulCap + 2), Math.Min(powerLevel + 5, PowerfulCap + 2))
+                    new Engram("Rare/Legendary Engram", intPowerLevel - 3, Math.Min(intPowerLevel, PowerfulCap)),
+                    new Engram("Powerful Engram (Tier 1)", Math.Min(intPowerLevel + 3, PowerfulCap)),
+                    new Engram("Powerful Engram (Tier 2)", Math.Min(intPowerLevel + 5, PowerfulCap)),
+                    new Engram("Powerful Engram (Tier 3)", Math.Min(intPowerLevel + 6, PowerfulCap + 1)),
+                    new Engram("Pinnacle Engram", Math.Min(intPowerLevel + 4, PowerfulCap + 2), Math.Min(intPowerLevel + 5, PowerfulCap + 2))
                 };
             }
 
@@ -98,14 +102,14 @@ namespace MaxPowerLevel.Services
                 return new[]
                 {
                     new Engram("Rare/Legendary Engram", PowerfulCap - 3, PowerfulCap),
-                    new Engram("Powerful Engram (Tier 1)", powerLevel),
-                    new Engram("Powerful Engram (Tier 2)", powerLevel),
-                    new Engram("Powerful Engram (Tier 3)", powerLevel),
-                    new Engram("Pinnacle Engram", powerLevel + 2)
+                    new Engram("Powerful Engram (Tier 1)", intPowerLevel),
+                    new Engram("Powerful Engram (Tier 2)", intPowerLevel),
+                    new Engram("Powerful Engram (Tier 3)", intPowerLevel),
+                    new Engram("Pinnacle Engram", intPowerLevel + 2)
                 };
             }
 
-            throw new Exception($"Unknown power level {powerLevel}");
+            throw new Exception($"Unknown power level {intPowerLevel}");
         }
 
         private IEnumerable<string> GetCollectionsRecommendations(IEnumerable<Item> allItems, int powerLevel)

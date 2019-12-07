@@ -107,7 +107,7 @@ namespace MaxPowerLevel.Services
             return maxItems.ToDictionary(item => (ItemSlot.SlotHashes)item.Slot.Hash);
         }
 
-        public int ComputePower(IEnumerable<Item> items)
+        public decimal ComputePower(IEnumerable<Item> items)
         {
             return MaxPower.ComputePower(items);
         }

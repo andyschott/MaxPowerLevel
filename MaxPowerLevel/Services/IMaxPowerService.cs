@@ -8,6 +8,6 @@ namespace MaxPowerLevel.Services
     public interface IMaxPowerService
     {
          Task<IDictionary<ItemSlot.SlotHashes, Item>> ComputeMaxPowerAsync(BungieMembershipType type, long accountId, long characterId);
-         int ComputePower(IEnumerable<Item> items);
+         decimal ComputePower(IEnumerable<Item> items);
     }
 }

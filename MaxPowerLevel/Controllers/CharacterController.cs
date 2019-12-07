@@ -63,7 +63,7 @@ namespace MaxPowerLevel.Controllers
             var profile = profileTask.Result;
             var lowestItems = FindLowestItems(maxGear.Values).ToList();
 
-            int maxPower = _maxPower.ComputePower(maxGear.Values);
+            var maxPower = _maxPower.ComputePower(maxGear.Values);
             var model = new CharacterViewModel()
             {
                 Type = membershipType,

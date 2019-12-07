@@ -8,10 +8,12 @@ namespace MaxPowerLevel.Helpers
 {
     public static class MaxPower
     {
-        public static int ComputePower(IEnumerable<Item> items)
+        public static decimal ComputePower(IEnumerable<Item> items)
         {
-            var power = items.Average(item => item.PowerLevel);
-            return (int)Math.Floor(power);
+            var power = items.Select(item => item.PowerLevel)
+                .Select(powerLevel => Convert.ToDecimal(powerLevel))
+                .Average();
+            return power;
         }
         public static IEnumerable<Item> FindMax(params IEnumerable<Item>[] items)
         {

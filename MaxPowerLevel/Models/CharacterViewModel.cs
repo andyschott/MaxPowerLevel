@@ -9,7 +9,7 @@ namespace MaxPowerLevel.Models
         public BungieMembershipType Type { get; set; }
         public long AccountId { get; set; }
         public IEnumerable<Item> Items { get; set; } = Enumerable.Empty<Item>();
-        public int MaxPower { get; set; } = 0;
+        public decimal MaxPower { get; set; } = 0;
         public int BonusPower { get; set; } = 0;
         public string EmblemPath { get; set; }
         public string EmblemBackgroundPath {get; set; }

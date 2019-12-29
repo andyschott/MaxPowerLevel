@@ -30,20 +30,12 @@ namespace MaxPowerLevel.Services
 
             if(intPowerLevel < PowerfulCap)
             {
+                // Recommmend legendary engrams for any slots that could easily be upgraded
                 var legendary = CombineItems(allItems, intPowerLevel - 2, "Rare/Legendary Engrams");
                 var powerful = new[] { "Powerful Engrams" };
                 var pinnacle = new[] { "Pinnacle Engrams" };
 
-                // Recommend pinnacles once at 947
-                if (powerLevel >= 947)
-                {
-                    return collections.Concat(legendary)
-                        .Concat(pinnacle)
-                        .Concat(powerful);
-                }
-
-                // Recommmend legendary engrams for any slots that could easily be upgraded
-                return collections.Concat(CombineItems(allItems, intPowerLevel - 2, "Rare/Legendary Engrams"))
+                return collections.Concat(legendary)
                     .Concat(new[] { "Powerful Engrams" })
                     .Concat(new[] { "Pinnacle Engrams" });
             }
@@ -101,11 +93,11 @@ namespace MaxPowerLevel.Services
             {
                 return new[]
                 {
-                    new Engram("Rare/Legendary Engram", PowerfulCap - 3, PowerfulCap),
+                    new Engram("Rare/Legendary Engram", Math.Min(intPowerLevel - 3, PowerfulCap), PowerfulCap),
                     new Engram("Powerful Engram (Tier 1)", intPowerLevel),
                     new Engram("Powerful Engram (Tier 2)", intPowerLevel),
                     new Engram("Powerful Engram (Tier 3)", intPowerLevel),
-                    new Engram("Pinnacle Engram", intPowerLevel + 2)
+                    new Engram("Pinnacle Engram", Math.Min(intPowerLevel + 2, HardCap))
                 };
             }
 

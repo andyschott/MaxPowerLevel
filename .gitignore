@@ -2,7 +2,4 @@
 bin/
 obj/
 environment.txt
-docker_data/
-cert/
-data/
 .vs

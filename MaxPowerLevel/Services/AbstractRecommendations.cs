@@ -72,7 +72,7 @@ namespace MaxPowerLevel.Services
                 // Ignore any slots where a season pass reward can be used first.
                 var trailingSlots = allItems.Where(item => intPowerLevel - item.PowerLevel >= TrailingPowerLevelDifference)
                     .OrderBy(item => item.PowerLevel)
-                    .Select(item => item.Slot)
+                    .Select(item => (item.Slot, 1))
                     .Except(seasonPassRewards);
                 if(trailingSlots.Any())
                 {
@@ -148,7 +148,7 @@ namespace MaxPowerLevel.Services
                 });
         }
 
-        protected async Task<ISet<ItemSlot.SlotHashes>> LoadAvailableSeasonPassItems(IDictionary<uint, DestinyProgression> progression)
+        protected async Task<IDictionary<ItemSlot.SlotHashes, int>> LoadAvailableSeasonPassItems(IDictionary<uint, DestinyProgression> progression)
         {
             var season = await _manifest.LoadSeason(SeasonHash);
             var progressionDefinition = await _manifest.LoadProgression(season.SeasonPassProgressionHash);
@@ -174,7 +174,7 @@ namespace MaxPowerLevel.Services
                 return state.HasFlag(DestinyProgressionRewardItemState.Earned | DestinyProgressionRewardItemState.ClaimAllowed);
             });
 
-            var availableSlots = new HashSet<ItemSlot.SlotHashes>();
+            var availableSlots = new Dictionary<ItemSlot.SlotHashes, int>();
             foreach(var reward in availableRewards)
             {
                 var itemDef = await _manifest.LoadInventoryItem(reward.ItemHash);
@@ -184,32 +184,41 @@ namespace MaxPowerLevel.Services
                     continue;
                 }
 
-                availableSlots.Add(slotHash);
+                availableSlots.TryGetValue(slotHash, out var count);
+                availableSlots[slotHash] = count + 1;
             }
 
             return availableSlots;
         }
 
-        private static IEnumerable<ItemSlot> GetSeasonPassRecommendations(IEnumerable<Item> allItems,
-            ISet<ItemSlot.SlotHashes> avaiableSeasonPassSlots, int powerLevel)
+        private static IEnumerable<(ItemSlot slot, int count)> GetSeasonPassRecommendations(IEnumerable<Item> allItems,
+            IDictionary<ItemSlot.SlotHashes, int> avaiableSeasonPassSlots, int powerLevel)
         {
             var slotUpgrades = allItems.Where(item =>
             {
-                if(!avaiableSeasonPassSlots.Contains(item.Slot.Hash))
+                if(!avaiableSeasonPassSlots.ContainsKey(item.Slot.Hash))
                 {
                     return false;
                 }
 
                 return powerLevel - item.PowerLevel >= TrailingPowerLevelDifference;
             }).OrderBy(item => item.PowerLevel)
-            .Select(item => item.Slot);
+            .Select(item => (item.Slot, avaiableSeasonPassSlots[item.Slot.Hash]));
 
             return slotUpgrades;
         }
 
-        private static string GetDisplayString(string description, IEnumerable<ItemSlot> slots)
+        private static string GetDisplayString(string description, IEnumerable<(ItemSlot slot, int count)> slots)
         {
-            var slotNames = slots.Select(slot => slot.Name);
+            var slotNames = slots.Select(item =>
+            {
+                if(item.count == 1)
+                {
+                    return item.slot.Name;
+                }
+
+                return $"{item.slot.Name} ({item.count})";
+            });
             return $"{description} ({string.Join(", ", slotNames)})";
         }
     }

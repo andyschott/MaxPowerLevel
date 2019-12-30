@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Humanizer" Version="2.7.9"/>
-    <PackageReference Include="Destiny2" Version="1.5.1"/>
+    <PackageReference Include="Destiny2" Version="1.6.0"/>
     <PackageReference Include="Fractions" Version="4.0.1"/>
   </ItemGroup>
 </Project>

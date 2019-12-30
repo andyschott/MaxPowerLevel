@@ -53,7 +53,7 @@ namespace MaxPowerLevel.Controllers
                 return Redirect(url);
             }
             var characterTask = _destiny.GetCharacterInfo(accessToken, membershipType, id, characterId,
-                DestinyComponentType.Characters);
+                DestinyComponentType.Characters, DestinyComponentType.CharacterProgressions);
             var profileTask = _destiny.GetProfile(accessToken, membershipType, id,
                 DestinyComponentType.ProfileProgression);
 
@@ -64,6 +64,8 @@ namespace MaxPowerLevel.Controllers
             var lowestItems = FindLowestItems(maxGear.Values).ToList();
 
             var maxPower = _maxPower.ComputePower(maxGear.Values);
+            var recommendations = await _recommendations.GetRecommendations(maxGear.Values,
+                maxPower, character.Progressions.Data.Progressions);
             var model = new CharacterViewModel()
             {
                 Type = membershipType,
@@ -74,7 +76,7 @@ namespace MaxPowerLevel.Controllers
                 BonusPower = profile.ProfileProgression.Data.SeasonalArtifact.PowerBonus,
                 EmblemPath = _bungie.Value.BaseUrl + character.Character.Data.EmblemPath,
                 EmblemBackgroundPath = _bungie.Value.BaseUrl + character.Character.Data.EmblemBackgroundPath,
-                Recommendations = _recommendations.GetRecommendations(maxGear.Values, maxPower),
+                Recommendations = recommendations,
                 Engrams = _recommendations.GetEngramPowerLevels(maxPower)
             };
 

@@ -101,7 +101,8 @@ namespace MaxPowerLevel
                 // }
 
                 // return new Season8Recommendations();
-                return new Season9Recommendations();
+                var manifest = sp.GetRequiredService<IManifest>();
+                return new Season9Recommendations(manifest);
             });
         }
     }

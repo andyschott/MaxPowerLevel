@@ -1,3 +1,5 @@
+using Destiny2;
+
 namespace MaxPowerLevel.Services
 {
     public class Season8Recommendations : AbstractRecommendations
@@ -7,5 +9,11 @@ namespace MaxPowerLevel.Services
         protected override int PowerfulCap => 950;
 
         protected override int HardCap => 960;
+        protected override uint SeasonHash => 3612906877;
+
+        public Season8Recommendations(IManifest manifest)
+            : base(manifest)
+        {
+        }
     }
 }

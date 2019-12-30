@@ -1,11 +1,7 @@
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
 WORKDIR /app
 
-# copy csproj and restore as distinct layers
-COPY MaxPowerLevel/MaxPowerLevel.csproj MaxPowerLevel/
-RUN dotnet restore MaxPowerLevel/MaxPowerLevel.csproj
-
-# copy everything else and build app
+# copy everything and build app
 COPY MaxPowerLevel/. ./MaxPowerLevel/
 WORKDIR /app/MaxPowerLevel
 RUN dotnet publish MaxPowerLevel.csproj -c Release -o out

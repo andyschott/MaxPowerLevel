@@ -54,7 +54,7 @@ namespace MaxPowerLevel.Services
                     .Concat(new[]
                     {
                         new Recommendation("Powerful Engrams"),
-                        new Recommendation("Pinnacle Engrams")
+                        CreatePinnacleRecommendations(lowestItems)
                     });
             }
 

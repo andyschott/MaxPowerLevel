@@ -238,9 +238,16 @@ namespace MaxPowerLevel.Services
             var pinnacleActivities = InitPinnacleActivities();
 
             var powerLevels = items.ToDictionary(item => item.Slot.Hash, item => item.PowerLevel);
+            var pinnacleItemLevel = (decimal)powerLevel + 2; // TODO: Handle below the powerful cap
 
             var activitiesWithUpgrades = pinnacleActivities.ToDictionary(activity => activity.Key,
-                activity => activity.Value.Average(slotHash => (decimal)powerLevels[slotHash] - powerLevel));
+                activity =>
+                {
+                    var increasePerSlot = activity.Value.Select(slot => pinnacleItemLevel - powerLevels[slot]);
+                    var numUpgrades = increasePerSlot.Count(increase => increase > 0);
+
+                    return (decimal)numUpgrades / activity.Value.Count;
+                });
 
             var prioritizedActivities = activitiesWithUpgrades.GroupBy(activity => activity.Value, activity => activity.Key)
                 .OrderByDescending(group => group.Key)

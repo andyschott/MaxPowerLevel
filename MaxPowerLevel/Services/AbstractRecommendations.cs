@@ -30,8 +30,7 @@ namespace MaxPowerLevel.Services
         }
 
         public async Task<IEnumerable<Recommendation>> GetRecommendations(IEnumerable<Item> allItems,
-            IEnumerable<Item> lowestItems, decimal powerLevel,
-            IDictionary<uint, DestinyProgression> progressions)
+            decimal powerLevel, IDictionary<uint, DestinyProgression> progressions)
         {
             var intPowerLevel = (int)Math.Floor(powerLevel);
 
@@ -54,7 +53,7 @@ namespace MaxPowerLevel.Services
                     .Concat(new[]
                     {
                         new Recommendation("Powerful Engrams"),
-                        CreatePinnacleRecommendations(lowestItems)
+                        CreatePinnacleRecommendations(intPowerLevel, allItems)
                     });
             }
 
@@ -81,7 +80,7 @@ namespace MaxPowerLevel.Services
                     recommendations.Add(GetDisplayString("Powerful Engrams", trailingSlots));
                 }
 
-                recommendations.Add(CreatePinnacleRecommendations(lowestItems));
+                recommendations.Add(CreatePinnacleRecommendations(intPowerLevel, allItems));
                 return recommendations;
             }
 
@@ -234,18 +233,14 @@ namespace MaxPowerLevel.Services
 
         protected abstract void PopulatePinnacleActivities(IDictionary<string, ISet<ItemSlot.SlotHashes>> pinnacleRecommendations);
 
-        protected virtual Recommendation CreatePinnacleRecommendations(IEnumerable<Item> lowestItems)
+        protected virtual Recommendation CreatePinnacleRecommendations(int powerLevel, IEnumerable<Item> items)
         {
             var pinnacleActivities = InitPinnacleActivities();
 
-            var lowestSlots = lowestItems.Select(item => item.Slot.Hash).ToArray();
+            var powerLevels = items.ToDictionary(item => item.Slot.Hash, item => item.PowerLevel);
 
-            var activitiesWithUpgrades = new Dictionary<string, decimal>();
-            foreach(var activity in pinnacleActivities)
-            {
-                var potentialUpgrades = activity.Value.Intersect(lowestSlots);
-                activitiesWithUpgrades.Add(activity.Key, potentialUpgrades.Count() / (decimal)activity.Value.Count);
-            }
+            var activitiesWithUpgrades = pinnacleActivities.ToDictionary(activity => activity.Key,
+                activity => activity.Value.Average(slotHash => (decimal)powerLevels[slotHash] - powerLevel));
 
             var prioritizedActivities = activitiesWithUpgrades.GroupBy(activity => activity.Value, activity => activity.Key)
                 .OrderByDescending(group => group.Key)

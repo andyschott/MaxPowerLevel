@@ -8,47 +8,64 @@ namespace MaxPowerLevel.Services
     {
         protected override int SoftCap => 900;
 
+        private const string Nightfall = "Nightfall: The Ordeal Weekly Score";
+        private const string MasterNightmareHunt = "Nightmare Hunt: Master";
+        private const string PitOfHeresy = "Pit of Heresy";
+        private const string GardenOfSalvation = "Garden of Salvation";
+
         protected Year3Recommendations(IManifest manifest) : base(manifest)
         {
         }
 
-        protected override void PopulatePinnacleRecommendations(IDictionary<ItemSlot.SlotHashes, IList<string>> pinnacleRecommendations)
+        protected override void PopulatePinnacleActivities(IDictionary<string, ISet<ItemSlot.SlotHashes>> pinnacleRecommendations)
         {
             // Pit of Heresy can drop armor
-            pinnacleRecommendations[ItemSlot.SlotHashes.Helmet].Add("Pit of Heresy");
-            pinnacleRecommendations[ItemSlot.SlotHashes.Gauntlet].Add("Pit of Heresy");
-            pinnacleRecommendations[ItemSlot.SlotHashes.ChestArmor].Add("Pit of Heresy");
-            pinnacleRecommendations[ItemSlot.SlotHashes.LegArmor].Add("Pit of Heresy");
-            pinnacleRecommendations[ItemSlot.SlotHashes.ClassArmor].Add("Pit of Heresy");
+            pinnacleRecommendations.Add(PitOfHeresy, new HashSet<ItemSlot.SlotHashes>(new[]
+            {
+                ItemSlot.SlotHashes.Helmet,
+                ItemSlot.SlotHashes.Gauntlet,
+                ItemSlot.SlotHashes.ChestArmor,
+                ItemSlot.SlotHashes.LegArmor,
+                ItemSlot.SlotHashes.ClassArmor,
+            }));
 
             // Nightmare Hunt: Master can drop anything
-            pinnacleRecommendations[ItemSlot.SlotHashes.Kinetic].Add("Nightmare Hunt: Master");
-            pinnacleRecommendations[ItemSlot.SlotHashes.Energy].Add("Nightmare Hunt: Master");
-            pinnacleRecommendations[ItemSlot.SlotHashes.Power].Add("Nightmare Hunt: Master");
-            pinnacleRecommendations[ItemSlot.SlotHashes.Helmet].Add("Nightmare Hunt: Master");
-            pinnacleRecommendations[ItemSlot.SlotHashes.Gauntlet].Add("Nightmare Hunt: Master");
-            pinnacleRecommendations[ItemSlot.SlotHashes.ChestArmor].Add("Nightmare Hunt: Master");
-            pinnacleRecommendations[ItemSlot.SlotHashes.LegArmor].Add("Nightmare Hunt: Master");
-            pinnacleRecommendations[ItemSlot.SlotHashes.ClassArmor].Add("Nightmare Hunt: Master");
+            pinnacleRecommendations.Add(MasterNightmareHunt, new HashSet<ItemSlot.SlotHashes>(new[]
+            {
+                ItemSlot.SlotHashes.Kinetic,
+                ItemSlot.SlotHashes.Energy,
+                ItemSlot.SlotHashes.Power,
+                ItemSlot.SlotHashes.Helmet,
+                ItemSlot.SlotHashes.Gauntlet,
+                ItemSlot.SlotHashes.ChestArmor,
+                ItemSlot.SlotHashes.LegArmor,
+                ItemSlot.SlotHashes.ClassArmor,
+            }));
 
             // Nightfall: The Ordeal Weekly Score can drop anything
-            pinnacleRecommendations[ItemSlot.SlotHashes.Kinetic].Add("Nightfall: The Ordeal Weekly Score");
-            pinnacleRecommendations[ItemSlot.SlotHashes.Energy].Add("Nightfall: The Ordeal Weekly Score");
-            pinnacleRecommendations[ItemSlot.SlotHashes.Power].Add("Nightfall: The Ordeal Weekly Score");
-            pinnacleRecommendations[ItemSlot.SlotHashes.Helmet].Add("Nightfall: The Ordeal Weekly Score");
-            pinnacleRecommendations[ItemSlot.SlotHashes.Gauntlet].Add("Nightfall: The Ordeal Weekly Score");
-            pinnacleRecommendations[ItemSlot.SlotHashes.ChestArmor].Add("Nightfall: The Ordeal Weekly Score");
-            pinnacleRecommendations[ItemSlot.SlotHashes.LegArmor].Add("Nightfall: The Ordeal Weekly Score");
-            pinnacleRecommendations[ItemSlot.SlotHashes.ClassArmor].Add("Nightfall: The Ordeal Weekly Score");
+            pinnacleRecommendations.Add(Nightfall, new HashSet<ItemSlot.SlotHashes>(new[]
+            {
+                ItemSlot.SlotHashes.Kinetic,
+                ItemSlot.SlotHashes.Energy,
+                ItemSlot.SlotHashes.Power,
+                ItemSlot.SlotHashes.Helmet,
+                ItemSlot.SlotHashes.Gauntlet,
+                ItemSlot.SlotHashes.ChestArmor,
+                ItemSlot.SlotHashes.LegArmor,
+                ItemSlot.SlotHashes.ClassArmor,
+            }));
 
             // Garden of Salvation can drop everything except Power
-            pinnacleRecommendations[ItemSlot.SlotHashes.Kinetic].Add("Garden of Salvation");
-            pinnacleRecommendations[ItemSlot.SlotHashes.Energy].Add("Garden of Salvation");
-            pinnacleRecommendations[ItemSlot.SlotHashes.Helmet].Add("Garden of Salvation");
-            pinnacleRecommendations[ItemSlot.SlotHashes.Gauntlet].Add("Garden of Salvation");
-            pinnacleRecommendations[ItemSlot.SlotHashes.ChestArmor].Add("Garden of Salvation");
-            pinnacleRecommendations[ItemSlot.SlotHashes.LegArmor].Add("Garden of Salvation");
-            pinnacleRecommendations[ItemSlot.SlotHashes.ClassArmor].Add("Garden of Salvation");
+            pinnacleRecommendations.Add(GardenOfSalvation, new HashSet<ItemSlot.SlotHashes>(new[]
+            {
+                ItemSlot.SlotHashes.Kinetic,
+                ItemSlot.SlotHashes.Energy,
+                ItemSlot.SlotHashes.Helmet,
+                ItemSlot.SlotHashes.Gauntlet,
+                ItemSlot.SlotHashes.ChestArmor,
+                ItemSlot.SlotHashes.LegArmor,
+                ItemSlot.SlotHashes.ClassArmor,
+            }));
         }
     }
 }

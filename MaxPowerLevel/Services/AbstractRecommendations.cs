@@ -224,26 +224,34 @@ namespace MaxPowerLevel.Services
             return new Recommendation($"{description} ({string.Join(", ", slotNames)})");
         }
 
-        private IDictionary<ItemSlot.SlotHashes, IList<string>> InitPinnacleRecommendations()
+        private IDictionary<string, ISet<ItemSlot.SlotHashes>> InitPinnacleActivities()
         {
-            var pinnacleRecommendations = _slotHashes.ToDictionary(hash => hash, hash => (IList<string>)new List<string>());
-            PopulatePinnacleRecommendations(pinnacleRecommendations);
+            var pinnacleRecommendations = new Dictionary<string, ISet<ItemSlot.SlotHashes>>();
+            PopulatePinnacleActivities(pinnacleRecommendations);
 
             return pinnacleRecommendations;
         }
 
-        protected abstract void PopulatePinnacleRecommendations(IDictionary<ItemSlot.SlotHashes, IList<string>> pinnacleRecommendations);
+        protected abstract void PopulatePinnacleActivities(IDictionary<string, ISet<ItemSlot.SlotHashes>> pinnacleRecommendations);
 
         protected virtual Recommendation CreatePinnacleRecommendations(IEnumerable<Item> lowestItems)
         {
-            var availablePinnacles = InitPinnacleRecommendations();
+            var pinnacleActivities = InitPinnacleActivities();
 
-            var slots = lowestItems.Select(item => item.Slot);
-            var activities = slots.SelectMany(slot => availablePinnacles[slot.Hash])
-                .Distinct()
-                .OrderBy(activity => activity);
+            var lowestSlots = lowestItems.Select(item => item.Slot.Hash).ToArray();
 
-            return new Recommendation("Pinnacle Engrams", activities);
+            var activitiesWithUpgrades = new Dictionary<string, decimal>();
+            foreach(var activity in pinnacleActivities)
+            {
+                var potentialUpgrades = activity.Value.Intersect(lowestSlots);
+                activitiesWithUpgrades.Add(activity.Key, potentialUpgrades.Count() / (decimal)activity.Value.Count);
+            }
+
+            var prioritizedActivities = activitiesWithUpgrades.GroupBy(activity => activity.Value, activity => activity.Key)
+                .OrderByDescending(group => group.Key)
+                .Select(group => string.Join(" / ", group.OrderBy(activity => activity)));
+
+            return new Recommendation("Pinnacle Engrams", prioritizedActivities);
         }
     }
 }

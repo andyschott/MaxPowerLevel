@@ -24,7 +24,7 @@ namespace MaxPowerLevel.Models
                                                .OrderBy(item => item.Slot.Order);
 
         public IEnumerable<Item> LowestItems { get; set; } = Enumerable.Empty<Item>();
-        public IEnumerable<string> Recommendations { get; set; } = Enumerable.Empty<string>();
+        public IEnumerable<Recommendation> Recommendations { get; set; } = Enumerable.Empty<Recommendation>();
         public IEnumerable<Engram> Engrams { get; set; }
     }
 }

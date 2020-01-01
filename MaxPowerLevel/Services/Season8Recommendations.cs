@@ -2,10 +2,8 @@ using Destiny2;
 
 namespace MaxPowerLevel.Services
 {
-    public class Season8Recommendations : AbstractRecommendations
+    public class Season8Recommendations : Year3Recommendations
     {
-        protected override int SoftCap => 900;
-
         protected override int PowerfulCap => 950;
 
         protected override int HardCap => 960;

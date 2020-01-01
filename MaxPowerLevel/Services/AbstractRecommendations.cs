@@ -29,8 +29,9 @@ namespace MaxPowerLevel.Services
             _manifest = manifest;
         }
 
-        public async Task<IEnumerable<string>> GetRecommendations(IEnumerable<Item> allItems,
-            decimal powerLevel, IDictionary<uint, DestinyProgression> progressions)
+        public async Task<IEnumerable<Recommendation>> GetRecommendations(IEnumerable<Item> allItems,
+            IEnumerable<Item> lowestItems, decimal powerLevel,
+            IDictionary<uint, DestinyProgression> progressions)
         {
             var intPowerLevel = (int)Math.Floor(powerLevel);
 
@@ -40,7 +41,7 @@ namespace MaxPowerLevel.Services
             {
                 return collections.Concat(new[]
                 {
-                    $"Rare/Legendary Engrams to increase your power level to {SoftCap}"
+                    new Recommendation($"Rare/Legendary Engrams to increase your power level to {SoftCap}")
                 });
             }
 
@@ -48,17 +49,18 @@ namespace MaxPowerLevel.Services
             {
                 // Recommmend legendary engrams for any slots that could easily be upgraded
                 var legendary = CombineItems(allItems, intPowerLevel - 2, "Rare/Legendary Engrams");
-                var powerful = new[] { "Powerful Engrams" };
-                var pinnacle = new[] { "Pinnacle Engrams" };
 
                 return collections.Concat(legendary)
-                    .Concat(new[] { "Powerful Engrams" })
-                    .Concat(new[] { "Pinnacle Engrams" });
+                    .Concat(new[]
+                    {
+                        new Recommendation("Powerful Engrams"),
+                        new Recommendation("Pinnacle Engrams")
+                    });
             }
 
             if(intPowerLevel < HardCap)
             {
-                var recommendations = new List<string>();
+                var recommendations = new List<Recommendation>();
 
                 var seasonPassSlots = await LoadAvailableSeasonPassItems(progressions);
                 var seasonPassRewards = GetSeasonPassRecommendations(allItems, seasonPassSlots, intPowerLevel);
@@ -79,12 +81,12 @@ namespace MaxPowerLevel.Services
                     recommendations.Add(GetDisplayString("Powerful Engrams", trailingSlots));
                 }
 
-                recommendations.Add("Pinnacle Engrams");
+                recommendations.Add(CreatePinnacleRecommendations(lowestItems));
                 return recommendations;
             }
 
             // At the hard cap. Nothing to do.
-            return Enumerable.Empty<string>();
+            return Enumerable.Empty<Recommendation>();
         }
 
         public IEnumerable<Engram> GetEngramPowerLevels(decimal powerLevel)
@@ -128,13 +130,13 @@ namespace MaxPowerLevel.Services
             throw new Exception($"Unknown power level {intPowerLevel}");
         }
 
-        private IEnumerable<string> GetCollectionsRecommendations(IEnumerable<Item> allItems, int powerLevel)
+        private IEnumerable<Recommendation> GetCollectionsRecommendations(IEnumerable<Item> allItems, int powerLevel)
         {
             return CombineItems(allItems, powerLevel - CollectionsPowerLevelDifference,
                 "Pull from Collections");
         }
 
-        private static IEnumerable<string> CombineItems(IEnumerable<Item> allItems,
+        private static IEnumerable<Recommendation> CombineItems(IEnumerable<Item> allItems,
             int powerLevel, string description)
         {
             return allItems.Where(item => item.PowerLevel <= powerLevel)
@@ -144,7 +146,7 @@ namespace MaxPowerLevel.Services
                 {
                     var slotNames = items.Select(item => item.Slot.Name)
                         .OrderBy(slotName => slotName);
-                    return $"{description}: {string.Join(", ", slotNames)}";
+                    return new Recommendation($"{description}: {string.Join(", ", slotNames)}");
                 });
         }
 
@@ -208,7 +210,7 @@ namespace MaxPowerLevel.Services
             return slotUpgrades;
         }
 
-        private static string GetDisplayString(string description, IEnumerable<(ItemSlot slot, int count)> slots)
+        private static Recommendation GetDisplayString(string description, IEnumerable<(ItemSlot slot, int count)> slots)
         {
             var slotNames = slots.Select(item =>
             {
@@ -219,7 +221,29 @@ namespace MaxPowerLevel.Services
 
                 return $"{item.slot.Name} ({item.count})";
             });
-            return $"{description} ({string.Join(", ", slotNames)})";
+            return new Recommendation($"{description} ({string.Join(", ", slotNames)})");
+        }
+
+        private IDictionary<ItemSlot.SlotHashes, IList<string>> InitPinnacleRecommendations()
+        {
+            var pinnacleRecommendations = _slotHashes.ToDictionary(hash => hash, hash => (IList<string>)new List<string>());
+            PopulatePinnacleRecommendations(pinnacleRecommendations);
+
+            return pinnacleRecommendations;
+        }
+
+        protected abstract void PopulatePinnacleRecommendations(IDictionary<ItemSlot.SlotHashes, IList<string>> pinnacleRecommendations);
+
+        protected virtual Recommendation CreatePinnacleRecommendations(IEnumerable<Item> lowestItems)
+        {
+            var availablePinnacles = InitPinnacleRecommendations();
+
+            var slots = lowestItems.Select(item => item.Slot);
+            var activities = slots.SelectMany(slot => availablePinnacles[slot.Hash])
+                .Distinct()
+                .OrderBy(activity => activity);
+
+            return new Recommendation("Pinnacle Engrams", activities);
         }
     }
 }

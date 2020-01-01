@@ -44,6 +44,15 @@
         @foreach(var recommendation in recommendations)
         {
           <li>@recommendation</li>
+          @if(recommendation.Activities.Any())
+          {
+            <ol>
+              @foreach(var activity in recommendation.Activities)
+              {
+                <li>@activity</li>
+              }
+            </ol>
+          }
         }
       </ol>
     </div>

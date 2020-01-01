@@ -65,7 +65,7 @@ namespace MaxPowerLevel.Controllers
 
             var maxPower = _maxPower.ComputePower(maxGear.Values);
             var recommendations = await _recommendations.GetRecommendations(maxGear.Values,
-                maxPower, character.Progressions.Data.Progressions);
+                lowestItems, maxPower, character.Progressions.Data.Progressions);
             var model = new CharacterViewModel()
             {
                 Type = membershipType,

@@ -53,7 +53,7 @@ namespace MaxPowerLevel.Services
                     .Concat(new[]
                     {
                         new Recommendation("Powerful Engrams"),
-                        CreatePinnacleRecommendations(intPowerLevel, allItems)
+                        new Recommendation("Pinnacle Engrams")
                     });
             }
 
@@ -223,30 +223,21 @@ namespace MaxPowerLevel.Services
             return new Recommendation($"{description} ({string.Join(", ", slotNames)})");
         }
 
-        private IDictionary<string, ISet<ItemSlot.SlotHashes>> InitPinnacleActivities()
-        {
-            var pinnacleRecommendations = new Dictionary<string, ISet<ItemSlot.SlotHashes>>();
-            PopulatePinnacleActivities(pinnacleRecommendations);
-
-            return pinnacleRecommendations;
-        }
-
-        protected abstract void PopulatePinnacleActivities(IDictionary<string, ISet<ItemSlot.SlotHashes>> pinnacleRecommendations);
+        protected abstract IEnumerable<PinnacleActivity> CreatePinnacleActivities();
 
         protected virtual Recommendation CreatePinnacleRecommendations(int powerLevel, IEnumerable<Item> items)
         {
-            var pinnacleActivities = InitPinnacleActivities();
+            var pinnacleActivities = CreatePinnacleActivities();
 
             var powerLevels = items.ToDictionary(item => item.Slot.Hash, item => item.PowerLevel);
-            var pinnacleItemLevel = (decimal)powerLevel + 2; // TODO: Handle below the powerful cap
+            var pinnacleItemLevel = (decimal)powerLevel + 2;
 
-            var activitiesWithUpgrades = pinnacleActivities.ToDictionary(activity => activity.Key,
+            var activitiesWithUpgrades = pinnacleActivities.ToDictionary(activity => activity.Name,
                 activity =>
                 {
-                    var increasePerSlot = activity.Value.Select(slot => pinnacleItemLevel - powerLevels[slot]);
-                    var numUpgrades = increasePerSlot.Count(increase => increase > 0);
-
-                    return (decimal)numUpgrades / activity.Value.Count;
+                    var encounterUpgrades = activity.Encounters.Select(encounter =>
+                        encounter.Average(slot => pinnacleItemLevel - powerLevels[slot]));
+                    return encounterUpgrades.Average();
                 });
 
             var prioritizedActivities = activitiesWithUpgrades.GroupBy(activity => activity.Value, activity => activity.Key)

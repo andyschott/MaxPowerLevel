@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Destiny2;
@@ -74,7 +75,7 @@ namespace MaxPowerLevel.Services
                 var trailingSlots = allItems.Where(item => intPowerLevel - item.PowerLevel >= TrailingPowerLevelDifference)
                     .OrderBy(item => item.PowerLevel)
                     .Select(item => (item.Slot, 1))
-                    .Except(seasonPassRewards);
+                    .Except(seasonPassRewards, new ItemComparer());
                 if(trailingSlots.Any())
                 {
                     recommendations.Add(GetDisplayString("Powerful Engrams", trailingSlots));
@@ -245,6 +246,19 @@ namespace MaxPowerLevel.Services
                 .Select(group => string.Join(" / ", group.OrderBy(activity => activity)));
 
             return new Recommendation("Pinnacle Engrams", prioritizedActivities);
+        }
+
+        class ItemComparer : IEqualityComparer<(ItemSlot slot, int count)>
+        {
+            public bool Equals([AllowNull] (ItemSlot slot, int count) x, [AllowNull] (ItemSlot slot, int count) y)
+            {
+                return x.slot.Hash == y.slot.Hash;
+            }
+
+            public int GetHashCode([DisallowNull] (ItemSlot slot, int count) obj)
+            {
+                return (int)obj.slot.Hash;
+            }
         }
     }
 }

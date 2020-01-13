@@ -259,7 +259,7 @@ namespace MaxPowerLevel.Services
                 foreach(var slot in combo)
                 {
                     var pinnacleItemLevel = Math.Min(Math.Floor(currentPowerLevels.Values.Average()) + 2, HardCap);
-                    currentPowerLevels[slot] = pinnacleItemLevel;
+                    currentPowerLevels[slot] = Math.Max(pinnacleItemLevel, currentPowerLevels[slot]);
                 }
 
                 var finalPowerLevel = currentPowerLevels.Values.Average();

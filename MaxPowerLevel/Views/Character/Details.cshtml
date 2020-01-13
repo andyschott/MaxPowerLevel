@@ -20,6 +20,31 @@
   <li>Seasonal Artifact Power: @Model.BonusPower</li>
 </ul>
 
+@{
+  var lowestItems = Model.LowestItems;
+  var recommendations = Model.Recommendations;
+}
+
+@if(Model.Recommendations.Any())
+{
+  <h1>Recommendations</h1>
+  <ol>
+    @foreach(var recommendation in recommendations)
+    {
+      <li>@recommendation</li>
+      @if(recommendation.Activities.Any())
+      {
+        <ol>
+          @foreach(var activity in recommendation.Activities)
+          {
+            <li>@activity</li>
+          }
+        </ol>
+      }
+    }
+  </ol>
+}
+
 <h1>Item Power Levels</h1>
 <ul>
     @foreach(var engram in Model.Engrams)
@@ -29,35 +54,6 @@
 </ul>
 
 <div class="container">
-  @{
-    var lowestItems = Model.LowestItems;
-    var recommendations = Model.Recommendations;
-  }
-
-  @if(Model.Recommendations.Any())
-  {
-    <div class="row">
-      <h1>Recommendations</h1>
-    </div>
-    <div class="row">
-      <ol>
-        @foreach(var recommendation in recommendations)
-        {
-          <li>@recommendation</li>
-          @if(recommendation.Activities.Any())
-          {
-            <ol>
-              @foreach(var activity in recommendation.Activities)
-              {
-                <li>@activity</li>
-              }
-            </ol>
-          }
-        }
-      </ol>
-    </div>
-  }
-
   @if(lowestItems.Any())
   {
     <div class="row">

@@ -237,6 +237,7 @@ namespace MaxPowerLevel.Services
                 activity => AveragePowerGain(powerLevels, activity));
 
             var prioritizedActivities = activitiesWithUpgrades.GroupBy(activity => activity.Value, activity => activity.Key)
+                .Where(group => group.Key > 0)
                 .OrderByDescending(group => group.Key)
                 .Select(group => string.Join(" / ", group.OrderBy(activity => activity)));
 

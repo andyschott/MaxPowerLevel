@@ -6,9 +6,9 @@ namespace MaxPowerLevel.Models
     {
         public string Name { get; }
 
-        public IEnumerable<IEnumerable<ItemSlot.SlotHashes>> Encounters { get; }
+        public ItemSlot.SlotHashes[][] Encounters { get; }
 
-        public PinnacleActivity(string name, IEnumerable<IEnumerable<ItemSlot.SlotHashes>> encounters)
+        public PinnacleActivity(string name, ItemSlot.SlotHashes[][] encounters)
         {
             Name = name;
             Encounters = encounters;

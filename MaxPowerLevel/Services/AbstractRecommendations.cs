@@ -4,6 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Destiny2;
+using MaxPowerLevel.Helpers;
 using MaxPowerLevel.Models;
 
 namespace MaxPowerLevel.Services
@@ -230,22 +231,42 @@ namespace MaxPowerLevel.Services
         {
             var pinnacleActivities = CreatePinnacleActivities();
 
-            var powerLevels = items.ToDictionary(item => item.Slot.Hash, item => item.PowerLevel);
-            var pinnacleItemLevel = (decimal)powerLevel + 2;
+            var powerLevels = items.ToDictionary(item => item.Slot.Hash, item => (decimal)item.PowerLevel);
 
             var activitiesWithUpgrades = pinnacleActivities.ToDictionary(activity => activity.Name,
-                activity =>
-                {
-                    var encounterUpgrades = activity.Encounters.Select(encounter =>
-                        encounter.Average(slot => pinnacleItemLevel - powerLevels[slot]));
-                    return encounterUpgrades.Average();
-                });
+                activity => AveragePowerGain(powerLevels, activity));
 
             var prioritizedActivities = activitiesWithUpgrades.GroupBy(activity => activity.Value, activity => activity.Key)
                 .OrderByDescending(group => group.Key)
                 .Select(group => string.Join(" / ", group.OrderBy(activity => activity)));
 
             return new Recommendation("Pinnacle Engrams", prioritizedActivities);
+        }
+
+        private decimal AveragePowerGain(IDictionary<ItemSlot.SlotHashes, decimal> powerLevels,
+             PinnacleActivity activity)
+        {
+            // 1. Find all combination of drops across all encounters in the activity
+            var itr = new EncounterIterator(activity);
+            
+            // 2. Compute the power gain for each combination of encounters
+            var possiblePowerGains = itr.Select(combo =>
+            {
+                var currentPowerLevels = new Dictionary<ItemSlot.SlotHashes, decimal>(powerLevels);
+                var startingPowerLevel = currentPowerLevels.Values.Average();
+
+                foreach(var slot in combo)
+                {
+                    var pinnacleItemLevel = Math.Min(Math.Floor(currentPowerLevels.Values.Average()) + 2, HardCap);
+                    currentPowerLevels[slot] = pinnacleItemLevel;
+                }
+
+                var finalPowerLevel = currentPowerLevels.Values.Average();
+                return finalPowerLevel - startingPowerLevel;
+            });
+
+            // 3. Return the average of all possible power gains
+            return possiblePowerGains.Average();
         }
 
         class ItemComparer : IEqualityComparer<(ItemSlot slot, int count)>

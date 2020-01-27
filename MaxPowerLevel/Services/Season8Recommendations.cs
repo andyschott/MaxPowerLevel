@@ -8,6 +8,7 @@ namespace MaxPowerLevel.Services
 
         protected override int HardCap => 960;
         protected override uint SeasonHash => 3612906877;
+        protected override int TargetRankPlus20Power => 201;
 
         public Season8Recommendations(IManifest manifest)
             : base(manifest)

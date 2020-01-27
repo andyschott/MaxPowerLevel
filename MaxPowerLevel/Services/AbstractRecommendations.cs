@@ -15,6 +15,7 @@ namespace MaxPowerLevel.Services
         protected abstract int PowerfulCap { get; }
         protected abstract int HardCap { get; }
         protected abstract uint SeasonHash { get; }
+        protected abstract int TargetRankPlus20Power { get; }
 
         // Items pulled from Collections are 20 power levels below the character's max
         protected virtual int CollectionsPowerLevelDifference { get; }= 20;
@@ -129,6 +130,19 @@ namespace MaxPowerLevel.Services
             }
 
             throw new Exception($"Unknown power level {intPowerLevel}");
+        }
+
+        public async Task<SeasonPassInfo> GetSeasonPassInfo(IDictionary<uint, DestinyProgression> progression)
+        {
+            var season = await _manifest.LoadSeason(SeasonHash);
+            var seasonPass = await _manifest.LoadSeasonPass(season.SeasonPassHash);
+
+            var baseProgression = progression[season.SeasonPassProgressionHash];
+            var prestigeProgression = progression[seasonPass.PrestigeProgressionHash];
+
+            var rank = baseProgression.Level + prestigeProgression.Level;
+
+            return new SeasonPassInfo(season.EndDate.Value, rank, TargetRankPlus20Power);
         }
 
         private IEnumerable<Recommendation> GetCollectionsRecommendations(IEnumerable<Item> allItems, int powerLevel)

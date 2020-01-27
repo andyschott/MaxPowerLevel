@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Destiny2;
 using MaxPowerLevel.Helpers;
 using MaxPowerLevel.Models;
+using MaxPowerLevel.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -18,16 +19,18 @@ namespace MaxPowerLevel.Controllers
   {
     private readonly IDestiny2 _destiny;
     private readonly IManifest _manifest;
+    private readonly IRecommendations _recommendations;
     private readonly IHttpContextAccessor _contextAccessor;
     private readonly IOptions<BungieSettings> _bungie;
     private readonly ILogger _logger;
 
     public AccountController(IDestiny2 destiny, IManifest manifest,
-        IHttpContextAccessor contextAccessor, IOptions<BungieSettings> bungie,
-        ILogger<AccountController> logger)
+        IRecommendations recommendations, IHttpContextAccessor contextAccessor,
+        IOptions<BungieSettings> bungie, ILogger<AccountController> logger)
     {
         _destiny = destiny;
         _manifest = manifest;
+        _recommendations = recommendations;
         _contextAccessor = contextAccessor;
         _bungie = bungie;
         _logger = logger;
@@ -90,11 +93,12 @@ namespace MaxPowerLevel.Controllers
         var membershipType = (BungieMembershipType)type;
         _logger.LogInformation($"{membershipType}/{id}");
 
-        var accessToken = _contextAccessor.HttpContext.GetTokenAsync("access_token");
+        var accessToken = await _contextAccessor.HttpContext.GetTokenAsync("access_token");
 
         var model = new AccountDetailsViewModel(membershipType, id);
 
-        var profileResponse = await _destiny.GetProfile(await accessToken, membershipType, id, DestinyComponentType.Characters);
+        var profileResponse = await _destiny.GetProfile(accessToken, membershipType, id,
+            DestinyComponentType.Characters, DestinyComponentType.CharacterProgressions);
         if (profileResponse == null)
         {
             var url = Url.RouteUrl("AccountIndex");
@@ -105,6 +109,13 @@ namespace MaxPowerLevel.Controllers
         {
             var classDef = await _manifest.LoadClass(item.Value.ClassHash);
             model.Characters.Add(new Character(item.Key, item.Value, classDef, _bungie.Value.BaseUrl));
+
+            if(model.SeasonPassInfo == null)
+            {
+                var characterProgression = await _destiny.GetCharacterInfo(accessToken,
+                    membershipType, id, item.Key, DestinyComponentType.CharacterProgressions);
+                model.SeasonPassInfo = await _recommendations.GetSeasonPassInfo(characterProgression.Progressions.Data.Progressions);
+            }
         }
 
         return View(model);

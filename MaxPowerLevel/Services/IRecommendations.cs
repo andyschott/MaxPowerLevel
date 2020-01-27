@@ -10,5 +10,6 @@ namespace MaxPowerLevel.Services
         Task<IEnumerable<Recommendation>> GetRecommendations(IEnumerable<Item> items,
             decimal powerLevel, IDictionary<uint, DestinyProgression> progression);
         IEnumerable<Engram> GetEngramPowerLevels(decimal powerLevel);
+        Task<SeasonPassInfo> GetSeasonPassInfo(IDictionary<uint, DestinyProgression> progression);
     }
 }

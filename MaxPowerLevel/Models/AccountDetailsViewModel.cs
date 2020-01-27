@@ -14,5 +14,6 @@ namespace MaxPowerLevel.Models
         public BungieMembershipType Type { get; }
         public long Id { get; }
         public IList<Character> Characters { get; set; } = new List<Character>();
+        public SeasonPassInfo SeasonPassInfo { get; set; } = null;
     }
 }

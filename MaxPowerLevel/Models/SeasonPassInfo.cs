@@ -4,14 +4,16 @@ namespace MaxPowerLevel.Models
 {
     public class SeasonPassInfo
     {
+        public string SeasonName { get; }
         public DateTime EndDate { get; }
         public int Rank { get; }
         public int RanksPerWeek { get; }
 
         private const int ResetHour = 17;
 
-        public SeasonPassInfo(DateTime endDate, int rank, int targetRank)
+        public SeasonPassInfo(string seasonName, DateTime endDate, int rank, int targetRank)
         {
+            SeasonName = seasonName;
             EndDate = endDate;
             Rank = rank;
 

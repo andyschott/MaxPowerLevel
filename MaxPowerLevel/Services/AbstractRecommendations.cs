@@ -142,7 +142,7 @@ namespace MaxPowerLevel.Services
 
             var rank = baseProgression.Level + prestigeProgression.Level;
 
-            return new SeasonPassInfo(season.EndDate.Value, rank, TargetRankPlus20Power);
+            return new SeasonPassInfo(season.DisplayProperties.Name, season.EndDate.Value, rank, TargetRankPlus20Power);
         }
 
         private IEnumerable<Recommendation> GetCollectionsRecommendations(IEnumerable<Item> allItems, int powerLevel)

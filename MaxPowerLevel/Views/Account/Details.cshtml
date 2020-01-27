@@ -20,18 +20,20 @@
   <div class="col-md-12">
     <h1>Season Pass Info</h1>
     <ul>
-      <li>End Date:
-        <script>
-          var strDate = new String('@Model.SeasonPassInfo.EndDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
-          var localTime = new Date(strDate);
-          if(localTime.toLocaleDateString !== undefined) {
-            var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.write(localTime.toLocaleDateString(undefined, options));
-          }
-          else {
-            document.write(localTime.toLocaleString());
-          }
-        </script>
+      <li>@Model.SeasonPassInfo.SeasonName End Date:
+        <span style="white-space: nowrap;">
+          <script>
+            var strDate = new String('@Model.SeasonPassInfo.EndDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
+            var localTime = new Date(strDate);
+            if(localTime.toLocaleDateString !== undefined) {
+              var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+              document.write(localTime.toLocaleDateString(undefined, options));
+            }
+            else {
+              document.write(localTime.toLocaleString());
+            }
+          </script>
+        </span>
       </li>
       <li>Rank: @Model.SeasonPassInfo.Rank</li>
       <li>Ranks per Week for +20 Power: @Model.SeasonPassInfo.RanksPerWeek</li>

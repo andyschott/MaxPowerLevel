@@ -36,7 +36,10 @@
         </span>
       </li>
       <li>Rank: @Model.SeasonPassInfo.Rank</li>
-      <li>Ranks per Week for +20 Power: @Model.SeasonPassInfo.RanksPerWeek</li>
+      @if(Model.SeasonPassInfo.RanksPerWeek.HasValue)
+      {
+        <li>Ranks per Week for +20 Power: @Model.SeasonPassInfo.RanksPerWeek.Value</li>
+      }
     </ul>
   </div>
 </div>

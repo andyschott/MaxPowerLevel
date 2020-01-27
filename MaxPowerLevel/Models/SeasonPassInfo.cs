@@ -7,7 +7,7 @@ namespace MaxPowerLevel.Models
         public string SeasonName { get; }
         public DateTime EndDate { get; }
         public int Rank { get; }
-        public int RanksPerWeek { get; }
+        public int? RanksPerWeek { get; } = null;
 
         private const int ResetHour = 17;
 
@@ -20,7 +20,10 @@ namespace MaxPowerLevel.Models
             var remainingWeeks = RemainingWeeks(EndDate);
             var remainingRanks = targetRank - Rank;
             
-            RanksPerWeek = (int)Math.Ceiling((double)remainingRanks / remainingWeeks);
+            if(remainingRanks > 0)
+            {
+                RanksPerWeek = (int)Math.Ceiling((double)remainingRanks / remainingWeeks);
+            }
         }
 
         private static DateTime PreviousWeeklyReset()

@@ -137,6 +137,11 @@ namespace MaxPowerLevel.Services
             var season = await _manifest.LoadSeason(SeasonHash);
             var seasonPass = await _manifest.LoadSeasonPass(season.SeasonPassHash);
 
+            if(season.SeasonPassProgressionHash == 0)
+            {
+                return null;
+            }
+
             var baseProgression = progression[season.SeasonPassProgressionHash];
             var prestigeProgression = progression[seasonPass.PrestigeProgressionHash];
 
@@ -168,6 +173,11 @@ namespace MaxPowerLevel.Services
         protected async Task<IDictionary<ItemSlot.SlotHashes, int>> LoadAvailableSeasonPassItems(IDictionary<uint, DestinyProgression> progression)
         {
             var season = await _manifest.LoadSeason(SeasonHash);
+            if(season.SeasonPassProgressionHash == 0)
+            {
+                return new Dictionary<ItemSlot.SlotHashes, int>();
+            }
+            
             var progressionDefinition = await _manifest.LoadProgression(season.SeasonPassProgressionHash);
 
             var characterProgression = progression[season.SeasonPassProgressionHash];

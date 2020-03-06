@@ -7,6 +7,7 @@ namespace MaxPowerLevel.Services
     public abstract class Year3Recommendations : AbstractRecommendations
     {
         protected override int SoftCap => 900;
+        protected override int TargetRankPlus20Power => 200;
 
         private const string Nightfall = "Nightfall: The Ordeal Weekly Score";
         private const string MasterNightmareHunt = "Nightmare Hunt: Master";

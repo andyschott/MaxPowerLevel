@@ -10,7 +10,6 @@ namespace MaxPowerLevel.Services
         protected override int PowerfulCap => 960;
         protected override int HardCap => 970;
         protected override uint SeasonHash => 2007338097;
-        protected override int TargetRankPlus20Power => 201;
 
         private const string SundialLegend = "The Sundial: Legend";
 

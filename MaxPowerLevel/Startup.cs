@@ -88,20 +88,20 @@ namespace MaxPowerLevel
             });
         }
 
-        // private static readonly DateTime Season9StartDate =
-        //     new DateTime(2019, 12, 10, 18, 0, 0, DateTimeKind.Utc);
+        private static readonly DateTime Season10StartDate =
+            new DateTime(2020, 3, 10, 18, 0, 0, DateTimeKind.Utc);
 
         private void AddRecommendations(IServiceCollection services)
         {
             services.AddScoped<IRecommendations>(sp =>
             {
-                // if(DateTime.UtcNow >= Season9StartDate)
-                // {
-                //     return new Season9Recommendations();
-                // }
-
-                // return new Season8Recommendations();
                 var manifest = sp.GetRequiredService<IManifest>();
+
+                if(DateTime.UtcNow >= Season10StartDate)
+                {
+                    return new Season10Recommendations(manifest);
+                }
+
                 return new Season9Recommendations(manifest);
             });
         }

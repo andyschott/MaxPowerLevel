@@ -9,14 +9,14 @@ namespace MaxPowerLevel.Models
         public IEnumerable<string> Activities { get; }
 
         public Recommendation(string description)
-            : this(description, Enumerable.Empty<string>())
+            : this(description, null)
         {
         }
 
         public Recommendation(string description, IEnumerable<string> activities)
         {
             Description = description;
-            Activities = activities;
+            Activities = activities ?? Enumerable.Empty<string>();
         }
 
         public override string ToString() => Description;

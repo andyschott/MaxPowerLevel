@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Destiny2;
 using MaxPowerLevel.Helpers;
 using MaxPowerLevel.Models;
+using VendorEngrams;
 
 namespace MaxPowerLevel.Services
 {
@@ -21,15 +22,17 @@ namespace MaxPowerLevel.Services
         protected virtual int CollectionsPowerLevelDifference { get; }= 20;
 
         protected readonly IManifest _manifest;
+        protected readonly IVendorEngramsClient _vendorEngrams;
 
         protected static readonly ISet<ItemSlot.SlotHashes> _slotHashes =
             new HashSet<ItemSlot.SlotHashes>((ItemSlot.SlotHashes[])Enum.GetValues(typeof(ItemSlot.SlotHashes)));
 
         private const int TrailingPowerLevelDifference = 2;
 
-        protected AbstractRecommendations(IManifest manifest)
+        protected AbstractRecommendations(IManifest manifest, IVendorEngramsClient vendorEngrams)
         {
             _manifest = manifest;
+            _vendorEngrams = vendorEngrams;
         }
 
         public async Task<IEnumerable<Recommendation>> GetRecommendations(IEnumerable<Item> allItems,
@@ -43,7 +46,7 @@ namespace MaxPowerLevel.Services
             {
                 return collections.Concat(new[]
                 {
-                    new Recommendation($"Rare/Legendary Engrams to increase your power level to {SoftCap}")
+                    new Recommendation($"Rare, Legendary, and Vendor Engrams to increase your power level to {SoftCap}")
                 });
             }
 
@@ -51,13 +54,17 @@ namespace MaxPowerLevel.Services
             {
                 // Recommmend legendary engrams for any slots that could easily be upgraded
                 var legendary = CombineItems(allItems, intPowerLevel - 2, "Rare/Legendary Engrams");
+                var vendors = await CreateVendorRecommendations();
 
-                return collections.Concat(legendary)
-                    .Concat(new[]
-                    {
-                        new Recommendation("Powerful Engrams"),
-                        new Recommendation("Pinnacle Engrams")
-                    });
+                var recommendations = new List<Recommendation>(legendary);
+                if(vendors != null)
+                {
+                    recommendations.Add(vendors);
+                }
+                recommendations.Add(new Recommendation("Powerful Engrams"));
+                recommendations.Add(new Recommendation("Pinnacle Engrams"));
+
+                return  recommendations;
             }
 
             if(intPowerLevel < HardCap)
@@ -108,7 +115,7 @@ namespace MaxPowerLevel.Services
             {
                 return new[]
                 {
-                    new Engram("Rare/Legendary Engram", intPowerLevel - 3, Math.Min(intPowerLevel, PowerfulCap)),
+                    new Engram("Rare, Legendary, and Vendor Engram", intPowerLevel - 3, Math.Min(intPowerLevel, PowerfulCap)),
                     new Engram("Powerful Engram (Tier 1)", Math.Min(intPowerLevel + 3, PowerfulCap)),
                     new Engram("Powerful Engram (Tier 2)", Math.Min(intPowerLevel + 5, PowerfulCap)),
                     new Engram("Powerful Engram (Tier 3)", Math.Min(intPowerLevel + 6, PowerfulCap + 1)),
@@ -292,6 +299,20 @@ namespace MaxPowerLevel.Services
 
             // 3. Return the average of all possible power gains
             return possiblePowerGains.Average();
+        }
+
+        private async Task<Recommendation> CreateVendorRecommendations()
+        {
+            var vendorEngrams = await _vendorEngrams.GetVendorDrops();
+            vendorEngrams = vendorEngrams.Where(vendor => vendor.Drop == DropStatus.High);
+
+            var vendorTasks = vendorEngrams.Select(vendor => _manifest.LoadVendor(vendor.Hash));
+
+            var vendors = await Task.WhenAll(vendorTasks);
+            var vendorNames = vendors.Select(vendor => vendor.DisplayProperties.Name).OrderBy(name => name);
+
+            var recommendation = new Recommendation("Vendor Engrams", vendorNames);
+            return recommendation;
         }
 
         class ItemComparer : IEqualityComparer<(ItemSlot slot, int count)>

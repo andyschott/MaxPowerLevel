@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Destiny2;
 using MaxPowerLevel.Models;
+using VendorEngrams;
 
 namespace MaxPowerLevel.Services
 {
@@ -13,8 +14,8 @@ namespace MaxPowerLevel.Services
 
         private const string SundialLegend = "The Sundial: Legend";
 
-        public Season9Recommendations(IManifest manifest)
-            : base(manifest)
+        public Season9Recommendations(IManifest manifest, IVendorEngramsClient vendorEngrams)
+            : base(manifest, vendorEngrams)
         {
         }
 

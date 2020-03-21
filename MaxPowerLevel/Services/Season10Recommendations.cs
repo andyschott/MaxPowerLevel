@@ -1,4 +1,5 @@
 using Destiny2;
+using VendorEngrams;
 
 namespace MaxPowerLevel.Services
 {
@@ -9,7 +10,8 @@ namespace MaxPowerLevel.Services
         protected override int HardCap => 1010;
         protected override uint SeasonHash => 4035491417;
 
-        public Season10Recommendations(IManifest manifest) : base(manifest)
+        public Season10Recommendations(IManifest manifest, IVendorEngramsClient vendorEngrams)
+            : base(manifest, vendorEngrams)
         {
         }
     }

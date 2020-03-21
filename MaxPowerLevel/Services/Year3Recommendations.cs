@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Destiny2;
 using MaxPowerLevel.Models;
+using VendorEngrams;
 
 namespace MaxPowerLevel.Services
 {
@@ -13,8 +14,9 @@ namespace MaxPowerLevel.Services
         private const string MasterNightmareHunt = "Nightmare Hunt: Master";
         private const string PitOfHeresy = "Pit of Heresy";
         private const string GardenOfSalvation = "Garden of Salvation";
-
-        protected Year3Recommendations(IManifest manifest) : base(manifest)
+        
+        protected Year3Recommendations(IManifest manifest, IVendorEngramsClient vendorEngrams)
+            : base(manifest, vendorEngrams)
         {
         }
 

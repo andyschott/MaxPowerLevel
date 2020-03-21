@@ -76,7 +76,8 @@ namespace MaxPowerLevel.Services
                 var seasonPassRewards = GetItemRecommendations(allItems, seasonPassSlots, intPowerLevel, TrailingPowerLevelDifference);
                 if(seasonPassRewards.Any())
                 {
-                    recommendations.Add(GetDisplayString("Season Pass Rewards", seasonPassRewards));
+                    var recommendation = new Recommendation(GetDisplayString("Season Pass Rewards", seasonPassRewards));
+                    recommendations.Add(recommendation);
                 }
 
                 // If any slot is at least two power levels behind,
@@ -88,7 +89,8 @@ namespace MaxPowerLevel.Services
                     .Except(seasonPassRewards, new ItemComparer());
                 if(trailingSlots.Any())
                 {
-                    recommendations.Add(GetDisplayString("Powerful Engrams", trailingSlots));
+                    var recommendation = new Recommendation(GetDisplayString("Powerful Engrams", trailingSlots));
+                    recommendations.Add(recommendation);
                 }
 
                 recommendations.Add(CreatePinnacleRecommendations(intPowerLevel, allItems));
@@ -243,8 +245,7 @@ namespace MaxPowerLevel.Services
             return slotUpgrades;
         }
 
-        private static Recommendation GetDisplayString(string description, IEnumerable<(ItemSlot slot, int count)> slots,
-            IEnumerable<string> activities = null)
+        private static string GetDisplayString(string description, IEnumerable<(ItemSlot slot, int count)> slots)
         {
             var slotNames = slots.Select(item =>
             {
@@ -255,7 +256,7 @@ namespace MaxPowerLevel.Services
 
                 return $"{item.slot.Name} ({item.count})";
             });
-            return new Recommendation($"{description} ({string.Join(", ", slotNames)})", activities);
+            return $"{description} ({string.Join(", ", slotNames)})";
         }
 
         protected abstract IEnumerable<PinnacleActivity> CreatePinnacleActivities();
@@ -329,21 +330,26 @@ namespace MaxPowerLevel.Services
             IEnumerable<Vendor> engrams, IEnumerable<Item> items, int engramPowerLevel, int powerLevel,
             string description)
         {
-            // TODO: Filter by item type for each vendor
-            var vendorEngramSlots = Enum.GetValues(typeof(ItemSlot.SlotHashes))
-                .Cast<ItemSlot.SlotHashes>()
-                .ToDictionary(slotHash => slotHash, slothash => engramPowerLevel);
-            var itemRecommendations = GetItemRecommendations(items, vendorEngramSlots, engramPowerLevel, 0);
-            if(!itemRecommendations.Any())
+            var recommendedVendors = engrams.Select(vendor =>
+            {
+                var slots = VendorEngramSlots.GetEngramSlots(vendor.Hash)
+                    .ToDictionary(slotHash => slotHash, slotHash => engramPowerLevel);
+                var itemRecommendations = GetItemRecommendations(items, slots, engramPowerLevel, 0);
+                if(!itemRecommendations.Any())
+                {
+                    return null;
+                }
+
+                var vendorName = vendors[vendor.Hash].DisplayProperties.Name;
+                return GetDisplayString(vendorName, itemRecommendations);
+            }).Where(thing => thing != null).OrderBy(thing => thing);
+
+            if(!recommendedVendors.Any())
             {
                 return null;
             }
 
-            var vendorNames = engrams.Select(engram => vendors[engram.Hash])
-                .Select(vendor => vendor.DisplayProperties.Name)
-                .OrderBy(name => name);
-
-            return GetDisplayString(description, itemRecommendations, vendorNames);
+            return new Recommendation(description, recommendedVendors);
         }
 
         class ItemComparer : IEqualityComparer<(ItemSlot slot, int count)>

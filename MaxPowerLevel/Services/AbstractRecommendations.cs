@@ -334,7 +334,7 @@ namespace MaxPowerLevel.Services
             {
                 var slots = VendorEngramSlots.GetEngramSlots(vendor.Hash)
                     .ToDictionary(slotHash => slotHash, slotHash => engramPowerLevel);
-                var itemRecommendations = GetItemRecommendations(items, slots, engramPowerLevel, 0);
+                var itemRecommendations = GetItemRecommendations(items, slots, engramPowerLevel, 1);
                 if(!itemRecommendations.Any())
                 {
                     return null;

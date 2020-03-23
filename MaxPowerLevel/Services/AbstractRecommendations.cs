@@ -51,17 +51,26 @@ namespace MaxPowerLevel.Services
                 });
             }
 
+            var seasonPassSlots = await LoadAvailableSeasonPassItems(progressions);
+            var seasonPassRewards = GetItemRecommendations(allItems, seasonPassSlots, intPowerLevel, TrailingPowerLevelDifference);
+
             if(intPowerLevel < PowerfulCap)
             {
                 // Recommmend legendary engrams for any slots that could easily be upgraded
                 var legendary = CombineItems(allItems, intPowerLevel - 2, "Rare/Legendary Engrams");
-                var vendors = await CreateVendorRecommendations(allItems, intPowerLevel);
-
                 var recommendations = new List<Recommendation>(legendary);
+                var vendors = await CreateVendorRecommendations(allItems, intPowerLevel);
                 if(vendors.Any())
                 {
                     recommendations.AddRange(vendors);
                 }
+
+                if(seasonPassRewards.Any())
+                {
+                    var recommendation = new Recommendation(GetDisplayString("Season Pass Rewards", seasonPassRewards));
+                    recommendations.Add(recommendation);
+                }
+
                 recommendations.Add(new Recommendation("Powerful Engrams"));
                 recommendations.Add(new Recommendation("Pinnacle Engrams"));
 
@@ -72,8 +81,6 @@ namespace MaxPowerLevel.Services
             {
                 var recommendations = new List<Recommendation>();
 
-                var seasonPassSlots = await LoadAvailableSeasonPassItems(progressions);
-                var seasonPassRewards = GetItemRecommendations(allItems, seasonPassSlots, intPowerLevel, TrailingPowerLevelDifference);
                 if(seasonPassRewards.Any())
                 {
                     var recommendation = new Recommendation(GetDisplayString("Season Pass Rewards", seasonPassRewards));

@@ -14,7 +14,6 @@ using Microsoft.Extensions.Options;
 
 namespace MaxPowerLevel.Controllers
 {
-  [Route("[controller]")]
   public class AccountController : Controller
   {
     private readonly IDestiny2 _destiny;
@@ -53,7 +52,7 @@ namespace MaxPowerLevel.Controllers
         return Redirect(url);
     }
 
-    [HttpGet(Name = "AccountIndex")]
+    [HttpGet("/account", Name = "AccountIndex")]
     [Authorize]
     public async Task<IActionResult> Index()
     {
@@ -84,6 +83,18 @@ namespace MaxPowerLevel.Controllers
         var model = new AccountsViewModel();
         model.Accounts = accounts;
         return View(model);
+    }
+
+    [HttpGet("Account/{type}/{id}")]
+    public IActionResult DetailsRedirect(int type, long id)
+    {
+        var url = Url.Action("Details", new
+        {
+            type = type,
+            id = id,
+        });
+
+        return Redirect(url);
     }
 
     [HttpGet("{type}/{id}", Name = "AccountDetails")]

@@ -14,7 +14,6 @@ using Microsoft.Extensions.Options;
 
 namespace MaxPowerLevel.Controllers
 {
-    [Route("[controller]")]
     [Authorize]
     public class CharacterController : Controller
     {
@@ -39,8 +38,22 @@ namespace MaxPowerLevel.Controllers
             _bungie = bungie;
             _logger = logger;
         }
+
+        [HttpGet("Character/{type}/{id}/{characterId}")]
+        public IActionResult CharacterDetailsRedirect(int type, long id, long characterId)
+        {
+            var url = Url.Action("Details", new
+            {
+               type = type,
+               id = id,
+               characterId = characterId 
+            });
+
+            return Redirect(url);
+        }
         
-        [HttpGet("{type}/{id}/{characterId}")]
+
+        [HttpGet("{type}/{id}/characters/{characterId}")]
         public async Task<IActionResult> Details(int type, long id, long characterId)
         {
             var membershipType = (BungieMembershipType)type;

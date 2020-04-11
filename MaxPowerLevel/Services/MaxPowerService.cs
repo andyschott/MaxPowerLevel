@@ -72,10 +72,25 @@ namespace MaxPowerLevel.Services
             return await ComputeMaxPower(character.ClassHash, items);
         }
 
-        public Task<IDictionary<long, IDictionary<ItemSlot.SlotHashes, Item>>> ComputeMaxPowerAsync(BungieMembershipType type, long accountId)
+        public async Task<IDictionary<long, IDictionary<ItemSlot.SlotHashes, Item>>> ComputeMaxPowerAsync(BungieMembershipType type, long accountId)
         {
             _logger.LogInformation($"Getting items for the {type} account {accountId}");
-            return null;
+            var info = await GetProfile(type, accountId);
+            if(info == null)
+            {
+                return null;
+            }
+
+            var items = await LoadItems(info);
+
+            var maxPowerTasks = info.Characters.Data.Select(item =>
+            {
+                return (item.Key, maxPower: ComputeMaxPower(item.Value.ClassHash, items));
+            });
+
+            await Task.WhenAll(maxPowerTasks.Select(item => item.maxPower));
+
+            return maxPowerTasks.ToDictionary(item => item.Key, item => item.maxPower.Result);
         }
 
         public decimal ComputePower(IEnumerable<Item> items)

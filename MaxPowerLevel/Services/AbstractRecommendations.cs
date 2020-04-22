@@ -129,7 +129,7 @@ namespace MaxPowerLevel.Services
                     new Engram("Powerful Engram (Tier 1)", Math.Min(intPowerLevel + 3, PowerfulCap)),
                     new Engram("Powerful Engram (Tier 2)", Math.Min(intPowerLevel + 5, PowerfulCap)),
                     new Engram("Powerful Engram (Tier 3)", Math.Min(intPowerLevel + 6, PowerfulCap)),
-                    new Engram("Pinnacle Engram", Math.Min(intPowerLevel + 4, PowerfulCap + 2), Math.Min(intPowerLevel + 5, PowerfulCap + 2))
+                    new Engram("Pinnacle Engram (Tier 2)", Math.Min(intPowerLevel + 4, PowerfulCap + 2), Math.Min(intPowerLevel + 5, PowerfulCap + 2))
                 };
             }
 
@@ -142,7 +142,8 @@ namespace MaxPowerLevel.Services
                     new Engram("Powerful Engram (Tier 2)", intPowerLevel),
                     new Engram("Powerful Engram (Tier 3)", intPowerLevel),
                     new Engram("Season Pass Items", intPowerLevel),
-                    new Engram("Pinnacle Engram", Math.Min(intPowerLevel + 2, HardCap))
+                    new Engram("Pinnacle Engram (Tier 1)", Math.Min(intPowerLevel + 1, HardCap)),
+                    new Engram("Pinnacle Engram (Tier 2)", Math.Min(intPowerLevel + 2, HardCap))
                 };
             }
 

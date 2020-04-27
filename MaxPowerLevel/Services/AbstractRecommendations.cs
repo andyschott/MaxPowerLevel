@@ -18,6 +18,7 @@ namespace MaxPowerLevel.Services
         protected abstract int HardCap { get; }
         protected abstract uint SeasonHash { get; }
         protected abstract int TargetRankPlus20Power { get; }
+        protected virtual DateTime? EndDateOverride { get; } = null;
 
         // Items pulled from Collections are 20 power levels below the character's max
         protected virtual int CollectionsPowerLevelDifference { get; }= 20;
@@ -165,7 +166,8 @@ namespace MaxPowerLevel.Services
 
             var rank = baseProgression.Level + prestigeProgression.Level;
 
-            return new SeasonPassInfo(season.DisplayProperties.Name, season.EndDate.Value, rank, TargetRankPlus20Power);
+            var seasonEndDate = EndDateOverride ?? season.EndDate.Value;
+            return new SeasonPassInfo(season.DisplayProperties.Name, seasonEndDate, rank, TargetRankPlus20Power);
         }
 
         private IEnumerable<Recommendation> GetCollectionsRecommendations(IEnumerable<Item> allItems, int powerLevel)

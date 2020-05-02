@@ -3,12 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Destiny2;
 using Destiny2.Definitions;
+using Destiny2.Entities;
 using Destiny2.Entities.Items;
-using Destiny2.Responses;
 using MaxPowerLevel.Helpers;
 using MaxPowerLevel.Models;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
@@ -18,7 +16,6 @@ namespace MaxPowerLevel.Services
     {
         private readonly IDestiny2 _destiny;
         private readonly IManifest _manifest;
-        private readonly IHttpContextAccessor _contextAccessor;
         private readonly IOptions<BungieSettings> _bungie;
         private readonly ILogger _logger;
 
@@ -42,55 +39,43 @@ namespace MaxPowerLevel.Services
                 ItemSlot.SlotHashes.ClassArmor,
             };
 
-        public MaxPowerService(IDestiny2 destiny, IManifest manifest, IHttpContextAccessor contextAccessor,
-            IOptions<BungieSettings> bungie, ILogger<MaxPowerService> logger)
+        public MaxPowerService(IDestiny2 destiny, IManifest manifest, IOptions<BungieSettings> bungie,
+            ILogger<MaxPowerService> logger)
         {
             _destiny = destiny;
             _manifest = manifest;
-            _contextAccessor = contextAccessor;
             _bungie = bungie;
             _logger = logger;
         }
 
-        public async Task<IDictionary<ItemSlot.SlotHashes, Item>> ComputeMaxPowerAsync(BungieMembershipType type, long accountId,
-            long characterId)
+        public async Task<IDictionary<ItemSlot.SlotHashes, Item>> ComputeMaxPower(DestinyCharacterComponent character,
+            IEnumerable<DestinyInventoryComponent> characterEquipment,
+            IEnumerable<DestinyInventoryComponent> characterInventories,
+            DestinyInventoryComponent vault,
+            IDictionary<long, DestinyItemInstanceComponent> itemInstances)
         {
-            _logger.LogInformation($"Getting items for the {type} account {accountId} character {characterId}");
-            var info = await GetProfile(type, accountId);
-            if(info == null)
-            {
-                return null;
-            }
-
-            if(!info.Characters.Data.TryGetValue(characterId, out var character))
-            {
-                _logger.LogWarning($"Could not find character {characterId}");
-                return null;
-            }
-
-            var items = await LoadItems(info);
+            var items = await LoadItems(characterEquipment, characterInventories,
+                vault, itemInstances);
             return await ComputeMaxPower(character.ClassHash, items);
         }
 
-        public async Task<IDictionary<long, IDictionary<ItemSlot.SlotHashes, Item>>> ComputeMaxPowerAsync(BungieMembershipType type, long accountId)
+        public async Task<IDictionary<long, IDictionary<ItemSlot.SlotHashes, Item>>> ComputeMaxPowerAsync(IDictionary<long, DestinyCharacterComponent> characters,
+            IEnumerable<DestinyInventoryComponent> characterEquipment,
+            IEnumerable<DestinyInventoryComponent> characterInventories,
+            DestinyInventoryComponent vault,
+            IDictionary<long, DestinyItemInstanceComponent> itemInstances)
         {
-            _logger.LogInformation($"Getting items for the {type} account {accountId}");
-            var info = await GetProfile(type, accountId);
-            if(info == null)
-            {
-                return null;
-            }
+            var items = await LoadItems(characterEquipment, characterInventories,
+                vault, itemInstances);
 
-            var items = await LoadItems(info);
-
-            var maxPowerTasks = info.Characters.Data.Select(item =>
+            var maxPowerTasks = characters.Select(async character =>
             {
-                return (item.Key, maxPower: ComputeMaxPower(item.Value.ClassHash, items));
+                return (character.Key, maxPower: await ComputeMaxPower(character.Value.ClassHash, items));
             });
 
-            await Task.WhenAll(maxPowerTasks.Select(item => item.maxPower));
+            await Task.WhenAll(maxPowerTasks);
 
-            return maxPowerTasks.ToDictionary(item => item.Key, item => item.maxPower.Result);
+            return maxPowerTasks.ToDictionary(item => item.Result.Key, item => item.Result.maxPower);
         }
 
         public decimal ComputePower(IEnumerable<Item> items)
@@ -98,14 +83,15 @@ namespace MaxPowerLevel.Services
             return MaxPower.ComputePower(items);
         }
 
-        private Task<IEnumerable<Item>> LoadItems(DestinyProfileResponse info)
+        private Task<IEnumerable<Item>> LoadItems(IEnumerable<DestinyInventoryComponent> characterEquipment,
+            IEnumerable<DestinyInventoryComponent> characterInventories,
+            DestinyInventoryComponent vault,
+            IDictionary<long, DestinyItemInstanceComponent> itemInstances)
         {
-            var itemComponents = info.CharacterEquipment.Data.Values // Equipped items on all characters
-                .Concat(info.CharacterInventories.Data.Values) // Items in all character inventories
+           var itemComponents = characterEquipment // Equipped items on all characters
+                .Concat(characterInventories) // Items in all character inventories
                 .SelectMany(group => group.Items)
-                .Concat(info.ProfileInventory.Data.Items); // Items in the Vault
-
-            var itemInstances = info.ItemComponents.Instances.Data;
+                .Concat(vault.Items); // Items in the Vault
 
             return LoadItems(itemComponents, itemInstances);
         }
@@ -140,16 +126,6 @@ namespace MaxPowerLevel.Services
         private static bool ShouldInclude(DestinyInventoryBucketDefinition bucket)
         {
             return _includedBuckets.Contains((ItemSlot.SlotHashes)bucket.Hash);
-        }
-
-        private async Task<DestinyProfileResponse> GetProfile(BungieMembershipType type, long accountId)
-        {
-            var accessToken = await _contextAccessor.HttpContext.GetTokenAsync("access_token");
-
-            return await _destiny.GetProfile(accessToken, type, accountId,
-                DestinyComponentType.ProfileInventories, DestinyComponentType.Characters,
-                DestinyComponentType.CharacterInventories, DestinyComponentType.CharacterEquipment,
-                DestinyComponentType.ItemInstances);
         }
 
         private async Task<IDictionary<ItemSlot.SlotHashes, Item>> ComputeMaxPower(uint classHash, IEnumerable<Item> items)

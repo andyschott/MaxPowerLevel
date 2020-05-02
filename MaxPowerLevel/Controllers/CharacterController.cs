@@ -61,29 +61,44 @@ namespace MaxPowerLevel.Controllers
 
             var accessToken = await _contextAccessor.HttpContext.GetTokenAsync("access_token");
 
-            var maxGear = await _maxPower.ComputeMaxPowerAsync(membershipType, id, characterId);
+            var profileTask = _destiny.GetProfile(accessToken, membershipType, id,
+                DestinyComponentType.ProfileInventories, DestinyComponentType.Characters,
+                DestinyComponentType.CharacterInventories, DestinyComponentType.CharacterEquipment,
+                DestinyComponentType.ItemInstances, DestinyComponentType.ProfileProgression,
+                DestinyComponentType.CharacterProgressions);
+            var characterProgressionsTask = _destiny.GetCharacterInfo(accessToken, membershipType, id, characterId,
+                DestinyComponentType.Characters, DestinyComponentType.CharacterProgressions);
+
+            await Task.WhenAll(profileTask, characterProgressionsTask);
+
+            var profile = profileTask.Result;
+            var characterProgressions = characterProgressionsTask.Result;
+
+            if(!profile.Characters.Data.TryGetValue(characterId, out var character))
+            {
+                _logger.LogWarning($"Could not find character {characterId}");
+                return null;
+            }
+
+            var maxGear = await _maxPower.ComputeMaxPower(character,
+                profile.CharacterEquipment.Data.Values,
+                profile.CharacterInventories.Data.Values,
+                profile.ProfileInventory.Data,
+                profile.ItemComponents.Instances.Data);
             if(maxGear == null)
             {
                 _logger.LogWarning("Couldn't find max gear. Redirecting to Account Index");
                 var url = Url.RouteUrl("AccountIndex");
                 return Redirect(url);
             }
-            var characterTask = _destiny.GetCharacterInfo(accessToken, membershipType, id, characterId,
-                DestinyComponentType.Characters, DestinyComponentType.CharacterProgressions);
-            var profileTask = _destiny.GetProfile(accessToken, membershipType, id,
-                DestinyComponentType.ProfileProgression);
 
-            await Task.WhenAll(characterTask, profileTask);
-
-            var character = characterTask.Result;
-            var profile = profileTask.Result;
             var lowestItems = FindLowestItems(maxGear.Values).ToList();
 
-            var classTask = _manifest.LoadClass(character.Character.Data.ClassHash);
+            var classTask = _manifest.LoadClass(character.ClassHash);
 
             var maxPower = _maxPower.ComputePower(maxGear.Values);
             var recommendationsTask = _recommendations.GetRecommendations(maxGear.Values,
-                maxPower, character.Progressions.Data.Progressions);
+                maxPower, characterProgressions.Progressions.Data.Progressions);
 
             await Task.WhenAll(classTask, recommendationsTask);
             
@@ -95,8 +110,8 @@ namespace MaxPowerLevel.Controllers
                 LowestItems = lowestItems,
                 BasePower = maxPower,
                 BonusPower = profile.ProfileProgression.Data.SeasonalArtifact.PowerBonus,
-                EmblemPath = _bungie.Value.BaseUrl + character.Character.Data.EmblemPath,
-                EmblemBackgroundPath = _bungie.Value.BaseUrl + character.Character.Data.EmblemBackgroundPath,
+                EmblemPath = _bungie.Value.BaseUrl + character.EmblemPath,
+                EmblemBackgroundPath = _bungie.Value.BaseUrl + character.EmblemBackgroundPath,
                 Recommendations = recommendationsTask.Result,
                 Engrams = _recommendations.GetEngramPowerLevels(maxPower),
                 ClassName = classTask.Result.DisplayProperties.Name

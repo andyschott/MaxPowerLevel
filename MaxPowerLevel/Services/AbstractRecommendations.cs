@@ -38,6 +38,27 @@ namespace MaxPowerLevel.Services
 
         public async Task<IEnumerable<Recommendation>> GetRecommendations(CharacterRecomendationInfo info)
         {
+            var seasonPassRewards = await GetSeasonPassRecommendations(info);
+            return await GetRecommendations(info, seasonPassRewards);
+        }
+
+        public async Task<IDictionary<long, IEnumerable<Recommendation>>> GetRecommendations(IDictionary<long, CharacterRecomendationInfo> infos)
+        {
+            var seasonPassRewards = await GetSeasonPassRecommendations(infos);
+
+            var tasks = infos.Select(async info =>
+            {
+                var characterSeasonPassRewords = seasonPassRewards[info.Key];
+                return (info.Key, await GetRecommendations(info.Value, characterSeasonPassRewords));
+            });
+
+            var results = await Task.WhenAll(tasks);
+            return results.ToDictionary(item => item.Key, item => item.Item2);
+        }
+
+        private async Task<IEnumerable<Recommendation>> GetRecommendations(CharacterRecomendationInfo info,
+            IEnumerable<(ItemSlot slot, int count)> seasonPassRewards)
+        {
             if(info.IntPowerLevel < SoftCap)
             {
                 var collections = GetCollectionsRecommendations(info.Items, info.IntPowerLevel);
@@ -46,8 +67,6 @@ namespace MaxPowerLevel.Services
                     new Recommendation($"Rare, Legendary, and Vendor Engrams to increase your power level to {SoftCap}")
                 });
             }
-
-            var seasonPassRewards = await GetSeasonPassRecommendations(info);
 
             if(info.IntPowerLevel < PowerfulCap)
             {
@@ -168,6 +187,19 @@ namespace MaxPowerLevel.Services
         {
             var seasonPassSlots = await _seasonPass.LoadAvailableSeasonPassItems(SeasonHash, info.Progressions);
             return GetItemRecommendations(info.Items, seasonPassSlots, info.IntPowerLevel, TrailingPowerLevelDifference);
+        }
+
+        private async Task<IDictionary<long, IEnumerable<(ItemSlot slot, int count)>>> GetSeasonPassRecommendations(IDictionary<long, CharacterRecomendationInfo> infos)
+        {
+            var progressions = infos.ToDictionary(item => item.Key, item => item.Value.Progressions);
+            var allSeasonPassSlots = await _seasonPass.LoadAvailableSeasonPassItems(SeasonHash, progressions);
+            // return GetItemRecommendations(info.Items, seasonPassSlots, info.IntPowerLevel, TrailingPowerLevelDifference);
+
+            return allSeasonPassSlots.ToDictionary(item => item.Key, item =>
+            {
+                var info = infos[item.Key];
+                return GetItemRecommendations(info.Items, item.Value, info.IntPowerLevel, TrailingPowerLevelDifference);
+            });
         }
 
         private IEnumerable<Recommendation> GetCollectionsRecommendations(IEnumerable<Item> allItems, int powerLevel)

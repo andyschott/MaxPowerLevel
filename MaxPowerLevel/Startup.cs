@@ -29,6 +29,7 @@ namespace MaxPowerLevel
             services.AddHttpContextAccessor();
 
             services.AddScoped<IMaxPowerService, MaxPowerService>();
+            services.AddScoped<SeasonPass>();
             AddRecommendations(services);
 
             var config = new Destiny2Config(Configuration["AppName"], Configuration["AppVersion"],
@@ -99,13 +100,14 @@ namespace MaxPowerLevel
             {
                 var manifest = sp.GetRequiredService<IManifest>();
                 var vendorEngrams = sp.GetRequiredService<IVendorEngramsClient>();
+                var seasonPass = sp.GetRequiredService<SeasonPass>();
 
                 // if(DateTime.UtcNow >= Season10StartDate)
                 // {
                 //     return new Season10Recommendations(manifest, vendorEngrams);
                 // }
 
-                return new Season10Recommendations(manifest, vendorEngrams);
+                return new Season10Recommendations(manifest, vendorEngrams, seasonPass);
             });
         }
     }

@@ -25,16 +25,15 @@ namespace MaxPowerLevel.Services
 
         protected readonly IManifest _manifest;
         protected readonly IVendorEngramsClient _vendorEngrams;
-
-        protected static readonly ISet<ItemSlot.SlotHashes> _slotHashes =
-            new HashSet<ItemSlot.SlotHashes>((ItemSlot.SlotHashes[])Enum.GetValues(typeof(ItemSlot.SlotHashes)));
-
+        private readonly SeasonPass _seasonPass;
         private const int TrailingPowerLevelDifference = 2;
 
-        protected AbstractRecommendations(IManifest manifest, IVendorEngramsClient vendorEngrams)
+        protected AbstractRecommendations(IManifest manifest, IVendorEngramsClient vendorEngrams,
+            SeasonPass seasonPass)
         {
             _manifest = manifest;
             _vendorEngrams = vendorEngrams;
+            _seasonPass = seasonPass;
         }
 
         public async Task<IEnumerable<Recommendation>> GetRecommendations(IEnumerable<Item> allItems,
@@ -52,7 +51,7 @@ namespace MaxPowerLevel.Services
                 });
             }
 
-            var seasonPassSlots = await LoadAvailableSeasonPassItems(progressions);
+            var seasonPassSlots = await _seasonPass.LoadAvailableSeasonPassItems(SeasonHash, progressions);
             var seasonPassRewards = GetItemRecommendations(allItems, seasonPassSlots, intPowerLevel, TrailingPowerLevelDifference);
 
             if(intPowerLevel < PowerfulCap)
@@ -188,54 +187,6 @@ namespace MaxPowerLevel.Services
                         .OrderBy(slotName => slotName);
                     return new Recommendation($"{description}: {string.Join(", ", slotNames)}");
                 });
-        }
-
-        protected async Task<IDictionary<ItemSlot.SlotHashes, int>> LoadAvailableSeasonPassItems(IDictionary<uint, DestinyProgression> progression)
-        {
-            var season = await _manifest.LoadSeason(SeasonHash);
-            if(season.SeasonPassProgressionHash == 0)
-            {
-                return new Dictionary<ItemSlot.SlotHashes, int>();
-            }
-            
-            var progressionDefinition = await _manifest.LoadProgression(season.SeasonPassProgressionHash);
-
-            var characterProgression = progression[season.SeasonPassProgressionHash];
-
-            var characterRewards = characterProgression.RewardItemStates.ToArray();
-
-            // Find all of the rewards that are available but unclaimed
-            var availableRewards = progressionDefinition.RewardItems.Where((rewardItem, index) =>
-            {
-                var state = characterRewards[index];
-                if(state.HasFlag(DestinyProgressionRewardItemState.Invisible))
-                {
-                    return false;
-                }
-
-                if(state.HasFlag(DestinyProgressionRewardItemState.Claimed))
-                {
-                    return false;
-                }
-
-                return state.HasFlag(DestinyProgressionRewardItemState.Earned | DestinyProgressionRewardItemState.ClaimAllowed);
-            });
-
-            var availableSlots = new Dictionary<ItemSlot.SlotHashes, int>();
-            foreach(var reward in availableRewards)
-            {
-                var itemDef = await _manifest.LoadInventoryItem(reward.ItemHash);
-                var slotHash = (ItemSlot.SlotHashes)itemDef.Inventory.BucketTypeHash;
-                if (itemDef == null || !_slotHashes.Contains(slotHash))
-                {
-                    continue;
-                }
-
-                availableSlots.TryGetValue(slotHash, out var count);
-                availableSlots[slotHash] = count + 1;
-            }
-
-            return availableSlots;
         }
 
         private static IEnumerable<(ItemSlot slot, int count)> GetItemRecommendations(IEnumerable<Item> allItems,

@@ -10,8 +10,9 @@ namespace MaxPowerLevel.Services
         protected override int HardCap => 960;
         protected override uint SeasonHash => 3612906877;
 
-        public Season8Recommendations(IManifest manifest, IVendorEngramsClient vendorEngrams)
-            : base(manifest, vendorEngrams)
+        public Season8Recommendations(IManifest manifest, IVendorEngramsClient vendorEngrams,
+            SeasonPass seasonPass)
+            : base(manifest, vendorEngrams, seasonPass)
         {
         }
     }

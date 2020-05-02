@@ -14,8 +14,9 @@ namespace MaxPowerLevel.Services
         // Season 10 actually ends on June 9
         protected override DateTime? EndDateOverride => new DateTime(2020, 6, 9, 17, 0, 0, DateTimeKind.Utc);
 
-        public Season10Recommendations(IManifest manifest, IVendorEngramsClient vendorEngrams)
-            : base(manifest, vendorEngrams)
+        public Season10Recommendations(IManifest manifest, IVendorEngramsClient vendorEngrams,
+            SeasonPass seasonPass)
+            : base(manifest, vendorEngrams, seasonPass)
         {
         }
     }

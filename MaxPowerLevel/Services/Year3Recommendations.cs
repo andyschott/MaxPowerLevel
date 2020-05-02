@@ -31,8 +31,9 @@ namespace MaxPowerLevel.Services
             ItemSlot.SlotHashes.ClassArmor,
         };
         
-        protected Year3Recommendations(IManifest manifest, IVendorEngramsClient vendorEngrams)
-            : base(manifest, vendorEngrams)
+        protected Year3Recommendations(IManifest manifest, IVendorEngramsClient vendorEngrams,
+            SeasonPass seasonPass)
+            : base(manifest, vendorEngrams, seasonPass)
         {
         }
 

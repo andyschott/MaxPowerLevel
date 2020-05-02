@@ -14,8 +14,9 @@ namespace MaxPowerLevel.Services
 
         private const string SundialLegend = "The Sundial: Legend";
 
-        public Season9Recommendations(IManifest manifest, IVendorEngramsClient vendorEngrams)
-            : base(manifest, vendorEngrams)
+        public Season9Recommendations(IManifest manifest, IVendorEngramsClient vendorEngrams,
+            SeasonPass seasonPass)
+            : base(manifest, vendorEngrams, seasonPass)
         {
         }
 

@@ -97,8 +97,12 @@ namespace MaxPowerLevel.Controllers
             var classTask = _manifest.LoadClass(character.ClassHash);
 
             var maxPower = _maxPower.ComputePower(maxGear.Values);
-            var recommendationsTask = _recommendations.GetRecommendations(maxGear.Values,
-                maxPower, characterProgressions.Progressions.Data.Progressions);
+            var recommendationsTask = _recommendations.GetRecommendations(new CharacterRecomendationInfo
+            {
+                Items = maxGear.Values,
+                PowerLevel = maxPower,
+                Progressions = characterProgressions.Progressions.Data.Progressions
+            });
 
             await Task.WhenAll(classTask, recommendationsTask);
             

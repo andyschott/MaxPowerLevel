@@ -36,30 +36,25 @@ namespace MaxPowerLevel.Services
             _seasonPass = seasonPass;
         }
 
-        public async Task<IEnumerable<Recommendation>> GetRecommendations(IEnumerable<Item> allItems,
-            decimal powerLevel, IDictionary<uint, DestinyProgression> progressions)
+        public async Task<IEnumerable<Recommendation>> GetRecommendations(CharacterRecomendationInfo info)
         {
-            var intPowerLevel = (int)Math.Floor(powerLevel);
-
-            var collections = GetCollectionsRecommendations(allItems, intPowerLevel);
-
-            if(intPowerLevel < SoftCap)
+            if(info.IntPowerLevel < SoftCap)
             {
+                var collections = GetCollectionsRecommendations(info.Items, info.IntPowerLevel);
                 return collections.Concat(new[]
                 {
                     new Recommendation($"Rare, Legendary, and Vendor Engrams to increase your power level to {SoftCap}")
                 });
             }
 
-            var seasonPassSlots = await _seasonPass.LoadAvailableSeasonPassItems(SeasonHash, progressions);
-            var seasonPassRewards = GetItemRecommendations(allItems, seasonPassSlots, intPowerLevel, TrailingPowerLevelDifference);
+            var seasonPassRewards = await GetSeasonPassRecommendations(info);
 
-            if(intPowerLevel < PowerfulCap)
+            if(info.IntPowerLevel < PowerfulCap)
             {
                 // Recommmend legendary engrams for any slots that could easily be upgraded
-                var legendary = CombineItems(allItems, intPowerLevel - 2, "Rare/Legendary Engrams");
+                var legendary = CombineItems(info.Items, info.IntPowerLevel - 2, "Rare/Legendary Engrams");
                 var recommendations = new List<Recommendation>(legendary);
-                var vendors = await CreateVendorRecommendations(allItems, intPowerLevel);
+                var vendors = await CreateVendorRecommendations(info.Items, info.IntPowerLevel);
                 if(vendors.Any())
                 {
                     recommendations.AddRange(vendors);
@@ -77,7 +72,7 @@ namespace MaxPowerLevel.Services
                 return  recommendations;
             }
 
-            if(intPowerLevel < HardCap)
+            if(info.IntPowerLevel < HardCap)
             {
                 var recommendations = new List<Recommendation>();
 
@@ -90,7 +85,7 @@ namespace MaxPowerLevel.Services
                 // If any slot is at least two power levels behind,
                 // a Powerful Engram would increase the max power level.
                 // Ignore any slots where a season pass reward can be used first.
-                var trailingSlots = allItems.Where(item => intPowerLevel - item.PowerLevel >= TrailingPowerLevelDifference)
+                var trailingSlots = info.Items.Where(item => info.IntPowerLevel - item.PowerLevel >= TrailingPowerLevelDifference)
                     .OrderBy(item => item.PowerLevel)
                     .Select(item => (item.Slot, 1))
                     .Except(seasonPassRewards, new ItemComparer());
@@ -100,7 +95,7 @@ namespace MaxPowerLevel.Services
                     recommendations.Add(recommendation);
                 }
 
-                recommendations.Add(CreatePinnacleRecommendations(intPowerLevel, allItems));
+                recommendations.Add(CreatePinnacleRecommendations(info.IntPowerLevel, info.Items));
                 return recommendations;
             }
 
@@ -167,6 +162,12 @@ namespace MaxPowerLevel.Services
 
             var seasonEndDate = EndDateOverride ?? season.EndDate.Value;
             return new SeasonPassInfo(season.DisplayProperties.Name, seasonEndDate, rank, TargetRankPlus20Power);
+        }
+
+        private async Task<IEnumerable<(ItemSlot slot, int count)>> GetSeasonPassRecommendations(CharacterRecomendationInfo info)
+        {
+            var seasonPassSlots = await _seasonPass.LoadAvailableSeasonPassItems(SeasonHash, info.Progressions);
+            return GetItemRecommendations(info.Items, seasonPassSlots, info.IntPowerLevel, TrailingPowerLevelDifference);
         }
 
         private IEnumerable<Recommendation> GetCollectionsRecommendations(IEnumerable<Item> allItems, int powerLevel)

@@ -7,8 +7,7 @@ namespace MaxPowerLevel.Services
 {
     public interface IRecommendations
     {
-        Task<IEnumerable<Recommendation>> GetRecommendations(IEnumerable<Item> items,
-            decimal powerLevel, IDictionary<uint, DestinyProgression> progression);
+        Task<IEnumerable<Recommendation>> GetRecommendations(CharacterRecomendationInfo info);
         IEnumerable<Engram> GetEngramPowerLevels(decimal powerLevel);
         Task<SeasonPassInfo> GetSeasonPassInfo(IDictionary<uint, DestinyProgression> progression);
     }

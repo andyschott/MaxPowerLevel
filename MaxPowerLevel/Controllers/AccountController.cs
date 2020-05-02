@@ -131,5 +131,22 @@ namespace MaxPowerLevel.Controllers
 
         return View(model);
     }
+
+    [HttpGet("{type}/{id}/dashboard", Name = "Dashboard")]
+    [Authorize]
+    public async Task<IActionResult> Dashboard(BungieMembershipType type, long id)
+    {
+        _logger.LogInformation($"{type}/{id}/dashboard");
+
+        var accessToken = await _contextAccessor.HttpContext.GetTokenAsync("access_token");
+
+        // TODO: Add CharacterProgressions to DestinyProfileResponse
+        var profileTask = await _destiny.GetProfile(accessToken, type, id,
+            DestinyComponentType.ProfileInventories, DestinyComponentType.Characters,
+            DestinyComponentType.CharacterInventories, DestinyComponentType.CharacterEquipment,
+            DestinyComponentType.ItemInstances, DestinyComponentType.ProfileProgression,
+            DestinyComponentType.CharacterProgressions);
+        return View();
+    }
   }
 }

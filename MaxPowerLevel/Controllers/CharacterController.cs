@@ -64,8 +64,7 @@ namespace MaxPowerLevel.Controllers
             var profileTask = _destiny.GetProfile(accessToken, membershipType, id,
                 DestinyComponentType.ProfileInventories, DestinyComponentType.Characters,
                 DestinyComponentType.CharacterInventories, DestinyComponentType.CharacterEquipment,
-                DestinyComponentType.ItemInstances, DestinyComponentType.ProfileProgression,
-                DestinyComponentType.CharacterProgressions);
+                DestinyComponentType.ItemInstances, DestinyComponentType.ProfileProgression);
             var characterProgressionsTask = _destiny.GetCharacterInfo(accessToken, membershipType, id, characterId,
                 DestinyComponentType.Characters, DestinyComponentType.CharacterProgressions);
 

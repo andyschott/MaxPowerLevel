@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Destiny2;
 using Destiny2.Entities;
 using Destiny2.Entities.Items;
 using MaxPowerLevel.Models;
@@ -15,12 +14,13 @@ namespace MaxPowerLevel.Services
             DestinyInventoryComponent vault,
             IDictionary<long, DestinyItemInstanceComponent> itemInstances);
         
-         Task<IDictionary<long, IDictionary<ItemSlot.SlotHashes, Item>>> ComputeMaxPowerAsync(IDictionary<long, DestinyCharacterComponent> characters,
+         Task<IDictionary<long, IDictionary<ItemSlot.SlotHashes, Item>>> ComputeMaxPower(IDictionary<long, DestinyCharacterComponent> characters,
             IEnumerable<DestinyInventoryComponent> characterEquipment,
             IEnumerable<DestinyInventoryComponent> characterInventories,
             DestinyInventoryComponent vault,
             IDictionary<long, DestinyItemInstanceComponent> itemInstances);
 
          decimal ComputePower(IEnumerable<Item> items);
+         IEnumerable<Item> FindLowestItems(IEnumerable<Item> items);
     }
 }

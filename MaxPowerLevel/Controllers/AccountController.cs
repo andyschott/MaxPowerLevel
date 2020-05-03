@@ -1,7 +1,10 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Destiny2;
+using Destiny2.Definitions;
+using Destiny2.Entities;
 using MaxPowerLevel.Helpers;
 using MaxPowerLevel.Models;
 using MaxPowerLevel.Services;
@@ -18,17 +21,19 @@ namespace MaxPowerLevel.Controllers
   {
     private readonly IDestiny2 _destiny;
     private readonly IManifest _manifest;
+    private readonly IMaxPowerService _maxPower;
     private readonly IRecommendations _recommendations;
     private readonly IHttpContextAccessor _contextAccessor;
     private readonly IOptions<BungieSettings> _bungie;
     private readonly ILogger _logger;
 
     public AccountController(IDestiny2 destiny, IManifest manifest,
-        IRecommendations recommendations, IHttpContextAccessor contextAccessor,
+        IMaxPowerService maxPower, IRecommendations recommendations, IHttpContextAccessor contextAccessor,
         IOptions<BungieSettings> bungie, ILogger<AccountController> logger)
     {
         _destiny = destiny;
         _manifest = manifest;
+        _maxPower = maxPower;
         _recommendations = recommendations;
         _contextAccessor = contextAccessor;
         _bungie = bungie;
@@ -141,12 +146,78 @@ namespace MaxPowerLevel.Controllers
         var accessToken = await _contextAccessor.HttpContext.GetTokenAsync("access_token");
 
         // TODO: Add CharacterProgressions to DestinyProfileResponse
-        var profileTask = await _destiny.GetProfile(accessToken, type, id,
+        var profile = await _destiny.GetProfile(accessToken, type, id,
             DestinyComponentType.ProfileInventories, DestinyComponentType.Characters,
             DestinyComponentType.CharacterInventories, DestinyComponentType.CharacterEquipment,
             DestinyComponentType.ItemInstances, DestinyComponentType.ProfileProgression,
             DestinyComponentType.CharacterProgressions);
-        return View();
+
+        var equipped = profile.CharacterEquipment.Data.Values
+            .SelectMany(items => items.Items);
+        var inventory = profile.CharacterInventories.Data.Values
+            .SelectMany(items => items.Items);
+
+        var maxGear = await _maxPower.ComputeMaxPower(profile.Characters.Data,
+            profile.CharacterEquipment.Data.Values,
+            profile.CharacterInventories.Data.Values,
+            profile.ProfileInventory.Data,
+            profile.ItemComponents.Instances.Data);
+        if(maxGear == null)
+        {
+            _logger.LogWarning("Couldn't find max gear. Redirecting to Account Index");
+            var url = Url.RouteUrl("AccountIndex");
+            return Redirect(url);
+        }
+
+        var recomendationInfo = maxGear.ToDictionary(item => item.Key, item => new CharacterRecomendationInfo
+        {
+            Items = maxGear[item.Key].Values,
+            PowerLevel = _maxPower.ComputePower(maxGear[item.Key].Values),
+            Progressions = profile.CharacterProgressions.Data[item.Key].Progressions
+        });
+        var recommendations = await _recommendations.GetRecommendations(recomendationInfo);
+
+        var viewModels = profile.Characters.Data.ToDictionary(item => item.Key, item => 
+        {
+            var charMaxGear = maxGear[item.Key];
+            var lowestItems = _maxPower.FindLowestItems(charMaxGear.Values);
+            return new CharacterViewModel
+            {
+                Type = type,
+                AccountId = id,
+                Items = charMaxGear.Values,
+                LowestItems = lowestItems.ToList(),
+                BasePower = _maxPower.ComputePower(charMaxGear.Values),
+                BonusPower = profile.ProfileProgression.Data.SeasonalArtifact.PowerBonus,
+                Recommendations = recommendations[item.Key]
+            };
+        });
+
+        foreach(var item in maxGear)
+        {
+            var lowestItems = _maxPower.FindLowestItems(item.Value.Values).ToList();
+            viewModels[item.Key].LowestItems = lowestItems;
+        }
+
+        await LoadClasses(profile.Characters.Data, viewModels);
+
+        return View(viewModels.Values);
+    }
+
+    private async Task LoadClasses(IDictionary<long, DestinyCharacterComponent> characters,
+        IDictionary<long, CharacterViewModel> viewModels)
+    {
+        var classTasks = characters.Select(async item =>
+        {
+            return (item.Key, await _manifest.LoadClass(item.Value.ClassHash));
+        });
+
+        var classes = await Task.WhenAll(classTasks);
+
+        foreach(var cls in classes)
+        {
+            viewModels[cls.Key].ClassName = cls.Item2.DisplayProperties.Name;
+        }
     }
   }
 }

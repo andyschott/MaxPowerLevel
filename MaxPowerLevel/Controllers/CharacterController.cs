@@ -91,7 +91,7 @@ namespace MaxPowerLevel.Controllers
                 return Redirect(url);
             }
 
-            var lowestItems = FindLowestItems(maxGear.Values).ToList();
+            var lowestItems = _maxPower.FindLowestItems(maxGear.Values).ToList();
 
             var classTask = _manifest.LoadClass(character.ClassHash);
 
@@ -121,20 +121,6 @@ namespace MaxPowerLevel.Controllers
             };
 
             return View(model);
-        }
-
-        private IEnumerable<Item> FindLowestItems(IEnumerable<Item> items)
-        {
-                var minPower = items.Min(item => item.PowerLevel);
-                var lowestItems = items.OrderBy(item => item.PowerLevel)
-                                       .TakeWhile(item => item.PowerLevel == minPower);
-                if(lowestItems.Count() == items.Count())
-                {
-                    // All items are max power.
-                    return Enumerable.Empty<Item>();
-                }
-
-                return lowestItems;
         }
     }
 }

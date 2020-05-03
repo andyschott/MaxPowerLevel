@@ -59,7 +59,7 @@ namespace MaxPowerLevel.Services
             return await ComputeMaxPower(character.ClassHash, items);
         }
 
-        public async Task<IDictionary<long, IDictionary<ItemSlot.SlotHashes, Item>>> ComputeMaxPowerAsync(IDictionary<long, DestinyCharacterComponent> characters,
+        public async Task<IDictionary<long, IDictionary<ItemSlot.SlotHashes, Item>>> ComputeMaxPower(IDictionary<long, DestinyCharacterComponent> characters,
             IEnumerable<DestinyInventoryComponent> characterEquipment,
             IEnumerable<DestinyInventoryComponent> characterInventories,
             DestinyInventoryComponent vault,
@@ -81,6 +81,20 @@ namespace MaxPowerLevel.Services
         public decimal ComputePower(IEnumerable<Item> items)
         {
             return MaxPower.ComputePower(items);
+        }
+
+        public IEnumerable<Item> FindLowestItems(IEnumerable<Item> items)
+        {
+                var minPower = items.Min(item => item.PowerLevel);
+                var lowestItems = items.OrderBy(item => item.PowerLevel)
+                                       .TakeWhile(item => item.PowerLevel == minPower);
+                if(lowestItems.Count() == items.Count())
+                {
+                    // All items are max power.
+                    return Enumerable.Empty<Item>();
+                }
+
+                return lowestItems;
         }
 
         private Task<IEnumerable<Item>> LoadItems(IEnumerable<DestinyInventoryComponent> characterEquipment,

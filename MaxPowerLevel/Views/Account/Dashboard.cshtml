@@ -1,3 +1,22 @@
 @model IEnumerable<CharacterViewModel>
+@using System.Linq;
 
-<h1>Dashboard</h1>
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<p>
+  <a asp-route="AccountDetails" asp-route-type="@((int)Model.First().Type)" asp-route-id="@Model.First().AccountId">&lt;&lt; Characters</a>
+</p>
+
+<div class="container-fluid">
+    <div class="row">
+        @foreach(var character in Model)
+        {
+            <div class="col-lg-4">
+                <img src="@character.EmblemPath">
+                @await Html.PartialAsync("CharacterPartial", character)
+            </div>
+        }
+    </div>
+</div>

@@ -181,15 +181,19 @@ namespace MaxPowerLevel.Controllers
         {
             var charMaxGear = maxGear[item.Key];
             var lowestItems = _maxPower.FindLowestItems(charMaxGear.Values);
+            var basePower = _maxPower.ComputePower(charMaxGear.Values);
             return new CharacterViewModel
             {
                 Type = type,
                 AccountId = id,
                 Items = charMaxGear.Values,
                 LowestItems = lowestItems.ToList(),
-                BasePower = _maxPower.ComputePower(charMaxGear.Values),
+                BasePower = basePower,
                 BonusPower = profile.ProfileProgression.Data.SeasonalArtifact.PowerBonus,
-                Recommendations = recommendations[item.Key]
+                Recommendations = recommendations[item.Key],
+                Engrams = _recommendations.GetEngramPowerLevels(basePower),
+                EmblemPath = _bungie.Value.BaseUrl + item.Value.EmblemPath,
+                EmblemBackgroundPath = _bungie.Value.BaseUrl + item.Value.EmblemBackgroundPath
             };
         });
 

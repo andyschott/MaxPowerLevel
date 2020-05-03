@@ -186,6 +186,7 @@ namespace MaxPowerLevel.Controllers
             {
                 Type = type,
                 AccountId = id,
+                Id = item.Key,
                 Items = charMaxGear.Values,
                 LowestItems = lowestItems.ToList(),
                 BasePower = basePower,

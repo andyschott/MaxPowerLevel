@@ -109,6 +109,7 @@ namespace MaxPowerLevel.Controllers
             {
                 Type = membershipType,
                 AccountId = id,
+                Id = characterId,
                 Items = maxGear.Values,
                 LowestItems = lowestItems,
                 BasePower = maxPower,

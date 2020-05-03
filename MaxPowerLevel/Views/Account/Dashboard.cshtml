@@ -3,10 +3,14 @@
 
 @{
     ViewData["Title"] = "Dashboard";
+
+    var firstCharacter = Model.First();
+    var type = firstCharacter.Type;
+    var accountId = firstCharacter.AccountId;
 }
 
 <p>
-  <a asp-route="AccountDetails" asp-route-type="@((int)Model.First().Type)" asp-route-id="@Model.First().AccountId">&lt;&lt; Characters</a>
+  <a asp-route="AccountDetails" asp-route-type="@((int)firstCharacter.Type)" asp-route-id="@Model.First().AccountId">&lt;&lt; Characters</a>
 </p>
 
 <div class="container-fluid">
@@ -14,7 +18,9 @@
         @foreach(var character in Model)
         {
             <div class="col-lg-4">
-                <img src="@character.EmblemPath">
+                <a asp-action="Details" asp-controller="Character" asp-route-type="@((int)type)" asp-route-id="@accountId" asp-route-characterId="@character.Id">
+                    <img src="@character.EmblemPath">
+                </a>
                 @await Html.PartialAsync("CharacterPartial", character)
             </div>
         }

@@ -193,7 +193,8 @@ namespace MaxPowerLevel.Controllers
                 Recommendations = recommendations[item.Key],
                 Engrams = _recommendations.GetEngramPowerLevels(basePower),
                 EmblemPath = _bungie.Value.BaseUrl + item.Value.EmblemPath,
-                EmblemBackgroundPath = _bungie.Value.BaseUrl + item.Value.EmblemBackgroundPath
+                EmblemBackgroundPath = _bungie.Value.BaseUrl + item.Value.EmblemBackgroundPath,
+                ItemsPerRow = 1
             };
         });
 

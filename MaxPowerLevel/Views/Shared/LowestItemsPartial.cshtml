@@ -1,9 +1,7 @@
 @model IEnumerable<Item>
-@using Humanizer
 
 @if(Model.Any())
 {
-    <h1>@("Lowest Item".ToQuantity(Model.Count(), ShowQuantityAs.None))</h1>
     @foreach(var item in Model)
     {
     <div class="col-auto">

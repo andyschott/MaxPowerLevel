@@ -33,6 +33,11 @@
         }
     </tr>
     <tr>
+        <td colspan="3" style="text-align: center">
+            <h1>Recommendations</h1>
+        </td>
+    </tr>
+    <tr>
         @foreach (var character in Model)
         {
             <td style="vertical-align: top;">
@@ -41,12 +46,22 @@
         }
     </tr>
     <tr>
+        <td colspan="3" style="text-align: center">
+            <h1>Lowest Items</h1>
+        </td>
+    </tr>
+    <tr>
         @foreach (var character in Model)
         {
             <td style="vertical-align: top;">
                 @await Html.PartialAsync("LowestItemsPartial", character.LowestItems)
             </td>
         }
+    </tr>
+    <tr>
+        <td colspan="3" style="text-align: center">
+            <h1>Highest Power Items</h1>
+        </td>
     </tr>
     <tr>
         @foreach (var character in Model)

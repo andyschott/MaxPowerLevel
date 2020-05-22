@@ -70,9 +70,10 @@ namespace MaxPowerLevel.Services
 
             if(info.IntPowerLevel < PowerfulCap)
             {
+                var recommendations = new List<Recommendation>(GetCollectionsRecommendations(info.Items, info.IntPowerLevel));
+
                 // Recommmend legendary engrams for any slots that could easily be upgraded
-                var legendary = CombineItems(info.Items, info.IntPowerLevel - 2, "Rare/Legendary Engrams");
-                var recommendations = new List<Recommendation>(legendary);
+                recommendations.AddRange(CombineItems(info.Items, info.IntPowerLevel - 2, "Rare/Legendary Engrams"));
                 var vendors = await CreateVendorRecommendations(info.Items, info.IntPowerLevel);
                 if(vendors.Any())
                 {

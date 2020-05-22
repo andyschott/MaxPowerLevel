@@ -13,16 +13,47 @@
   <a asp-route="AccountDetails" asp-route-type="@((int)firstCharacter.Type)" asp-route-id="@Model.First().AccountId">&lt;&lt; Characters</a>
 </p>
 
-<div class="container-fluid">
-    <div class="row">
-        @foreach(var character in Model)
+<table style="width: 100%">
+    <tr>
+        @foreach (var character in Model)
         {
-            <div class="col-lg-4">
+            <td style="width: 33%; text-align:center">
                 <a asp-action="Details" asp-controller="Character" asp-route-type="@((int)type)" asp-route-id="@accountId" asp-route-characterId="@character.Id">
                     <img src="@character.EmblemPath">
                 </a>
-                @await Html.PartialAsync("CharacterPartial", character)
-            </div>
+            </td>
         }
-    </div>
-</div>
+    </tr>
+    <tr>
+        @foreach (var character in Model)
+        {
+            <td>
+                @await Html.PartialAsync("CharacterSummaryPartial", character)
+            </td>
+        }
+    </tr>
+    <tr>
+        @foreach (var character in Model)
+        {
+            <td style="vertical-align: top;">
+                @await Html.PartialAsync("RecommendationsPartial", character.Recommendations)
+            </td>
+        }
+    </tr>
+    <tr>
+        @foreach (var character in Model)
+        {
+            <td style="vertical-align: top;">
+                @await Html.PartialAsync("LowestItemsPartial", character.LowestItems)
+            </td>
+        }
+    </tr>
+    <tr>
+        @foreach (var character in Model)
+        {
+            <td style="vertical-align: top;">
+                @await Html.PartialAsync("HighestItemsPartial", character)
+            </td>
+        }
+    </tr>
+</table>

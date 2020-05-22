@@ -4,6 +4,10 @@
 @await Html.PartialAsync("ItemPowerLevelsPartial", Model.Engrams)
 
 <div class="container">
-  @await Html.PartialAsync("LowestItemsPartial", Model.LowestItems)
-  @await Html.PartialAsync("HighestPowerItemsPartial", Model)
+  <div class="row">
+    @await Html.PartialAsync("LowestItemsPartial", Model.LowestItems)
+  </div>
+  <div class="row">
+    @await Html.PartialAsync("HighestItemsPartial", Model)
+  </div>
 </div>

@@ -115,7 +115,7 @@ namespace MaxPowerLevel.Services
                     recommendations.Add(recommendation);
                 }
 
-                recommendations.Add(CreatePinnacleRecommendations(info.IntPowerLevel, info.Items));
+                recommendations.AddRange(CreatePinnacleRecommendations(info.IntPowerLevel, info.Items));
                 return recommendations;
             }
 
@@ -157,8 +157,8 @@ namespace MaxPowerLevel.Services
                     new Engram("Powerful Engram (Tier 2)", intPowerLevel),
                     new Engram("Powerful Engram (Tier 3)", intPowerLevel),
                     new Engram("Season Pass Items", intPowerLevel),
-                    new Engram("Pinnacle Engram (Tier 1)", Math.Min(intPowerLevel + 1, HardCap)),
-                    new Engram("Pinnacle Engram (Tier 2)", Math.Min(intPowerLevel + 2, HardCap))
+                    new Engram("Pinnacle Engram (Weak)", Math.Min(intPowerLevel + 1, HardCap)),
+                    new Engram("Pinnacle Engram", Math.Min(intPowerLevel + 2, HardCap))
                 };
             }
 
@@ -255,13 +255,50 @@ namespace MaxPowerLevel.Services
         }
 
         protected abstract IEnumerable<PinnacleActivity> CreatePinnacleActivities();
+        protected virtual IEnumerable<PinnacleActivity> CreateWeakPinnacleActivities() => Enumerable.Empty<PinnacleActivity>();
 
-        protected virtual Recommendation CreatePinnacleRecommendations(int powerLevel, IEnumerable<Item> items)
+        protected virtual IEnumerable<Recommendation> CreatePinnacleRecommendations(int powerLevel, IEnumerable<Item> items)
         {
-            var pinnacleActivities = CreatePinnacleActivities();
-
             var powerLevels = items.ToDictionary(item => item.Slot.Hash, item => (decimal)item.PowerLevel);
 
+            var strongPinnacles = new Recommendation("Pinnacle Engrams",
+                SortPinnacleActivites(CreatePinnacleActivities(), powerLevels));
+            var weakPinnacles = new Recommendation("Pinnacle Engrams (Weak)",
+                SortPinnacleActivites(CreateWeakPinnacleActivities(), powerLevels));
+
+            var levelsToGo = HardCap - powerLevel;
+            if (levelsToGo <= 2)
+            {
+                // If within 1 of the hard cap, order doesn't matter.
+                if(levelsToGo <= 1)
+                {
+                    return new[]
+                    {
+                        new Recommendation("Pinnacle Engrams",
+                            strongPinnacles.Activities.Concat(weakPinnacles.Activities)
+                                .OrderBy(activity => activity))
+                    };
+                }
+
+                // If within 2 of the hard cap, do normal pinnacles first.
+                return new[]
+                {
+                    strongPinnacles,
+                    weakPinnacles,
+                };
+            }
+
+            // Not sure which is better - suggesting weak then strong for now
+            return new[]
+            {
+                weakPinnacles,
+                strongPinnacles,
+            };
+        }
+
+        protected IEnumerable<string> SortPinnacleActivites(IEnumerable<PinnacleActivity> pinnacleActivities,
+            IDictionary<ItemSlot.SlotHashes, decimal> powerLevels)
+        {
             var activitiesWithUpgrades = pinnacleActivities.ToDictionary(activity => activity.Name,
                 activity => AveragePowerGain(powerLevels, activity));
 
@@ -269,8 +306,8 @@ namespace MaxPowerLevel.Services
                 .Where(group => group.Key > 0)
                 .OrderByDescending(group => group.Key)
                 .Select(group => string.Join(" / ", group.OrderBy(activity => activity)));
-
-            return new Recommendation("Pinnacle Engrams", prioritizedActivities);
+            
+            return prioritizedActivities;
         }
 
         private decimal AveragePowerGain(IDictionary<ItemSlot.SlotHashes, decimal> powerLevels,

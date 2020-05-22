@@ -88,7 +88,14 @@ namespace MaxPowerLevel.Services
                         ItemSlot.SlotHashes.Helmet,
                         ItemSlot.SlotHashes.ClassArmor
                     }
-                }),
+                })
+            };
+        }
+
+        protected override IEnumerable<PinnacleActivity> CreateWeakPinnacleActivities()
+        {
+            return new[]
+            {
                 new PinnacleActivity(Strikes, new[] { _allSlots }),
                 new PinnacleActivity(Crucible, new[] { _allSlots }),
                 new PinnacleActivity(Gambit, new[] { _allSlots }),

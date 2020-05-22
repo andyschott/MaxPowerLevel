@@ -27,7 +27,7 @@
     <tr>
         @foreach (var character in Model)
         {
-            <td>
+            <td style="vertical-align: top;">
                 @await Html.PartialAsync("CharacterSummaryPartial", character)
             </td>
         }

@@ -1,0 +1,21 @@
+@model IEnumerable<Recommendation>
+
+@if(Model.Any())
+{
+  <h1>Recommendations</h1>
+  <ol>
+    @foreach(var recommendation in Model)
+    {
+      <li>@recommendation</li>
+      @if(recommendation.Activities.Any())
+      {
+        <ol>
+          @foreach(var activity in recommendation.Activities)
+          {
+            <li>@activity</li>
+          }
+        </ol>
+      }
+    }
+  </ol>
+}

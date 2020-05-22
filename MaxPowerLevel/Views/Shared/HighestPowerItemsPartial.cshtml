@@ -1,0 +1,13 @@
+@model CharacterViewModel
+
+<div class="row">
+    <h1>Highest Power Items</h1>
+</div>
+<div class="row">
+    @foreach(var item in Model.Items)
+    {
+        <div class=@("col-md-" + (12 / Model.ItemsPerRow))>
+        @await Html.PartialAsync("ItemPartial", item)
+        </div>
+    }
+</div>

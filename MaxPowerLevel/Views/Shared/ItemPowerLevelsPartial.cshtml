@@ -1,0 +1,9 @@
+@model IEnumerable<Engram>
+
+<h1>Item Power Levels</h1>
+<ul>
+    @foreach(var engram in Model)
+    {
+        <li>@engram.Description</li>
+    }
+</ul>

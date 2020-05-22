@@ -12,10 +12,5 @@
   <source media="(min-width: 992px)" srcset="@Model.EmblemBackgroundPath">
   <img src="@Model.EmblemPath" class="d-none d-md-block">
 </picture>
-<h1>Max Power: <span style="white-space: nowrap;">@(Model.MaxPowerHuman)</span></h1>
-<ul>
-  <li>Base Power: @Model.BasePowerHuman</li>
-  <li>Seasonal Artifact Power: @Model.BonusPower</li>
-</ul>
-
+@await Html.PartialAsync("CharacterSummaryPartial", Model)
 @await Html.PartialAsync("CharacterPartial", Model)

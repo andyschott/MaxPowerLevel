@@ -12,12 +12,15 @@
 @await Html.PartialAsync("ItemPowerLevelsPartial", Model.Engrams)
 
 <div class="container">
-  <div class="row">
-    <h1>@("Lowest Item".ToQuantity(Model.LowestItems.Count(), ShowQuantityAs.None))</h1>
-  </div>
-  <div class="row">
-    @await Html.PartialAsync("LowestItemsPartial", Model.LowestItems)
-  </div>
+  @if(Model.LowestItems.Any())
+  {
+    <div class="row">
+      <h1>@("Lowest Item".ToQuantity(Model.LowestItems.Count(), ShowQuantityAs.None))</h1>
+    </div>
+    <div class="row">
+      @await Html.PartialAsync("LowestItemsPartial", Model.LowestItems)
+    </div>
+  }
   <div class="row">
     <h1>Highest Power Items</h1>
   </div>

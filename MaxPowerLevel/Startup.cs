@@ -91,8 +91,8 @@ namespace MaxPowerLevel
             });
         }
 
-        private static readonly DateTime Season11StartDate =
-            new DateTime(2020, 6, 9, 18, 0, 0, DateTimeKind.Utc);
+        // private static readonly DateTime Season11StartDate =
+        //     new DateTime(2020, 6, 9, 18, 0, 0, DateTimeKind.Utc);
 
         private void AddRecommendations(IServiceCollection services)
         {
@@ -102,12 +102,12 @@ namespace MaxPowerLevel
                 var vendorEngrams = sp.GetRequiredService<IVendorEngramsClient>();
                 var seasonPass = sp.GetRequiredService<SeasonPass>();
 
-                if(DateTime.UtcNow >= Season11StartDate)
-                {
-                    return new Season11Recommendations(manifest, vendorEngrams, seasonPass);
-                }
+                // if(DateTime.UtcNow >= Season11StartDate)
+                // {
+                //     return new Season11Recommendations(manifest, vendorEngrams, seasonPass);
+                // }
 
-                return new Season10Recommendations(manifest, vendorEngrams, seasonPass);
+                return new Season11Recommendations(manifest, vendorEngrams, seasonPass);
             });
         }
     }

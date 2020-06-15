@@ -10,7 +10,13 @@
     <ul>
     @foreach (var character in Model.Characters)
     {
-      <li><img src="@character.EmblemPath" width="48" height="48"> <a asp-action="Details" asp-controller="Character" asp-route-type="@((int)Model.Type)" asp-route-id="@Model.Id" asp-route-characterId="@character.Id">@character</a></li>
+      <li>
+        @if(!string.IsNullOrEmpty(character.EmblemPath))
+        {
+          <img src="@character.EmblemPath" width="48" height="48">
+        }
+        <a asp-action="Details" asp-controller="Character" asp-route-type="@((int)Model.Type)" asp-route-id="@Model.Id" asp-route-characterId="@character.Id">@character</a>
+      </li>
     }
     <li><a asp-action="Dashboard" asp-controller="Account"  asp-route-type="@((int)Model.Type)" asp-route-id="@Model.Id">All Characters</a></li>
     </ul>

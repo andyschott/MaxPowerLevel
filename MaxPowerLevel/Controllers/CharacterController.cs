@@ -104,6 +104,14 @@ namespace MaxPowerLevel.Controllers
             });
 
             await Task.WhenAll(classTask, recommendationsTask);
+
+            var emblemPath = string.Empty;
+            var emblemBackgroundPath = string.Empty;
+            if(character.EmblemBackgroundPath != null)
+            {
+                emblemPath = _bungie.Value.BaseUrl + character.EmblemPath;
+                emblemBackgroundPath = _bungie.Value.BaseUrl + character.EmblemBackgroundPath;
+            }
             
             var model = new CharacterViewModel()
             {
@@ -114,8 +122,8 @@ namespace MaxPowerLevel.Controllers
                 LowestItems = lowestItems,
                 BasePower = maxPower,
                 BonusPower = profile.ProfileProgression.Data.SeasonalArtifact.PowerBonus,
-                EmblemPath = _bungie.Value.BaseUrl + character.EmblemPath,
-                EmblemBackgroundPath = _bungie.Value.BaseUrl + character.EmblemBackgroundPath,
+                EmblemPath = emblemPath,
+                EmblemBackgroundPath = emblemBackgroundPath,
                 Recommendations = recommendationsTask.Result,
                 Engrams = _recommendations.GetEngramPowerLevels(maxPower),
                 ClassName = classTask.Result.DisplayProperties.Name

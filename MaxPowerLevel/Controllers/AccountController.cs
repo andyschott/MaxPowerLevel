@@ -182,6 +182,7 @@ namespace MaxPowerLevel.Controllers
             var charMaxGear = maxGear[item.Key];
             var lowestItems = _maxPower.FindLowestItems(charMaxGear.Values);
             var basePower = _maxPower.ComputePower(charMaxGear.Values);
+
             return new CharacterViewModel
             {
                 Type = type,

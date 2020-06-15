@@ -38,17 +38,17 @@ namespace MaxPowerLevel.Services
 
         public async Task<IEnumerable<Recommendation>> GetRecommendations(CharacterRecomendationInfo info)
         {
-            var seasonPassRewards = await GetSeasonPassRecommendations(info);
-            return await GetRecommendations(info, seasonPassRewards);
+            var seasonPassSlots = await _seasonPass.LoadAvailableSeasonPassItems(SeasonHash, info.Progressions);
+            return await GetRecommendations(info, seasonPassSlots);
         }
 
         public async Task<IDictionary<long, IEnumerable<Recommendation>>> GetRecommendations(IDictionary<long, CharacterRecomendationInfo> infos)
         {
-            var seasonPassRewards = await GetSeasonPassRecommendations(infos);
+            var seasonPassSlots = await GetSeasonPassSlots(infos);
 
             var tasks = infos.Select(async info =>
             {
-                var characterSeasonPassRewords = seasonPassRewards[info.Key];
+                var characterSeasonPassRewords = seasonPassSlots[info.Key];
                 return (info.Key, await GetRecommendations(info.Value, characterSeasonPassRewords));
             });
 
@@ -57,7 +57,7 @@ namespace MaxPowerLevel.Services
         }
 
         private async Task<IEnumerable<Recommendation>> GetRecommendations(CharacterRecomendationInfo info,
-            IEnumerable<(ItemSlot slot, int count)> seasonPassRewards)
+            IDictionary<ItemSlot.SlotHashes, int> seasonPassSlots)
         {
             if(info.IntPowerLevel < SoftCap)
             {
@@ -80,6 +80,7 @@ namespace MaxPowerLevel.Services
                     recommendations.AddRange(vendors);
                 }
 
+                var seasonPassRewards = GetItemRecommendations(info.Items, seasonPassSlots, info.IntPowerLevel, 1);
                 if(seasonPassRewards.Any())
                 {
                     var recommendation = new Recommendation(GetDisplayString("Season Pass Rewards", seasonPassRewards));
@@ -96,6 +97,7 @@ namespace MaxPowerLevel.Services
             {
                 var recommendations = new List<Recommendation>();
 
+                var seasonPassRewards = GetItemRecommendations(info.Items, seasonPassSlots, info.IntPowerLevel, TrailingPowerLevelDifference);
                 if(seasonPassRewards.Any())
                 {
                     var recommendation = new Recommendation(GetDisplayString("Season Pass Rewards", seasonPassRewards));
@@ -185,23 +187,10 @@ namespace MaxPowerLevel.Services
             return new SeasonPassInfo(season.DisplayProperties.Name, seasonEndDate, rank, TargetRankPlus20Power);
         }
 
-        private async Task<IEnumerable<(ItemSlot slot, int count)>> GetSeasonPassRecommendations(CharacterRecomendationInfo info)
-        {
-            var seasonPassSlots = await _seasonPass.LoadAvailableSeasonPassItems(SeasonHash, info.Progressions);
-            return GetItemRecommendations(info.Items, seasonPassSlots, info.IntPowerLevel, TrailingPowerLevelDifference);
-        }
-
-        private async Task<IDictionary<long, IEnumerable<(ItemSlot slot, int count)>>> GetSeasonPassRecommendations(IDictionary<long, CharacterRecomendationInfo> infos)
+        private Task<IDictionary<long, IDictionary<ItemSlot.SlotHashes, int>>> GetSeasonPassSlots(IDictionary<long, CharacterRecomendationInfo> infos)
         {
             var progressions = infos.ToDictionary(item => item.Key, item => item.Value.Progressions);
-            var allSeasonPassSlots = await _seasonPass.LoadAvailableSeasonPassItems(SeasonHash, progressions);
-            // return GetItemRecommendations(info.Items, seasonPassSlots, info.IntPowerLevel, TrailingPowerLevelDifference);
-
-            return allSeasonPassSlots.ToDictionary(item => item.Key, item =>
-            {
-                var info = infos[item.Key];
-                return GetItemRecommendations(info.Items, item.Value, info.IntPowerLevel, TrailingPowerLevelDifference);
-            });
+            return  _seasonPass.LoadAvailableSeasonPassItems(SeasonHash, progressions);
         }
 
         private IEnumerable<Recommendation> GetCollectionsRecommendations(IEnumerable<Item> allItems, int powerLevel)

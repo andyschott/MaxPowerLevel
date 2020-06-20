@@ -29,7 +29,17 @@ namespace MaxPowerLevel.Services
             return base.CreatePinnacleActivities()
                 .Concat(new[]
                 {
-                    new PinnacleActivity(Prophecy, new[] { _allSlots }),
+                    new PinnacleActivity(Prophecy, new[]
+                    {
+                        new[]
+                        {
+                            ItemSlot.SlotHashes.Helmet,
+                            ItemSlot.SlotHashes.Gauntlet,
+                            ItemSlot.SlotHashes.ChestArmor,
+                            ItemSlot.SlotHashes.LegArmor,
+                            ItemSlot.SlotHashes.ClassArmor,
+                        }
+                    }),
                     new PinnacleActivity(DarkTimes, new[] { _allSlots })
                 });
         }

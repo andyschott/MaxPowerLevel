@@ -9,6 +9,7 @@ namespace MaxPowerLevel.Models
         public string Name { get; set; }
         public string Description { get; set; }
         public string Type { get; set; }
+        public string IconUrl { get; set; }
 
         public override string ToString() => Name;
     }

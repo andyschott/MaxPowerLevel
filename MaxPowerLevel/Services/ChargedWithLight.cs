@@ -3,13 +3,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using Destiny2;
 using Destiny2.Definitions;
+using MaxPowerLevel.Helpers;
 using MaxPowerLevel.Models;
+using Microsoft.Extensions.Options;
 
 namespace MaxPowerLevel.Services
 {
     public class ChargedWithLight
     {
         private readonly IManifest _manifest;
+        private readonly string _baseUrl;
 
         private static readonly ISet<uint> _modCategoryHashes = new HashSet<uint>
         {
@@ -24,9 +27,10 @@ namespace MaxPowerLevel.Services
         private const string Become = "Become Charged with Light";
         private const string While = "While Charged with Light";
 
-        public ChargedWithLight(IManifest manifest)
+        public ChargedWithLight(IManifest manifest, IOptions<BungieSettings> bungie)
         {
             _manifest = manifest;
+            _baseUrl = bungie.Value.BaseUrl;
         }
         
         public async Task<(IEnumerable<ModData> becomeCharged, IEnumerable<ModData> whileCharged)> LoadMods()
@@ -70,11 +74,31 @@ namespace MaxPowerLevel.Services
                         Hash = mod.Hash,
                         Name = mod.DisplayProperties.Name,
                         Type = mod.ItemTypeDisplayName,
-                        Description = perk.DisplayProperties.Description
+                        Description = perk.DisplayProperties.Description,
+                        IconUrl = BuildIconUrl(mod)
                     };
                 });
 
             return Task.WhenAll(modDataTasks);
+        }
+
+        private string BuildIconUrl(DestinyInventoryItemDefinition item)
+        {
+            if(!item.DisplayProperties.HasIcon)
+            {
+                return string.Empty;
+            }
+
+            // The second icon in the sequence is the small icon.
+            var smallIconUrl = item.DisplayProperties.IconSequences?.ElementAtOrDefault(1)
+                ?.Frames.FirstOrDefault();
+
+            if(string.IsNullOrEmpty(smallIconUrl))
+            {
+                return _baseUrl + item.DisplayProperties.Icon;
+            }
+
+            return _baseUrl + smallIconUrl;
         }
     }
 }

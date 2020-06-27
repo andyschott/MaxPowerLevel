@@ -1,6 +1,6 @@
 @model ModData
 
-<span><img src="@Model.IconUrl">@Model.Name (@Model.Element, @Model.Type)</span>
+<span><mod mod="Model">@Model.Name (@Model.Type)</span>
 <ul>
     @foreach(var perk in Model.Perks)
     {

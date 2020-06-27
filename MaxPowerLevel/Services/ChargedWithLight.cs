@@ -61,13 +61,17 @@ namespace MaxPowerLevel.Services
             return armorMods;
         }
 
-        private Task<ModData[]> LoadMods(IEnumerable<DestinyInventoryItemDefinition> mods)
+        private async Task<ModData[]> LoadMods(IEnumerable<DestinyInventoryItemDefinition> mods)
         {
+            var investmentStatHashes = mods.SelectMany(mod => mod.InvestmentStats)
+                .Select(investmentStat => investmentStat.StatTypeHash)
+                .Distinct();
+            var investmentStats = await LoadStatTypes(investmentStatHashes);
+
             var modDataTasks = mods.Where(mod => mod.Perks.Any())
                 .Select(async mod =>
                 {
-                    var perks = (await _manifest.LoadSandboxPerks(mod.Perks.Select(perk => perk.PerkHash)))
-                        .Where(perk => perk.IsDisplayable);
+                    var perks = (await _manifest.LoadSandboxPerks(mod.Perks.Select(perk => perk.PerkHash))).Where(perk => perk.IsDisplayable);
                     return new ModData
                     {
                         Hash = mod.Hash,
@@ -75,11 +79,12 @@ namespace MaxPowerLevel.Services
                         Type = mod.ItemTypeDisplayName,
                         Perks = perks.Select(perk => perk.DisplayProperties.Description).ToArray(),
                         IconUrl = BuildIconUrl(mod),
-                        ChargedWithLightType = GetChargedWithLightType(perks)
+                        ChargedWithLightType = GetChargedWithLightType(perks),
+                        Element = LoadStat(investmentStats, mod)
                     };
                 });
 
-            return Task.WhenAll(modDataTasks);
+            return await Task.WhenAll(modDataTasks);
         }
 
         private string BuildIconUrl(DestinyInventoryItemDefinition item)
@@ -118,6 +123,42 @@ namespace MaxPowerLevel.Services
                 }
             }
             return null;
+        }
+
+        private ModElement LoadStat(IDictionary<uint, DestinyStatDefinition> cache, DestinyInventoryItemDefinition item)
+        {
+            // assume mods have 1 investment stat
+            var investmentStat = item.InvestmentStats.FirstOrDefault();
+            if (investmentStat == null)
+            {
+                return ModElement.General;
+            }
+
+            var stat = cache[investmentStat.StatTypeHash];
+            return stat.DisplayProperties.Name switch
+            {
+                "Arc Cost" => ModElement.Arc,
+                "Solar Cost" => ModElement.Solar,
+                "Void Cost" => ModElement.Void,
+                _ => ModElement.General
+            };
+        }
+
+        private async Task<IDictionary<uint, DestinyStatDefinition>> LoadStatTypes(IEnumerable<uint> hashes)
+        {
+            var statTypes = await _manifest.LoadStatTypes(hashes);
+            return statTypes.ToDictionary(statTypes => statTypes.Hash);
+        }
+
+        private static ModElement GetElement(DestinyStatDefinition statDefinition)
+        {
+            return statDefinition.DisplayProperties.Name switch
+            {
+                "Arc Cost" => ModElement.Arc,
+                "Solar Cost" => ModElement.Solar,
+                "Void Cost" => ModElement.Void,
+                _ => ModElement.General
+            };
         }
     }
 }

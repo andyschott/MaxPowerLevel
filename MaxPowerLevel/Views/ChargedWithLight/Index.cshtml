@@ -1,0 +1,36 @@
+@model ChargedWithLightViewModel
+
+@{
+    ViewData["Title"] = "Charged With Light Mods";
+}
+
+<div class="container">
+    <div class="row">
+        <p>
+            <a asp-route="AccountDetails" asp-route-type="@((int)Model.AccountType)" asp-route-id="@Model.AccountId">&lt;&lt; Back</a>
+        </p>
+    </div>
+    <div class="row">
+        <h1>Charged with Light Mods</h1>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Become Charged with Light</h2>
+            <ul>
+                @foreach(var mod in Model.BecomeCharged)
+                {
+                    <li>@await Html.PartialAsync("ModPartial", mod)</li>
+                }
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <h2>While Charged with Light</h2>
+            <ul>
+                @foreach(var mod in Model.WhileCharged)
+                {
+                    <li>@await Html.PartialAsync("ModPartial", mod)</li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

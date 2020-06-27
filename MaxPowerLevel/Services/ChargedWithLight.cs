@@ -26,6 +26,7 @@ namespace MaxPowerLevel.Services
 
         private const string Become = "Become Charged with Light";
         private const string While = "While Charged with Light";
+        private const string ChargedWithLightText = "Charged with Light";
 
         public ChargedWithLight(IManifest manifest, IOptions<BungieSettings> bungie)
         {
@@ -33,15 +34,12 @@ namespace MaxPowerLevel.Services
             _baseUrl = bungie.Value.BaseUrl;
         }
         
-        public async Task<(IEnumerable<ModData> becomeCharged, IEnumerable<ModData> whileCharged)> LoadMods()
+        public async Task<ILookup<ChargedWithLightType?, ModData>> LoadMods()
         {
             var armorMods = await _manifest.LoadInventoryItemsWithCategory(ArmorModsCategory);
             var modData = await LoadMods(armorMods);
 
-            var becomeCharged = modData.Where(mod => mod.Description.Contains(Become));
-            var whileCharged = modData.Where(mod => mod.Description.Contains(While));
-
-            return (becomeCharged, whileCharged);
+            return modData.ToLookup(mod => mod.ChargedWithLightType);
         }
 
         private async Task<IEnumerable<DestinyInventoryItemDefinition>> LoadArmorMods()
@@ -68,14 +66,16 @@ namespace MaxPowerLevel.Services
             var modDataTasks = mods.Where(mod => mod.Perks.Any())
                 .Select(async mod =>
                 {
-                    var perk = await _manifest.LoadSandboxPerk(mod.Perks.FirstOrDefault().PerkHash);
+                    var perks = (await _manifest.LoadSandboxPerks(mod.Perks.Select(perk => perk.PerkHash)))
+                        .Where(perk => perk.IsDisplayable);
                     return new ModData
                     {
                         Hash = mod.Hash,
                         Name = mod.DisplayProperties.Name,
                         Type = mod.ItemTypeDisplayName,
-                        Description = perk.DisplayProperties.Description,
-                        IconUrl = BuildIconUrl(mod)
+                        Perks = perks.Select(perk => perk.DisplayProperties.Description).ToArray(),
+                        IconUrl = BuildIconUrl(mod),
+                        ChargedWithLightType = GetChargedWithLightType(perks)
                     };
                 });
 
@@ -99,6 +99,25 @@ namespace MaxPowerLevel.Services
             }
 
             return _baseUrl + smallIconUrl;
+        }
+
+        private static ChargedWithLightType? GetChargedWithLightType(IEnumerable<DestinySandboxPerkDefinition> perks)
+        {
+            var chargedWithLight = perks.Select(perk => perk.DisplayProperties.Description)
+                .Where(description => description.Contains(ChargedWithLightText));
+            foreach(var description in chargedWithLight)
+            {
+                if(description.Contains(Become))
+                {
+                    return ChargedWithLightType.Become;
+                }
+
+                if(description.Contains(While))
+                {
+                    return ChargedWithLightType.While;
+                }
+            }
+            return null;
         }
     }
 }

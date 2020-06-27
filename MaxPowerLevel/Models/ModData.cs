@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 
 namespace MaxPowerLevel.Models
 {
@@ -7,9 +6,10 @@ namespace MaxPowerLevel.Models
     {
         public uint Hash { get; set; }
         public string Name { get; set; }
-        public string Description { get; set; }
+        public IEnumerable<string> Perks { get; set; }
         public string Type { get; set; }
         public string IconUrl { get; set; }
+        public ChargedWithLightType? ChargedWithLightType { get; set; }
 
         public override string ToString() => Name;
     }

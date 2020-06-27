@@ -2,6 +2,9 @@
 
 <span><img src="@Model.IconUrl">@Model.Name</span>
 <ul>
-    <li>@Model.Type
-    <li>@Model.Description
+    <li>@Model.Type</li>
+    @foreach(var perk in Model.Perks)
+    {
+        <li>@perk</li>
+    }
 </ul>

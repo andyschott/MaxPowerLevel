@@ -33,13 +33,13 @@ namespace MaxPowerLevel.Controllers
         [Route("{type}/{id}")]
         public async Task<IActionResult> Index(BungieMembershipType type, long id)
         {
-            var (becomeCharged, WhileCharged) = await _chargedWithLight.LoadMods();
+            var chargedWithLightMods = await _chargedWithLight.LoadMods();
             return View(new ChargedWithLightViewModel
             {
                 AccountType = type,
                 AccountId = id,
-                BecomeCharged = becomeCharged.OrderBy(mod => mod.Name),
-                WhileCharged = WhileCharged.OrderBy(mod => mod.Name)
+                BecomeCharged = chargedWithLightMods[ChargedWithLightType.Become].OrderBy(mod => mod.Name),
+                WhileCharged = chargedWithLightMods[ChargedWithLightType.While].OrderBy(mod => mod.Name)
             });
         }
     }

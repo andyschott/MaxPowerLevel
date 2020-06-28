@@ -77,18 +77,22 @@ namespace MaxPowerLevel.Services
             return armorMods;
         }
 
-        private async Task<ModData[]> LoadMods(IEnumerable<DestinyInventoryItemDefinition> mods,
+        private async Task<IEnumerable<ModData>> LoadMods(IEnumerable<DestinyInventoryItemDefinition> mods,
             IDictionary<uint, DestinyCollectibleComponent> collectibles)
         {
             var investmentStatHashes = mods.SelectMany(mod => mod.InvestmentStats)
                 .Select(investmentStat => investmentStat.StatTypeHash)
                 .Distinct();
-            var investmentStats = await LoadStatTypes(investmentStatHashes);
+            var investmentStatsTask = LoadStatTypes(investmentStatHashes);
+            var perksTask = LoadPerks(mods);
 
-            var modDataTasks = mods.Where(mod => mod.Perks.Any())
-                .Select(async mod =>
+            await Task.WhenAll(investmentStatsTask, perksTask);
+            var investmentStats = investmentStatsTask.Result;
+            var perks = perksTask.Result;
+
+            var modData = mods.Where(mod => mod.Perks.Any())
+                .Select(mod =>
                 {
-                    var perks = (await _manifest.LoadSandboxPerks(mod.Perks.Select(perk => perk.PerkHash))).Where(perk => perk.IsDisplayable);
                     var isUnlocked = false;
                     if(mod.CollectibleHash != null)
                     {
@@ -98,20 +102,44 @@ namespace MaxPowerLevel.Services
                         }
                     }
 
+                    var modPerks = GetModPerks(mod, perks);
+
                     return new ModData
                     {
                         Hash = mod.Hash,
                         Name = mod.DisplayProperties.Name,
                         Type = mod.ItemTypeDisplayName,
-                        Perks = perks.Select(perk => perk.DisplayProperties.Description).ToArray(),
+                        Perks = modPerks.Select(perk => perk.DisplayProperties.Description).ToArray(),
                         IconUrl = BuildIconUrl(mod),
-                        ChargedWithLightType = GetChargedWithLightType(perks),
+                        ChargedWithLightType = GetChargedWithLightType(modPerks),
                         Element = LoadStat(investmentStats, mod),
                         IsUnlocked = isUnlocked
                     };
                 });
 
-            return await Task.WhenAll(modDataTasks);
+            return modData;
+        }
+
+        private async Task<IDictionary<uint, DestinySandboxPerkDefinition>> LoadPerks(IEnumerable<DestinyInventoryItemDefinition> mods)
+        {
+            var perkHashes = mods.SelectMany(mod => mod.Perks)
+                .Select(perk => perk.PerkHash);
+            var perks = await _manifest.LoadSandboxPerks(perkHashes);
+
+            return perks.Where(perk => perk.IsDisplayable)
+                .ToDictionary(perk => perk.Hash);
+        }
+
+        private IEnumerable<DestinySandboxPerkDefinition> GetModPerks(DestinyInventoryItemDefinition mod, IDictionary<uint, DestinySandboxPerkDefinition> perks)
+        {
+            var perkHashes = mod.Perks.Select(perk => perk.PerkHash);
+            foreach(var perkHash in perkHashes)
+            {
+                if(perks.TryGetValue(perkHash, out var perk))
+                {
+                    yield return perk;
+                }
+            }
         }
 
         private string BuildIconUrl(DestinyInventoryItemDefinition item)

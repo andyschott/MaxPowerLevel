@@ -1,27 +1,25 @@
 img.arc {
-    border-style: solid;
-    border-width: 1;
     border-color: #7AA6D1;
 }
 
 img.solar {
-    border-style: solid;
-    border-width: 1;
     border-color: #EA7F1F;
 }
 
 img.void {
-    border-style: solid;
-    border-width: 1;
     border-color: #9D73B2;
 }
 
 img.general {
-    border-style: solid;
-    border-width: 1;
     border-color: transparent;
 }
 
 img.locked {
     opacity: 0.4;
+}
+
+img.modIcon {
+    margin: 5px;
+    border-style: solid;
+    border-width: 1;
 }

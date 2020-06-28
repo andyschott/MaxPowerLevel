@@ -8,6 +8,8 @@ namespace MaxPowerLevel.TagHelpers
     {
         public ModData Mod { get; set; }
 
+        private const string ModClass = "modIcon";
+
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.TagName = "img";
@@ -26,7 +28,7 @@ namespace MaxPowerLevel.TagHelpers
             };
 
             var collectionsClass = Mod.IsUnlocked ? string.Empty : "locked";
-            return string.Join(' ', elementClass, collectionsClass);
+            return string.Join(' ', ModClass, elementClass, collectionsClass);
         }
     }
 }

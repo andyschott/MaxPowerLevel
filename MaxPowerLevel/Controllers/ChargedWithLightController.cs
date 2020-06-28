@@ -33,7 +33,7 @@ namespace MaxPowerLevel.Controllers
         [Route("{type}/{id}")]
         public async Task<IActionResult> Index(BungieMembershipType type, long id)
         {
-            var chargedWithLightMods = await _chargedWithLight.LoadMods();
+            var chargedWithLightMods = await _chargedWithLight.LoadMods(type, id);
             return View(new ChargedWithLightViewModel
             {
                 AccountType = type,

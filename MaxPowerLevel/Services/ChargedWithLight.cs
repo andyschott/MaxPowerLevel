@@ -2,16 +2,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Destiny2;
+using Destiny2.Components.Collectibles;
 using Destiny2.Definitions;
 using MaxPowerLevel.Helpers;
 using MaxPowerLevel.Models;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
 namespace MaxPowerLevel.Services
 {
     public class ChargedWithLight
     {
+        private readonly IDestiny2 _destiny;
         private readonly IManifest _manifest;
+        private readonly IHttpContextAccessor _contextAccessor;
         private readonly string _baseUrl;
 
         private static readonly ISet<uint> _modCategoryHashes = new HashSet<uint>
@@ -28,16 +33,27 @@ namespace MaxPowerLevel.Services
         private const string While = "While Charged with Light";
         private const string ChargedWithLightText = "Charged with Light";
 
-        public ChargedWithLight(IManifest manifest, IOptions<BungieSettings> bungie)
+        public ChargedWithLight(IDestiny2 destiny, IManifest manifest,
+         IHttpContextAccessor contextAccessor, IOptions<BungieSettings> bungie)
         {
+            _destiny = destiny;
             _manifest = manifest;
+            _contextAccessor = contextAccessor;
             _baseUrl = bungie.Value.BaseUrl;
         }
         
-        public async Task<ILookup<ChargedWithLightType?, ModData>> LoadMods()
+        public async Task<ILookup<ChargedWithLightType?, ModData>> LoadMods(BungieMembershipType type, long accountId)
         {
-            var armorMods = await _manifest.LoadInventoryItemsWithCategory(ArmorModsCategory);
-            var modData = await LoadMods(armorMods);
+            var accessToken = await _contextAccessor.HttpContext.GetTokenAsync("access_token");
+
+            var armorModsTask = LoadArmorMods();
+            var profileTask = _destiny.GetProfile(accessToken, type, accountId,
+                DestinyComponentType.Collectibles);
+
+            await Task.WhenAll(armorModsTask, profileTask);
+
+            var modData = await LoadMods(armorModsTask.Result,
+                profileTask.Result.ProfileCollectibles.Data.Collectibles);
 
             return modData.ToLookup(mod => mod.ChargedWithLightType);
         }
@@ -61,7 +77,8 @@ namespace MaxPowerLevel.Services
             return armorMods;
         }
 
-        private async Task<ModData[]> LoadMods(IEnumerable<DestinyInventoryItemDefinition> mods)
+        private async Task<ModData[]> LoadMods(IEnumerable<DestinyInventoryItemDefinition> mods,
+            IDictionary<uint, DestinyCollectibleComponent> collectibles)
         {
             var investmentStatHashes = mods.SelectMany(mod => mod.InvestmentStats)
                 .Select(investmentStat => investmentStat.StatTypeHash)
@@ -72,6 +89,15 @@ namespace MaxPowerLevel.Services
                 .Select(async mod =>
                 {
                     var perks = (await _manifest.LoadSandboxPerks(mod.Perks.Select(perk => perk.PerkHash))).Where(perk => perk.IsDisplayable);
+                    var isUnlocked = false;
+                    if(mod.CollectibleHash != null)
+                    {
+                        if(collectibles.TryGetValue(mod.CollectibleHash.Value, out var collectible))
+                        {
+                            isUnlocked = collectible.State != DestinyCollectibleState.NotAcquired;
+                        }
+                    }
+
                     return new ModData
                     {
                         Hash = mod.Hash,
@@ -80,7 +106,8 @@ namespace MaxPowerLevel.Services
                         Perks = perks.Select(perk => perk.DisplayProperties.Description).ToArray(),
                         IconUrl = BuildIconUrl(mod),
                         ChargedWithLightType = GetChargedWithLightType(perks),
-                        Element = LoadStat(investmentStats, mod)
+                        Element = LoadStat(investmentStats, mod),
+                        IsUnlocked = isUnlocked
                     };
                 });
 

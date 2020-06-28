@@ -21,3 +21,7 @@ img.general {
     border-width: 1;
     border-color: transparent;
 }
+
+img.locked {
+    opacity: 0.4;
+}

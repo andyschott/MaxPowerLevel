@@ -11,6 +11,7 @@ namespace MaxPowerLevel.Models
         public string IconUrl { get; set; }
         public ChargedWithLightType? ChargedWithLightType { get; set; }
         public ModElement Element { get; set; }
+        public bool IsUnlocked { get; set; }
 
         public override string ToString() => Name;
     }

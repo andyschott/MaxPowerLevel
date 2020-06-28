@@ -12,18 +12,21 @@ namespace MaxPowerLevel.TagHelpers
         {
             output.TagName = "img";
             output.Attributes.SetAttribute("src", Mod.IconUrl);
-            output.Attributes.SetAttribute("class", GetCssClass(Mod.Element));
+            output.Attributes.SetAttribute("class", GetCssClass());
         }
 
-        private static string GetCssClass(ModElement element)
+        private string GetCssClass()
         {
-            return element switch
+            var elementClass = Mod.Element switch
             {
                 ModElement.Arc => "arc",
                 ModElement.Solar => "solar",
                 ModElement.Void => "void",
                 _ => "general"
             };
+
+            var collectionsClass = Mod.IsUnlocked ? string.Empty : "locked";
+            return string.Join(' ', elementClass, collectionsClass);
         }
     }
 }

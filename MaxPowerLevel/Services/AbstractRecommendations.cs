@@ -277,6 +277,18 @@ namespace MaxPowerLevel.Services
                     weakPinnacles,
                 };
             }
+            
+            // If less than half of the slots would get an upgrade from a weak pinnacle,
+            // recommend strong pinnacles first.
+            var numWeakUpgrades = powerLevels.Values.Count(slotPowerLevel => powerLevel - slotPowerLevel > 1);
+            if(numWeakUpgrades < powerLevels.Count / 2)
+            {
+            return new[]
+            {
+                strongPinnacles,
+                weakPinnacles,
+            };
+            }
 
             // Not sure which is better - suggesting weak then strong for now
             return new[]

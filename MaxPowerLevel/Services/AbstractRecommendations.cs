@@ -97,8 +97,8 @@ namespace MaxPowerLevel.Services
             {
                 var recommendations = new List<Recommendation>();
 
-                var seasonPassRewards = GetItemRecommendations(info.Items, seasonPassSlots, info.IntPowerLevel, TrailingPowerLevelDifference);
-                if(seasonPassRewards.Any())
+                var seasonPassRewards = GetSeasonPassPinnacleRecomendations(info.Items, seasonPassSlots, info.PowerLevel);
+                if (seasonPassRewards.Any())
                 {
                     var recommendation = new Recommendation(GetDisplayString("Season Pass Rewards", seasonPassRewards));
                     recommendations.Add(recommendation);
@@ -384,6 +384,44 @@ namespace MaxPowerLevel.Services
             }
 
             return new Recommendation(description, recommendedVendors);
+        }
+
+        private static IEnumerable<(ItemSlot slot, int count)> GetSeasonPassPinnacleRecomendations(IEnumerable<Item> allItems,
+            IDictionary<ItemSlot.SlotHashes, int> seasonPassRewards, decimal powerLevel)
+        {
+            // Find all of the slots where season pass items are a higher power level
+            var seasonPassUpgrades = allItems.Where(item => seasonPassRewards.ContainsKey(item.Slot.Hash))
+                .Select(item => (item, powerDifference: (int)powerLevel - item.PowerLevel))
+                .Where(item => item.powerDifference > 0)
+                .OrderByDescending(item => item.powerDifference)
+                .Select(item => (slot: item.item.Slot, count: seasonPassRewards[item.item.Slot.Hash]));
+
+            decimal computePowerLevel(ICollection<int> powerLevels)
+            {
+                return powerLevels.Sum() / powerLevels.Count;
+            }
+
+            var potentialItems = allItems.ToDictionary(item => item.Slot.Hash, item => item.PowerLevel);
+            var slotUpgrades = new List<(ItemSlot, int)>();
+            foreach(var seasonPassUpgrade in seasonPassUpgrades)
+            {
+                var potentialPowerLevel = computePowerLevel(potentialItems.Values);
+                if (potentialPowerLevel - (int)powerLevel >= 1)
+                {
+                    break;
+                }
+
+                potentialItems[seasonPassUpgrade.slot.Hash] = (int)powerLevel;
+                slotUpgrades.Add(seasonPassUpgrade);
+            }
+
+            // If season pass items won't increase power level, don't reommend anything.
+            if(computePowerLevel(potentialItems.Values) - (int)powerLevel < 1)
+            {
+                return Enumerable.Empty<(ItemSlot, int)>();
+            }
+
+            return slotUpgrades;
         }
 
         class ItemComparer : IEqualityComparer<(ItemSlot slot, int count)>

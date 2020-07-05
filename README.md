@@ -1,6 +1,6 @@
 # Max Power Level
 
-Max Power Level is a website written with ASP.NET Core 2.2. It shows the highest power gear for your Destiny 2 characters.
+Max Power Level is a website written with ASP.NET Core 3.1. It shows the highest power gear for your Destiny 2 characters.
 
 When cloning this repository, make sure to clone recursively in order to clone the submodules as well.
 

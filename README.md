@@ -6,7 +6,7 @@ When cloning this repository, make sure to clone recursively in order to clone t
 
 # Set up
 
-Download and install the [.NET Core 2.2 SDK](https://dotnet.microsoft.com/download).
+Download and install the [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download).
 
 In order to run the server, you will need to create an application using the [Bungie Application Portal](https://www.bungie.net/en/Application). When creating the application, do the following:
 

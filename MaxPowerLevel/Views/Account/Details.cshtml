@@ -4,59 +4,75 @@
     ViewData["Title"] = "Characters";
 }
 
-<div class="row">
-  <div class="col-md-12">
-    <h1>Max Power Level</h1>
-    <ul>
-    @foreach (var character in Model.Characters)
+<div class="container is-widescreen">
+  <div class="columns is-centered mt-2">
+    <div class="column">
+      <div class="panel is-primary char-details-panel">
+        <p class="panel-heading">Max Power Level</p>
+        
+          @foreach (var character in Model.Characters){            
+            <a class="panel-block" asp-action="Details" asp-controller="Character" asp-route-type="@((int)Model.Type)" asp-route-id="@Model.Id" asp-route-characterId="@character.Id">
+              @if(!string.IsNullOrEmpty(character.EmblemPath)){
+              <span >
+                <img class="char-icon" src="@character.EmblemPath">
+              </span>
+              }
+              @character
+            </a>
+          }
+          <div class="panel-block" asp-action="Dashboard" asp-controller="Account"  asp-route-type="@((int)Model.Type)" asp-route-id="@Model.Id">              
+            <a class="button is-link is-outlined is-fullwidth" asp-action="Dashboard" asp-controller="Account"  asp-route-type="@((int)Model.Type)" asp-route-id="@Model.Id">
+                All Characters
+            </a>
+          </div>
+      </div>
+    </div>
+
+    @if(@Model.SeasonPassInfo != null)
     {
-      <li>
-        @if(!string.IsNullOrEmpty(character.EmblemPath))
-        {
-          <img src="@character.EmblemPath" width="48" height="48">
-        }
-        <a asp-action="Details" asp-controller="Character" asp-route-type="@((int)Model.Type)" asp-route-id="@Model.Id" asp-route-characterId="@character.Id">@character</a>
-      </li>
+
+    <div class="column">
+      <div class="panel char-details-panel">
+        <p class="panel-heading">Season Pass Info</p>
+        
+            <div class="panel-block">@Model.SeasonPassInfo.SeasonName</div>
+            <div class="panel-block">
+              <span class="mr-1">Ends:</span>
+              
+              <script>
+                var strDate = new String('@Model.SeasonPassInfo.EndDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
+                var localTime = new Date(strDate);
+                if(localTime.toLocaleDateString !== undefined) {
+                  var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                  document.write(localTime.toLocaleDateString(undefined, options));
+                }
+                else {
+                  document.write(localTime.toLocaleString());
+                }
+              </script>
+            </div>
+            <div class="panel-block">Rank: @Model.SeasonPassInfo.Rank</div>
+            @if(Model.SeasonPassInfo.RanksPerWeek.HasValue)
+            {
+              <div class="panel-block">Ranks per Week for +20 Power: @Model.SeasonPassInfo.RanksPerWeek.Value</div>
+            }
+          
+      </div>
+    </div>
     }
-    <li><a asp-action="Dashboard" asp-controller="Account"  asp-route-type="@((int)Model.Type)" asp-route-id="@Model.Id">All Characters</a></li>
-    </ul>
-  </div>
-</div>
+    <div class="column">
+      <div class="panel char-details-panel">
+        <p class="panel-heading">Charged with Light Mods</p>
 
-@if(@Model.SeasonPassInfo != null)
-{
-<div class="row">
-  <div class="col-md-12">
-    <h1>Season Pass Info</h1>
-    <ul>
-      <li>@Model.SeasonPassInfo.SeasonName End Date:
-        <span style="white-space: nowrap;">
-          <script>
-            var strDate = new String('@Model.SeasonPassInfo.EndDate.ToString("MM/dd/yyyy hh:mm:ss tt") UTC');
-            var localTime = new Date(strDate);
-            if(localTime.toLocaleDateString !== undefined) {
-              var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-              document.write(localTime.toLocaleDateString(undefined, options));
-            }
-            else {
-              document.write(localTime.toLocaleString());
-            }
-          </script>
-        </span>
-      </li>
-      <li>Rank: @Model.SeasonPassInfo.Rank</li>
-      @if(Model.SeasonPassInfo.RanksPerWeek.HasValue)
-      {
-        <li>Ranks per Week for +20 Power: @Model.SeasonPassInfo.RanksPerWeek.Value</li>
-      }
-    </ul>
-  </div>
-</div>
-}
-
-<div class="row">
-  <h1>Charged with Light Mods</h1>
-</div>
-<div class="row">
-  <p>Display all mods that use the <a asp-action="Index" asp-controller="chargedWithLight" asp-route-type="@((int)Model.Type)" asp-route-id="@Model.Id">Charged with Light </a> mechanic.</p>
+        
+            <a class="panel-block is-active" asp-action="Index" asp-controller="chargedWithLight" asp-route-type="@((int)Model.Type)" asp-route-id="@Model.Id">          
+              Display all mods that use the Charged with Light mechanic.
+            </a>
+            <div class="panel-block">
+              <a class="button is-link is-outlined is-fullwidth" asp-action="Index" asp-controller="chargedWithLight" asp-route-type="@((int)Model.Type)" asp-route-id="@Model.Id">
+                Show Mods
+              </a>
+      </div>
+    </div>
+  </div> 
 </div>

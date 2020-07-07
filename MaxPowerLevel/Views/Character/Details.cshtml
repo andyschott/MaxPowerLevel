@@ -4,16 +4,20 @@
     ViewData["Title"] = Model.ClassName + " Max Power";
 }
 
+<div class="container is-widescreen">
 <p>
-  <a asp-route="AccountDetails" asp-route-type="@((int)Model.Type)" asp-route-id="@Model.AccountId">&lt;&lt; Characters</a>
+  <a asp-route="AccountDetails" asp-route-type="@((int)Model.Type)" asp-route-id="@Model.AccountId">&lt;&lt; Characters</a>  
 </p>
 
 @if(!string.IsNullOrEmpty(Model.EmblemBackgroundPath))
 {
-  <picture class="float-right">
-    <source media="(min-width: 992px)" srcset="@Model.EmblemBackgroundPath">
-    <img src="@Model.EmblemPath" class="d-none d-md-block">
-  </picture>
+  <div class="character-box destiny2" aria-label="Human Male Titan">
+    <div class="background" style="background-image: url('@Model.EmblemBackgroundPath')"></div>
+    <div class="details">      
+      <div class="character-text"> @Model.ClassName - @Model.MaxPowerHuman</div>        
+    </div>
+  </div>
 }
 @await Html.PartialAsync("CharacterSummaryPartial", Model)
 @await Html.PartialAsync("CharacterPartial", Model)
+</div>

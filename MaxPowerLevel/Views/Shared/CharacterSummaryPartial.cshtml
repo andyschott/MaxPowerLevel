@@ -3,16 +3,18 @@
 @if(!string.IsNullOrEmpty(Model.EmblemBackgroundPath))
 {
     @if(ViewData.Eval("wide")!=null) {
-        <div class="columns mt-3">
+        @* todo fix this *@
+        <div class="columns mt-3 mb-2">
             
             <div class="column ml-1 character-box" aria-label="Human Male Titan">
                 <div class="background" style="background-image: url('@Model.EmblemBackgroundPath')"></div>
                 <div class="character-text has-text-warning"> @Model.ClassName <span class="ml-2">@Model.MaxPowerHuman</span></div>
             </div>
-            <ul class="column ml-4 mt-1">
-                <li>Base Power: @Model.BasePowerHuman</li>
-                <li>Seasonal Artifact Bonus: @Model.BonusPower</li>
-            </ul>
+            <div class="ml-5 mt-2">
+                <div style="font-size: 1.5rem; font-weight: 600;">Base Power: @Model.BasePowerHuman</div>
+                <p>Seasonal Artifact Bonus: @Model.BonusPower</p>
+            </div>
+            
         </div>
     }
     @if(ViewData.Eval("wide")==null) {

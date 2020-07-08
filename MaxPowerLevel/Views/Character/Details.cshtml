@@ -19,8 +19,13 @@
     </div>
 
   </div>
+
+  <div class="item-panels">
+
   @if(Model.LowestItems.Any()){
       @await Html.PartialAsync("LowestItemsPartial", Model.LowestItems)
   }
+  
   @await Html.PartialAsync("HighestItemsPartial", Model)
+  </div>
 </div>

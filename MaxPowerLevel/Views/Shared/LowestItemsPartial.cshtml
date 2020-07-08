@@ -2,10 +2,15 @@
 
 @if(Model.Any())
 {
-    @foreach(var item in Model)
-    {
-    <div class="col-auto">
-        @await Html.PartialAsync("ItemPartial", item)
+    <div class="gear-panel panel">
+        <p class="panel-heading">Lowest Items</p>
+        <div class="panel-block">
+            <div class='item-grid'>
+            @foreach(var item in Model)
+            {
+                @await Html.PartialAsync("ItemPartial", item)
+            }
+            </div>
+        </div>
     </div>
-    }
 }

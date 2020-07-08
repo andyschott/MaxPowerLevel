@@ -1,8 +1,20 @@
 @model IEnumerable<Engram>
 
-<ul>
-    @foreach(var engram in Model)
-    {
-        <li>@engram.Description</li>
-    }
-</ul>
+<div class="panel recommendations-panel">
+    <p class="panel-heading">
+        Item Power Levels
+    </p>
+    <div class="panel-block">
+        <table class="table">
+            <tbody>
+                @foreach(var engram in Model)
+                {
+                    <tr>
+                        <td>@engram.Name</td>
+                        <td>@engram.HighestPower</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

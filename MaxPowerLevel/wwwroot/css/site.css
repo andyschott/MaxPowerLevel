@@ -54,15 +54,10 @@ body {
 }
 
 img.char-icon {
+  border-radius: 3px;
   width: 36px;
   height: 36px;
   margin-right: 1rem;
-}
-
-.char-details-panel {
-  margin: 5px;
-  max-width: 300px;
-  margin: auto;
 }
 
 /* Override bulma responsive navbar */
@@ -88,13 +83,14 @@ img.char-icon {
 .character-box {
   position: relative;
   border-bottom: 2px solid #666;
-  height: 72px;
-  max-width: 356px;
+  height: 64px;
+  max-width: 316px;
   cursor: pointer;
   border-bottom: none;
 }
 
 .background {
+  border-radius: 6px;
   position: absolute;
   width: 100%;
   height: 100%;
@@ -104,38 +100,51 @@ img.char-icon {
   z-index: 0;
 }
 
-.details {
-  
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+.character-text {  
   padding: 4px 6px 4px 8px;
   position: relative;
-  z-index: 0;
-}
 
-.character-text {  
-  margin-top: 5px;
   margin-left: 64px;
-  color: white;
   font-family: 'Helvetica Neue', 'Helvetica', Arial, sans-serif;
   font-weight: 500;
-  font-size: 32px;
+  font-size: 28px;
   text-shadow: 1px 1px 1px rgba(0,0,0,0.5), 0px 0px 10px rgba(0,0,0,0.5);
 }
 
 .nav-panels {
   display: flex;
   justify-content: center;
+  align-items: flex-start;
   flex-direction: row;
   margin-top: 1rem;
   flex-wrap: wrap;
 }
 
 .nav-panel {
-  min-width: 350px;
+  width: 350px;
   margin-top: 10px;
   margin-bottom: 10px;
   margin-left: 5px;
   margin-right: 5px;
 }
+
+.recommendations-panel{
+  max-width: 600px;
+}
+
+table.dash-board-table {
+  margin: auto;
+}
+
+table.dash-board-table th {
+  min-width: 200px; 
+  vertical-align: top; 
+  padding-right: 5px; 
+  padding-left: 5px;
+}
+
+table.dash-board-table { border: none; border-collapse: collapse; }
+table.dash-board-table td { border-left: 1px solid #dbdbdb; }
+table.dash-board-table td:first-child { border-left: none; }
+table.dash-board-table th { border-left: 1px solid #dbdbdb; }
+table.dash-board-table th:first-child { border-left: none; }

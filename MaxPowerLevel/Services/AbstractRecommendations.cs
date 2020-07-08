@@ -298,7 +298,7 @@ namespace MaxPowerLevel.Services
             };
         }
 
-        protected IEnumerable<string> SortPinnacleActivites(IEnumerable<PinnacleActivity> pinnacleActivities,
+        protected IEnumerable<IEnumerable<string>> SortPinnacleActivites(IEnumerable<PinnacleActivity> pinnacleActivities,
             IDictionary<ItemSlot.SlotHashes, decimal> powerLevels)
         {
             var activitiesWithUpgrades = pinnacleActivities.ToDictionary(activity => activity.Name,
@@ -307,7 +307,7 @@ namespace MaxPowerLevel.Services
             var prioritizedActivities = activitiesWithUpgrades.GroupBy(activity => activity.Value, activity => activity.Key)
                 .Where(group => group.Key > 0)
                 .OrderByDescending(group => group.Key)
-                .Select(group => string.Join(" / ", group.OrderBy(activity => activity)));
+                .Select(group => group.OrderBy(activity => activity));
             
             return prioritizedActivities;
         }
@@ -375,14 +375,14 @@ namespace MaxPowerLevel.Services
                 }
 
                 var vendorName = vendors[vendor.Hash].DisplayProperties.Name;
-                return GetDisplayString(vendorName, itemRecommendations);
+                var displayName = GetDisplayString(vendorName, itemRecommendations);
+                return new string[] {displayName};
             }).Where(thing => thing != null).OrderBy(thing => thing);
 
             if(!recommendedVendors.Any())
             {
                 return null;
             }
-
             return new Recommendation(description, recommendedVendors);
         }
 

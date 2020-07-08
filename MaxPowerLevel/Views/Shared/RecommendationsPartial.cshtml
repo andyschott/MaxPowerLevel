@@ -2,19 +2,33 @@
 
 @if(Model.Any())
 {
-  <ol>
-    @foreach(var recommendation in Model)
-    {
-      <li>@recommendation</li>
-      @if(recommendation.Activities.Any())
-      {
-        <ol>
-          @foreach(var activity in recommendation.Activities)
-          {
-            <li>@activity</li>
+  <div class="panel recommendations-panel ml-1 mr-1">
+    <p class="panel-heading">
+      Recommendations
+    </p>
+      <div class="panel-block">
+        <table class="table">
+          <tbody>
+          @foreach(var recommendation in Model){
+            <tr>
+              <td>
+                @recommendation
+                @if(recommendation.Activities.Any() && ViewData.Eval("wide") != null) {
+                <table class="table">
+                  @foreach(var activity in recommendation.Activities){
+                    <tr><td>
+                      @foreach(var subactivity in activity){
+                        <span class="tag is-light">@subactivity</span>
+                      }</td>
+                    </tr>
+                  }
+                </table>
+                }
+              </td>
+            </tr>
           }
-        </ol>
-      }
-    }
-  </ol>
+          </tbody>
+        </table>
+      </div>
+  </div>
 }

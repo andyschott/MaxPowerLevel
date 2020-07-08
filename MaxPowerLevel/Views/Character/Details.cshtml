@@ -1,23 +1,26 @@
 @model CharacterViewModel
+@using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 @{
     ViewData["Title"] = Model.ClassName + " Max Power";
 }
 
 <div class="container is-widescreen">
-<p>
-  <a asp-route="AccountDetails" asp-route-type="@((int)Model.Type)" asp-route-id="@Model.AccountId">&lt;&lt; Characters</a>  
-</p>
+  @await Html.PartialAsync("CharacterSummaryPartial", Model, new ViewDataDictionary(ViewData){{"wide", true}})
+  <div class="columns">
+    @if(Model.Recommendations.Any()){
+      <div class="column">
+        @await Html.PartialAsync("RecommendationsPartial", Model.Recommendations, new ViewDataDictionary(ViewData){{"wide", true}})
+      </div>
+    }
 
-@if(!string.IsNullOrEmpty(Model.EmblemBackgroundPath))
-{
-  <div class="character-box destiny2" aria-label="Human Male Titan">
-    <div class="background" style="background-image: url('@Model.EmblemBackgroundPath')"></div>
-    <div class="details">      
-      <div class="character-text"> @Model.ClassName - @Model.MaxPowerHuman</div>        
+    <div class="column">
+      @await Html.PartialAsync("ItemPowerLevelsPartial", Model.Engrams, new ViewDataDictionary(ViewData){{"wide", true}})
     </div>
+
   </div>
-}
-@await Html.PartialAsync("CharacterSummaryPartial", Model)
-@await Html.PartialAsync("CharacterPartial", Model)
+  @if(Model.LowestItems.Any()){
+      @await Html.PartialAsync("LowestItemsPartial", Model.LowestItems)
+  }
+  @await Html.PartialAsync("HighestItemsPartial", Model)
 </div>

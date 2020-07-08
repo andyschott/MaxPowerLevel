@@ -123,3 +123,16 @@ img.char-icon {
   font-size: 32px;
   text-shadow: 1px 1px 1px rgba(0,0,0,0.5), 0px 0px 10px rgba(0,0,0,0.5);
 }
+
+.nav-panels {
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.nav-panel {
+  min-width: 150px;
+  margin: 10px;
+}

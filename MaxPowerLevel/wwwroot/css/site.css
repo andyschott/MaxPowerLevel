@@ -260,3 +260,7 @@ table.dash-board-table th:first-child { border-left: none; }
 .dashboard-cell {
   vertical-align: top;
 }
+
+.comma:not(:last-child):after {
+  content: ", ";
+}

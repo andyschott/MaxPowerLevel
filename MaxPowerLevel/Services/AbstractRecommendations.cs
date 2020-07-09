@@ -375,9 +375,8 @@ namespace MaxPowerLevel.Services
                 }
 
                 var vendorName = vendors[vendor.Hash].DisplayProperties.Name;
-                var displayName = GetDisplayString(vendorName, itemRecommendations);
-                return new string[] {displayName};
-            }).Where(thing => thing != null).OrderBy(thing => thing);
+                return GetDisplayString(vendorName, itemRecommendations);
+            }).Where(thing => thing != null).OrderBy(thing => thing).Select(vendor => new string[] {vendor});
 
             if(!recommendedVendors.Any())
             {

@@ -2,7 +2,7 @@
 
 @if(Model.Any())
 {
-  <div class="panel recommendations-panel ml-1 mr-1">
+  <div class="panel recommendations-panel">
     <p class="panel-heading">
       Recommendations
     </p>
@@ -18,7 +18,7 @@
                   @foreach(var activity in recommendation.Activities){
                     <tr><td>
                       @foreach(var subactivity in activity){
-                        <span class="tag is-light">@subactivity</span>
+                        <span class="is-size-7 has-text-info">@subactivity</span>
                       }</td>
                     </tr>
                   }

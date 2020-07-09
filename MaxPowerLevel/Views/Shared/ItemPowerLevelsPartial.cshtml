@@ -11,7 +11,14 @@
                 {
                     <tr>
                         <td>@engram.Name</td>
-                        <td>@engram.HighestPower</td>
+                        <td>
+                            @if(engram.LowestPower==engram.HighestPower) {
+                                @engram.HighestPower
+                            }
+                            @if(engram.LowestPower<engram.HighestPower) {
+                                <span>@engram.LowestPower - @engram.HighestPower</span>
+                            }
+                        </td>
                     </tr>
                 }
             </tbody>

@@ -1,7 +1,7 @@
 @model MaxPowerLevel.Models.Item
 
 <div class="item-box">
-  <div class="item-slot">@Model.Slot.Name</div>
+  <div class="item-slot">@Model.Slot.Name.Replace(" Weapons","").Replace(" Armor","")</div>
   <div class="pointer item-image divider-border" style="background-image: url('@Model.Icon')">
       <div class="item-power-level"> @Model.PowerLevel </div>
   </div>

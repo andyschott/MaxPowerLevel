@@ -1,50 +1,51 @@
 @model IEnumerable<CharacterViewModel>
 @using System.Linq;
-
 @{
     ViewData["Title"] = "Dashboard";
-
     var firstCharacter = Model.First();
     var type = firstCharacter.Type;
     var accountId = firstCharacter.AccountId;
 }
-
 <table class="dash-board-table mt-1">
     <thead>
         <tr>
             @foreach (var character in Model)
             {
             <th>
-                @await Html.PartialAsync("CharacterSummaryPartial", character)
+                <div class="my-3 mx-3">
+                    @await Html.PartialAsync("CharacterSummaryPartial", character)
+                </div>
             </th>
             }
         </tr>
     </thead>
-    
-    <tr>
-        
-    </tr>
     <tr>
         @foreach (var character in Model)
         {
-            <td style="vertical-align: top;">
-                @await Html.PartialAsync("RecommendationsPartial", character.Recommendations)
+            <td class="dashboard-cell">
+                <div class="my-3 mx-3">
+                    @await Html.PartialAsync("RecommendationsPartial", character.Recommendations)
+                </div>
             </td>
         }
     </tr>
     <tr>
         @foreach (var character in Model)
         {
-            <td style="vertical-align: top;">
-                @await Html.PartialAsync("LowestItemsPartial", character.LowestItems)
+            <td class="dashboard-cell">
+                <div class="my-3 mx-3">
+                    @await Html.PartialAsync("LowestItemsPartial", character.LowestItems)
+                </div>
             </td>
         }
     </tr>
     <tr>
         @foreach (var character in Model)
         {
-            <td style="vertical-align: top;">
-                @await Html.PartialAsync("HighestItemsPartial", character)
+            <td class="dashboard-cell">
+                <div class="my-3 mx-3">
+                    @await Html.PartialAsync("HighestItemsPartial", character)
+                </div>
             </td>
         }
     </tr>

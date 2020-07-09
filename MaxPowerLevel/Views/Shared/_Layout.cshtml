@@ -17,35 +17,36 @@
     <link rel="stylesheet" href="~/css/elements.css" />
 </head>
 <body>
-    <header>
-        <nav class="navbar is-info" role="navigation" aria-label="main navigation">
-            <div class="container is-widescreen has-text-centered">
+    <div class="main">
+        <header>
+            <nav class="navbar is-info" role="navigation" aria-label="main navigation">
+                <div class="container is-fluid has-text-centered">
 
 
-                <div class="navbar-brand">
-                    <a class="navbar-item" asp-area="" asp-controller="Home" asp-action="Index">
-                        <i class="fas fa-level-up-alt mr-1"></i> Destiny 2 Utilities</a>            
-                   
-                </div>
-                 @if(User.Identity.IsAuthenticated){  
-                    <div class="navbar-end">                      
-                        <a class="navbar-item ml-3 is-pulled-right" asp-area="" asp-action="Logout" title="Logout" asp-controller="Account">
-                            <i class="fas fa-sign-out-alt"></i> <span class="ml-1 is-hidden-mobile">Logout</span>
-                        </a>
+                    <div class="navbar-brand">
+                        <a class="navbar-item" asp-area="" asp-controller="Home" asp-action="Index">
+                            <i class="fas fa-level-up-alt mr-1"></i> Destiny 2 Utilities</a>            
+                        
                     </div>
-                    }
-            </div>
-        </nav>
-    </header>
-    
-    <partial name="_CookieConsentPartial" />
-    <main role="main" class="pb-3">
-        @RenderBody()
-    </main>
-    
+                        @if(User.Identity.IsAuthenticated){  
+                        <div class="navbar-end">                      
+                            <a class="navbar-item ml-3 is-pulled-right" asp-area="" asp-action="Logout" title="Logout" asp-controller="Account">
+                                <i class="fas fa-sign-out-alt"></i> <span class="ml-1 is-hidden-mobile">Logout</span>
+                            </a>
+                        </div>
+                        }
+                </div>
+            </nav>
+        </header>
+        <partial name="_CookieConsentPartial" />
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+   
 
     <footer class="footer has-background-light">
-        <div class="container is-widescreen has-text-centered">            
+        <div class="container is-fluid has-text-centered">            
             <p>
                 &copy; 2019-2020 - Andy Schott <a href="https://github.com/andyschott/MaxPowerLevel"><i class="fab fab fa-github-square"></i></a>. 
                 Vendor information courtesy of <a href="https://vendorengrams.xyz">Vendor Engrams</a>

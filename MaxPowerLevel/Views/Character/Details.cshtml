@@ -6,29 +6,32 @@
 }
 
 <div class="container is-fluid">
-  @await Html.PartialAsync("CharacterSummaryPartial", Model, new ViewDataDictionary(ViewData){{"wide", true}})
-  <div class="char-row my-4">
+
+  <div class="character-container">
+    <div class="box character-title my-2">
+      @await Html.PartialAsync("CharacterSummaryPartial", Model, new ViewDataDictionary(ViewData){{"wide", true}})
+    </div>
+  </div>
+
+  <div class="character-container">
     @if(Model.Recommendations.Any()){
-      <div class="mr-4 my-2">
+      <div class="mx-2 my-2">
         @await Html.PartialAsync("RecommendationsPartial", Model.Recommendations, new ViewDataDictionary(ViewData){{"wide", true}})
       </div>
     }
 
-    <div class="my-2">
+    <div class="mx-2 my-2">
       @await Html.PartialAsync("ItemPowerLevelsPartial", Model.Engrams, new ViewDataDictionary(ViewData){{"wide", true}})
     </div>
-
-  </div>
-
-  <div class="item-panels">
-      
+    
     @if(Model.LowestItems.Any()){
-      <div class="mr-4 my-2">
+      <div class="mx-2 my-2">
           @await Html.PartialAsync("LowestItemsPartial", Model.LowestItems)
       </div>
     }
-    <div class="mt-1 my-2">
+    <div class="mx-2 my-2">
       @await Html.PartialAsync("HighestItemsPartial", Model)
     </div>
   </div>
+  
 </div>

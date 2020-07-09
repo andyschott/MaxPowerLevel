@@ -266,7 +266,7 @@ namespace MaxPowerLevel.Services
                     {
                         new Recommendation("Pinnacle Engrams",
                             strongPinnacles.Activities.Concat(weakPinnacles.Activities)
-                                .OrderBy(activity => activity))
+                                .OrderBy(activity => activity.FirstOrDefault()))
                     };
                 }
 

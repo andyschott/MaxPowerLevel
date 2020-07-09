@@ -198,13 +198,13 @@ table.dash-board-table th:first-child { border-left: none; }
   border-radius: 4px; */
   
   padding: 5px;
-  margin: 2px;
+  margin: 5px;
   
   display: flex;
   flex-direction: column;
   max-width: 150px;
-  margin-top: 1rem;
-  margin-right: 1rem;
+  /* margin-top: 5px;
+  margin-right: 5px; */
 }
 
 
@@ -263,4 +263,15 @@ table.dash-board-table th:first-child { border-left: none; }
 
 .comma:not(:last-child):after {
   content: ", ";
+}
+
+.character-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.character-title {
+  display: inline-block;
 }

@@ -7,8 +7,6 @@ a.navbar-brand {
   word-break: break-all;
 }
 
-/* Sticky footer styles
--------------------------------------------------- */
 html {
   font-size: 14px;
 }
@@ -34,13 +32,6 @@ button.accept-policy {
   line-height: inherit;
 }
 
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-  /* position: relative;
-  min-height: 100%; */
-}
-
 body {
   display: flex;
   min-height: 100vh;
@@ -52,9 +43,6 @@ body {
 }
 
 .footer {
-  /* position: absolute;
-  bottom: 0;
-  width: 100%;   */
   padding-top: 1rem !important;
   padding-bottom: 1rem !important;
 }
@@ -191,20 +179,12 @@ table.dash-board-table th:first-child { border-left: none; }
   font-weight: 500;
 }
 
-.item-box {
-  /* border-color: rgba(0,0,0,.12);
-  border-style: solid;
-  border-width: 2px;
-  border-radius: 4px; */
-  
+.item-box {  
   padding: 5px;
   margin: 5px;
-  
   display: flex;
   flex-direction: column;
   max-width: 150px;
-  /* margin-top: 5px;
-  margin-right: 5px; */
 }
 
 

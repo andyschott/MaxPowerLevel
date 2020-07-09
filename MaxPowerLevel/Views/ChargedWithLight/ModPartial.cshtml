@@ -1,9 +1,28 @@
 @model ModData
 
-<span><mod mod="Model">@Model.Name (@Model.Type)</span>
-<ul>
-    @foreach(var perk in Model.Perks)
-    {
-        <li>@perk</li>
-    }
-</ul>
+<div class="box my-2">
+  <div class="media">
+    <div class="media-left">
+      <figure class="image is-48x48">
+          <mod mod="Model"></mod>
+      </figure>
+    </div>
+    <div class="media-content">
+      <div class="content">
+        <p>
+          <strong>@Model.Name</strong><br>
+          <small>@Model.Type</small>
+          
+        </p>
+      </div>
+    </div>
+   </div>
+   <div>
+       <table class="table mt-2">
+            @foreach(var perk in Model.Perks)
+            {
+                <tr><td>@perk</td></tr>
+            }
+        </table>
+   </div>
+</div>

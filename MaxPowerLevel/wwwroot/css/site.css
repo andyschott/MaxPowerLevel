@@ -259,3 +259,29 @@ table.dash-board-table th:first-child { border-left: none; }
 .char-info-text {
   text-align: center;
 }
+
+.charged-columns{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: start;
+}
+
+.charged-column {
+  flex: 1 1 auto;
+  max-width: 1000px;
+
+}
+
+.charged-mods {
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: start;
+
+}
+
+.charged-mod {
+  max-width: 300px;
+}

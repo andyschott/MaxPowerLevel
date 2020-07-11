@@ -6,29 +6,29 @@
 
 <div class="container is-fluid">
     <div class="my-2">
-        <h1 class="title">Charged with Light Mods</h1>
+        <h1 class="title is-5">Charged with Light Mods</h1>
     </div>
     <div class="my-2">
         <p><em>NOTE: There is currently a bug in the Bungie API where mods from Season of Arrivals won't show as unlocked even if they are. Sorry!</em></p>
     </div>
-    <div class="columns class="my-2">
+    <div class="columns my-2">
         <div class="column">
-            <h2 class="subtitle">Become Charged with Light</h2>
-            <ul class="content">
+            <h2 class="subtitle is-4">Become Charged with Light</h2>
+            <div class="charged-mods">
                 @foreach(var mod in Model.BecomeCharged)
                 {
-                    <li>@await Html.PartialAsync("ModPartial", mod)</li>
+                    @await Html.PartialAsync("ModPartial", mod)
                 }
-            </ul>
+            </div>
         </div>
         <div class="column">
-            <h2 class="subtitle">While Charged with Light</h2>
-            <ul class="content">
+            <h2 class="subtitle is-4">While Charged with Light</h2>
+            <div class="charged-mods">
                 @foreach(var mod in Model.WhileCharged)
                 {
-                    <li>@await Html.PartialAsync("ModPartial", mod)</li>
+                    @await Html.PartialAsync("ModPartial", mod)
                 }
-            </ul>
+            </div>
         </div>
     </div>
 </div>

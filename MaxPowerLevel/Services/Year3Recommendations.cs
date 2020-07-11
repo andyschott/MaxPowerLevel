@@ -15,7 +15,7 @@ namespace MaxPowerLevel.Services
         private const string PitOfHeresy = "Pit of Heresy";
         private const string GardenOfSalvation = "Garden of Salvation";
         private const string Strikes = "Weekly Vanguard Strikes";
-        private const string Crucible = "Crucible Core Playlist Challenge ";
+        private const string Crucible = "Crucible Core Playlist Challenge";
         private const string Gambit = "Weekly Gambit Challenge";
         private const string Clan = "Clan Rewards";
 

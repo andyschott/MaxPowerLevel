@@ -2,19 +2,32 @@
 
 @if(Model.Any())
 {
-  <ol>
-    @foreach(var recommendation in Model)
-    {
-      <li>@recommendation</li>
-      @if(recommendation.Activities.Any())
-      {
-        <ol>
-          @foreach(var activity in recommendation.Activities)
-          {
-            <li>@activity</li>
+  <div class="panel recommendations-panel">
+    <p class="panel-heading">
+      Recommendations
+    </p>
+      <div class="panel-block">
+        <table class="table">
+          <tbody>
+          @foreach(var recommendation in Model){
+            <tr>
+              <td>
+                @recommendation
+                
+                <table class="table">
+                  @foreach(var activity in recommendation.Activities){
+                    <tr><td>
+                      @foreach(var subactivity in activity){
+                        <span class="comma is-size-7 has-text-success">@subactivity</span>
+                      }</td>
+                    </tr>
+                  }
+                </table>
+              </td>
+            </tr>
           }
-        </ol>
-      }
-    }
-  </ol>
+          </tbody>
+        </table>
+      </div>
+  </div>
 }

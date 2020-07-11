@@ -1,8 +1,9 @@
 @model MaxPowerLevel.Models.Item
 
-<ul style="list-style-type: none;">
-  <li><strong>@Model.Slot.Name:</strong></li>
-  <li><img src="@Model.Icon"></li>
-  <li><span>[@Model.PowerLevel] @Model.Name</span></li>
-</ul>
-
+<div class="item-box">
+  <div class="item-slot">@Model.Slot.Name.Replace(" Weapons",String.Empty).Replace(" Armor",String.Empty)</div>
+  <div class="pointer item-image divider-border" style="background-image: url('@Model.Icon')">
+      <div class="item-power-level"> @Model.PowerLevel </div>
+  </div>
+  <div class="item-name">@Model.Name</div>
+</div>

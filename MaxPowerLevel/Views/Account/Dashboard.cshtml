@@ -1,73 +1,51 @@
 @model IEnumerable<CharacterViewModel>
 @using System.Linq;
-
 @{
     ViewData["Title"] = "Dashboard";
-
     var firstCharacter = Model.First();
     var type = firstCharacter.Type;
     var accountId = firstCharacter.AccountId;
 }
-
-<p>
-  <a asp-route="AccountDetails" asp-route-type="@((int)firstCharacter.Type)" asp-route-id="@Model.First().AccountId">&lt;&lt; Characters</a>
-</p>
-
-<table style="width: 100%">
+<table class="dash-board-table mt-1">
+    <thead>
+        <tr>
+            @foreach (var character in Model)
+            {
+            <th>
+                <div class="my-3 mx-3">
+                    @await Html.PartialAsync("CharacterSummaryPartial", character)
+                </div>
+            </th>
+            }
+        </tr>
+    </thead>
     <tr>
         @foreach (var character in Model)
         {
-            <td style="width: 33%; text-align:center">
-                <a asp-action="Details" asp-controller="Character" asp-route-type="@((int)type)" asp-route-id="@accountId" asp-route-characterId="@character.Id">
-                    <img src="@character.EmblemPath">
-                </a>
+            <td class="dashboard-cell">
+                <div class="my-3 mx-3">
+                    @await Html.PartialAsync("RecommendationsPartial", character.Recommendations)
+                </div>
             </td>
         }
     </tr>
     <tr>
         @foreach (var character in Model)
         {
-            <td style="vertical-align: top;">
-                @await Html.PartialAsync("CharacterSummaryPartial", character)
+            <td class="dashboard-cell">
+                <div class="my-3 mx-3">
+                    @await Html.PartialAsync("LowestItemsPartial", character.LowestItems)
+                </div>
             </td>
         }
     </tr>
     <tr>
-        <td colspan="3" style="text-align: center">
-            <h1>Recommendations</h1>
-        </td>
-    </tr>
-    <tr>
         @foreach (var character in Model)
         {
-            <td style="vertical-align: top;">
-                @await Html.PartialAsync("RecommendationsPartial", character.Recommendations)
-            </td>
-        }
-    </tr>
-    <tr>
-        <td colspan="3" style="text-align: center">
-            <h1>Lowest Items</h1>
-        </td>
-    </tr>
-    <tr>
-        @foreach (var character in Model)
-        {
-            <td style="vertical-align: top;">
-                @await Html.PartialAsync("LowestItemsPartial", character.LowestItems)
-            </td>
-        }
-    </tr>
-    <tr>
-        <td colspan="3" style="text-align: center">
-            <h1>Highest Power Items</h1>
-        </td>
-    </tr>
-    <tr>
-        @foreach (var character in Model)
-        {
-            <td style="vertical-align: top;">
-                @await Html.PartialAsync("HighestItemsPartial", character)
+            <td class="dashboard-cell">
+                <div class="my-3 mx-3">
+                    @await Html.PartialAsync("HighestItemsPartial", character)
+                </div>
             </td>
         }
     </tr>

@@ -1,19 +1,37 @@
 @model CharacterViewModel
+@using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 @{
     ViewData["Title"] = Model.ClassName + " Max Power";
 }
 
-<p>
-  <a asp-route="AccountDetails" asp-route-type="@((int)Model.Type)" asp-route-id="@Model.AccountId">&lt;&lt; Characters</a>
-</p>
+<div class="container is-fluid">
 
-@if(!string.IsNullOrEmpty(Model.EmblemBackgroundPath))
-{
-  <picture class="float-right">
-    <source media="(min-width: 992px)" srcset="@Model.EmblemBackgroundPath">
-    <img src="@Model.EmblemPath" class="d-none d-md-block">
-  </picture>
-}
-@await Html.PartialAsync("CharacterSummaryPartial", Model)
-@await Html.PartialAsync("CharacterPartial", Model)
+  <div class="character-container">
+    <div class="box character-title my-2">
+      @await Html.PartialAsync("CharacterSummaryPartial", Model, new ViewDataDictionary(ViewData){{"wide", true}})
+    </div>
+  </div>
+
+  <div class="character-container">
+    @if(Model.Recommendations.Any()){
+      <div class="mx-2 my-2">
+        @await Html.PartialAsync("RecommendationsPartial", Model.Recommendations, new ViewDataDictionary(ViewData){{"wide", true}})
+      </div>
+    }
+
+    <div class="mx-2 my-2">
+      @await Html.PartialAsync("ItemPowerLevelsPartial", Model.Engrams, new ViewDataDictionary(ViewData){{"wide", true}})
+    </div>
+    
+    @if(Model.LowestItems.Any()){
+      <div class="mx-2 my-2">
+          @await Html.PartialAsync("LowestItemsPartial", Model.LowestItems)
+      </div>
+    }
+    <div class="mx-2 my-2">
+      @await Html.PartialAsync("HighestItemsPartial", Model)
+    </div>
+  </div>
+  
+</div>

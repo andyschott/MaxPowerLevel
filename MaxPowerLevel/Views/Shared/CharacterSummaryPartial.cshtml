@@ -1,7 +1,32 @@
 @model CharacterViewModel
 
-<h1>Max Power: <span style="white-space: nowrap;">@(Model.MaxPowerHuman)</span></h1>
-<ul>
-  <li>Base Power: @Model.BasePowerHuman</li>
-  <li>Seasonal Artifact Power: @Model.BonusPower</li>
-</ul>
+@if(!string.IsNullOrEmpty(Model.EmblemBackgroundPath))
+{
+    @if(ViewData.Eval("wide")!=null) {
+        <div class="char-summary-wide mt-3 mb-2">
+            
+            <div class="ml-1 character-box" aria-label="Human Male Titan">
+                <div class="background" style="background-image: url('@Model.EmblemBackgroundPath')"></div>
+                <div class="character-text has-text-warning"> @Model.ClassName <span class="ml-2">@Model.MaxPowerHuman</span></div>
+            </div>
+            <div class="ml-5 mt-2 char-info-text">
+                <span style="font-size: 1.5rem; font-weight: 600;">Base Power: @Model.BasePowerHuman</span>
+                <span class="ml-4 artifact-bonus" >Seasonal Artifact Bonus: @Model.BonusPower</span>
+            </div>
+            
+        </div>
+    }
+    @if(ViewData.Eval("wide")==null) {
+        <div class="char-summary-narrow">
+            <div class="character-box mx-1 my-1" aria-label="Human Male Titan">
+                <div class="background" style="background-image: url('@Model.EmblemBackgroundPath')"></div>
+                <div class="character-text has-text-warning"> @Model.ClassName</div>
+            </div>
+            <ul class="mx-1 my-1">
+                <li>Max Power: @Model.MaxPowerHuman</li>
+                <li>Base Power: @Model.BasePowerHuman</li>
+                <li>Seasonal Artifact Bonus: @Model.BonusPower</li>
+            </ul>
+        </div>
+    }
+}

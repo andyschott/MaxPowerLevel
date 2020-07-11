@@ -1,8 +1,13 @@
 @model CharacterViewModel
 
-@foreach(var item in Model.Items)
-{
-    <div class=@("col-md-" + (12 / Model.ItemsPerRow))>
-    @await Html.PartialAsync("ItemPartial", item)
+ <div class="gear-panel panel">
+    <p class="panel-heading">Highest Per Slot</p>
+    <div class="panel-block">
+        <div class='item-grid'>
+            @foreach(var item in Model.Items)
+            {
+                @await Html.PartialAsync("ItemPartial", item)
+            }
+        </div>
     </div>
-}
+</div>

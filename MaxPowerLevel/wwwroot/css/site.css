@@ -7,8 +7,6 @@ a.navbar-brand {
   word-break: break-all;
 }
 
-/* Sticky footer styles
--------------------------------------------------- */
 html {
   font-size: 14px;
 }
@@ -34,23 +32,230 @@ button.accept-policy {
   line-height: inherit;
 }
 
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-  position: relative;
-  min-height: 100%;
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
 }
 
-body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+.main {
+  flex: 1;
 }
+
 .footer {
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+}
+
+img.char-icon {
+  border-radius: 3px;
+  width: 36px;
+  height: 36px;
+  margin-right: 1rem;
+}
+
+/* Override bulma responsive navbar */
+.navbar-item {
+  color: #fff !important;
+}
+
+.navbar-end {
+  justify-content: flex-end !important;
+  margin-left: auto !important;
+  
+  align-items: stretch  !important;;
+  display: flex  !important;;
+}
+
+.navbar > .container {
+  align-items: stretch;
+  display: flex;
+  min-height: 3.25rem;
+  width: 100%;
+}
+
+.character-box {
+  position: relative;
+  border-bottom: 2px solid #666;
+  height: 64px;
+  max-width: 316px;
+  min-width: 175px;
+  border-bottom: none;
+}
+
+.background {
+  border-radius: 6px;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: left center;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+.character-text {  
+  padding: 10px 8px 4px 12px;
+  position: relative;
+
+  margin-left: 50px;
+  font-family: 'Helvetica Neue', 'Helvetica', Arial, sans-serif;
+  font-weight: 500;
+  font-size: 28px;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.5), 0px 0px 10px rgba(0,0,0,0.5);
+}
+
+.nav-panels {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: row;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.nav-panel {
+  width: 350px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.recommendations-panel{
+  max-width: 600px;
+}
+
+table.dash-board-table {
+  margin: auto;
+}
+
+table.dash-board-table th {
+  min-width: 200px; 
+  vertical-align: top; 
+  padding-right: 5px; 
+  padding-left: 5px;
+}
+
+table.dash-board-table { border: none; border-collapse: collapse; }
+table.dash-board-table td { border-left: 1px solid #dbdbdb; }
+table.dash-board-table td:first-child { border-left: none; }
+table.dash-board-table th { border-left: 1px solid #dbdbdb; }
+table.dash-board-table th:first-child { border-left: none; }
+
+.item-image {
+  position: relative;
+  display: inline-block;
+  vertical-align: top;
+  width: 72px;
+  height: 72px;
+  margin-right: 6px;
+  background-size: cover;
+}
+
+.item-power-level {
   position: absolute;
   bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  /* Set the fixed height of the footer here */
-  height: 60px;
-  line-height: 60px; /* Vertically center the text there */
+  width: auto;
+  padding: 0 2px !important;
+  background: rgba(255, 255, 255, 0.9);
+  line-height: 13px;
+  color: rgb(0, 0, 0);
+  font-size: 10px;
+  font-weight: 700;
+  right: 0;
+}
+
+.divider-border {
+  border: 1px solid rgba(0,0,0,.12);
+}
+
+.item-name {
+    word-wrap: break-word;
+}
+
+.item-slot {
+  word-wrap: break-word;
+  font-weight: 500;
+}
+
+.item-box {  
+  padding: 5px;
+  margin: 5px;
+  display: flex;
+  flex-direction: column;
+  max-width: 150px;
+}
+
+
+.item-grid {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.gear-panel {
+  max-width: 600px;
+}
+
+.item-panels {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.char-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+
+}
+
+.char-summary-wide {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.char-summary-narrow {
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.artifact-bonus {
+  display: inline-block;
+}
+
+.dashboard-cell {
+  vertical-align: top;
+}
+
+.comma:not(:last-child):after {
+  content: ", ";
+}
+
+.character-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.character-title {
+  display: inline-block;
+}
+
+.char-info-text {
+  text-align: center;
 }

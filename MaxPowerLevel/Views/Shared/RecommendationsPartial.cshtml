@@ -13,7 +13,7 @@
             <tr>
               <td>
                 @recommendation
-                @if(recommendation.Activities.Any() && ViewData.Eval("wide") != null) {
+                
                 <table class="table">
                   @foreach(var activity in recommendation.Activities){
                     <tr><td>
@@ -23,7 +23,6 @@
                     </tr>
                   }
                 </table>
-                }
               </td>
             </tr>
           }

@@ -79,7 +79,7 @@ img.char-icon {
   border-bottom: 2px solid #666;
   height: 64px;
   max-width: 316px;
-  cursor: pointer;
+  min-width: 175px;
   border-bottom: none;
 }
 
@@ -95,10 +95,10 @@ img.char-icon {
 }
 
 .character-text {  
-  padding: 4px 6px 4px 8px;
+  padding: 10px 8px 4px 12px;
   position: relative;
 
-  margin-left: 64px;
+  margin-left: 50px;
   font-family: 'Helvetica Neue', 'Helvetica', Arial, sans-serif;
   font-weight: 500;
   font-size: 28px;
@@ -220,16 +220,16 @@ table.dash-board-table th:first-child { border-left: none; }
 .char-summary-wide {
   display: flex;
   flex-direction: row;
-  justify-content: start;
+  justify-content: center;
   align-items: center;
   flex-wrap: wrap;
 }
 
 .char-summary-narrow {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: start;
-  align-items: flex-start;
+  align-items: center;
   flex-wrap: wrap;
 }
 
@@ -254,4 +254,8 @@ table.dash-board-table th:first-child { border-left: none; }
 
 .character-title {
   display: inline-block;
+}
+
+.char-info-text {
+  text-align: center;
 }

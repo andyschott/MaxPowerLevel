@@ -150,16 +150,11 @@ namespace MaxPowerLevel.Services
                 .OrderByDescending(item => item.PowerLevel)
                 .ToLookup(item => item.Slot.Hash);
 
-            var maxWeapons = MaxPower.FindMax(gearSlots[ItemSlot.SlotHashes.Kinetic],
-                gearSlots[ItemSlot.SlotHashes.Energy],
-                gearSlots[ItemSlot.SlotHashes.Power]);
-            var maxArmor = MaxPower.FindMax(gearSlots[ItemSlot.SlotHashes.Helmet],
-                gearSlots[ItemSlot.SlotHashes.Gauntlet],
-                gearSlots[ItemSlot.SlotHashes.ChestArmor],
-                gearSlots[ItemSlot.SlotHashes.LegArmor],
-                gearSlots[ItemSlot.SlotHashes.ClassArmor]);
-            
-            var maxItems = maxWeapons.Concat(maxArmor);
+            // As of Season 11, the game seems to ignore the "only one exotic"
+            // rule when computing max power. So at least for now, ignore that
+            // here as well.
+            var maxItems = gearSlots.Select(items => items.First())
+                .OrderBy(item => item.Slot.Order);
 
             _logger.LogDebug("Max power level items:");
             foreach(var item in maxItems)
@@ -167,7 +162,7 @@ namespace MaxPowerLevel.Services
                 _logger.LogDebug(item.ToString());
             }
 
-            return maxItems.ToDictionary(item => (ItemSlot.SlotHashes)item.Slot.Hash);
+            return maxItems.ToDictionary(item => item.Slot.Hash);
         }
     }
 }

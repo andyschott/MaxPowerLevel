@@ -74,6 +74,11 @@ img.char-icon {
   width: 100%;
 }
 
+
+div.character-box {
+  cursor: default;
+}
+
 .character-box {
   position: relative;
   border-bottom: 2px solid #666;
@@ -97,6 +102,7 @@ img.char-icon {
 .character-text {  
   padding: 10px 8px 4px 12px;
   position: relative;
+  white-space: nowrap;
 
   margin-left: 50px;
   font-family: 'Helvetica Neue', 'Helvetica', Arial, sans-serif;
@@ -284,4 +290,8 @@ table.dash-board-table th:first-child { border-left: none; }
 
 .charged-mod {
   max-width: 300px;
+}
+
+.all-chars-link {
+  text-align: center;
 }

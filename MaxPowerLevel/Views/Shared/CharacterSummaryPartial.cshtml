@@ -18,10 +18,10 @@
     }
     @if(ViewData.Eval("wide")==null) {
         <div class="char-summary-narrow">
-            <div class="character-box mx-1 my-1" aria-label="Human Male Titan">
+            <a class="character-box mx-1 my-1" aria-label="Human Male Titan" asp-action="Details" asp-controller="Character" asp-route-type="@((int)Model.Type)" asp-route-id="@Model.AccountId" asp-route-characterId="@Model.Id">
                 <div class="background" style="background-image: url('@Model.EmblemBackgroundPath')"></div>
                 <div class="character-text has-text-warning"> @Model.ClassName</div>
-            </div>
+            </a>
             <ul class="mx-1 my-1">
                 <li>Max Power: @Model.MaxPowerHuman</li>
                 <li>Base Power: @Model.BasePowerHuman</li>

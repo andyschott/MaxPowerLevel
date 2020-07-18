@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Destiny2;
@@ -23,6 +24,8 @@ namespace MaxPowerLevel.Services
         protected override int HardCap => 1060;
 
         protected override uint SeasonHash => 248573323;
+
+        protected override DateTime? EndDateOverride => new DateTime(2020, 11, 10, 0, 0, 0, DateTimeKind.Utc);
 
         protected override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
         {

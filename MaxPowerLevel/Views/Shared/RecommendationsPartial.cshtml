@@ -14,15 +14,17 @@
               <td>
                 @recommendation
                 
-                <table class="table">
+                <div class="content">
+                   <ul class="content">
                   @foreach(var activity in recommendation.Activities){
-                    <tr><td>
+                    <li>
                       @foreach(var subactivity in activity){
-                        <span class="comma is-size-7 has-text-success">@subactivity</span>
-                      }</td>
-                    </tr>
+                        <span class="comma is-size-7 has-text-dark">@subactivity</span>
+                      }
+                    </li>
                   }
-                </table>
+                </ul>
+                </div>
               </td>
             </tr>
           }

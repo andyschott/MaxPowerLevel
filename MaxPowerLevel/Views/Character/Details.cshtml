@@ -10,6 +10,12 @@
   <div class="character-container">
     <div class="box character-title my-2">
       @await Html.PartialAsync("CharacterSummaryPartial", Model, new ViewDataDictionary(ViewData){{"wide", true}})
+
+      <div class="all-chars-link">
+        <a class="button is-link is-outlined" asp-action="Dashboard" asp-controller="Account"  asp-route-type="@((int)Model.Type)" asp-route-id="@Model.AccountId">
+            All Characters
+        </a>
+      </div>
     </div>
   </div>
 

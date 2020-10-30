@@ -43,7 +43,7 @@ namespace MaxPowerLevel.Services
                             ItemSlot.SlotHashes.ClassArmor,
                         }
                     }),
-                    new PinnacleActivity(DarkTimes, new[] { _allSlots })
+                    new PinnacleActivity(DarkTimes, new[] { PinnacleActivities.AllSlots })
                 });
         }
     }

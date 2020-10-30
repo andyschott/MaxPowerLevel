@@ -14,22 +14,6 @@ namespace MaxPowerLevel.Services
         private const string MasterNightmareHunt = "Nightmare Hunt: Master";
         private const string PitOfHeresy = "Pit of Heresy";
         private const string GardenOfSalvation = "Garden of Salvation";
-        private const string Strikes = "Weekly Vanguard Strikes";
-        private const string Crucible = "Crucible Core Playlist Challenge";
-        private const string Gambit = "Weekly Gambit Challenge";
-        private const string Clan = "Clan Rewards";
-
-        protected static readonly ItemSlot.SlotHashes[] _allSlots = new[]
-        {
-            ItemSlot.SlotHashes.Kinetic,
-            ItemSlot.SlotHashes.Energy,
-            ItemSlot.SlotHashes.Power,
-            ItemSlot.SlotHashes.Helmet,
-            ItemSlot.SlotHashes.Gauntlet,
-            ItemSlot.SlotHashes.ChestArmor,
-            ItemSlot.SlotHashes.LegArmor,
-            ItemSlot.SlotHashes.ClassArmor,
-        };
         
         protected Year3Recommendations(IManifest manifest, IVendorEngramsClient vendorEngrams,
             SeasonPass seasonPass)
@@ -54,9 +38,9 @@ namespace MaxPowerLevel.Services
                     }
                 }),
                 // Nightmare Hunt: Master can drop anything
-                new PinnacleActivity(MasterNightmareHunt, new[] { _allSlots }),
+                new PinnacleActivity(MasterNightmareHunt, new[] { PinnacleActivities.AllSlots }),
                 // Nightfall: The Ordeal Weekly Score can drop anything
-                new PinnacleActivity(Nightfall, new[] { _allSlots }),
+                new PinnacleActivity(Nightfall, new[] { PinnacleActivities.AllSlots }),
                 // Garden of Salvation
                 new PinnacleActivity(GardenOfSalvation, new[]
                 {
@@ -93,14 +77,6 @@ namespace MaxPowerLevel.Services
         }
 
         protected override IEnumerable<PinnacleActivity> CreateWeakPinnacleActivities()
-        {
-            return new[]
-            {
-                new PinnacleActivity(Strikes, new[] { _allSlots }),
-                new PinnacleActivity(Crucible, new[] { _allSlots }),
-                new PinnacleActivity(Gambit, new[] { _allSlots }),
-                new PinnacleActivity(Clan, new[] { _allSlots })
-            };
-        }
+            => PinnacleActivities.StandardActivities;
     }
 }

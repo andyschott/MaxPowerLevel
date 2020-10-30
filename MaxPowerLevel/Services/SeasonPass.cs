@@ -67,6 +67,11 @@ namespace MaxPowerLevel.Services
         private async Task<IDictionary<ItemSlot.SlotHashes, int>> LoadAvailableSeasonPassItems(DestinyProgression seasonPassProgression,
             DestinyProgressionDefinition seasonPassProgressionDef)
         {
+            if(seasonPassProgression.RewardItemStates == null)
+            {
+                return new Dictionary<ItemSlot.SlotHashes, int>();
+            }
+            
             var seasonPassRewards = seasonPassProgression.RewardItemStates.ToArray();
 
             // Find all of the rewards that are available but unclaimed

@@ -1,12 +1,11 @@
 using Destiny2;
-using VendorEngrams;
 
 namespace MaxPowerLevel.Services.YearFour
 {
     public class Season12Recommendations : Year4Recommendations
     {
-        public Season12Recommendations(IManifest manifest, IVendorEngramsClient vendorEngrams,
-            SeasonPass seasonPass) : base(manifest, vendorEngrams, seasonPass)
+        public Season12Recommendations(IManifest manifest, SeasonPass seasonPass) :
+            base(manifest, seasonPass)
         {
         }
 

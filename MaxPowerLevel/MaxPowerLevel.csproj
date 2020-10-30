@@ -6,7 +6,6 @@
   <ItemGroup>
     <PackageReference Include="Humanizer" Version="2.8.26"/>
     <PackageReference Include="Fractions" Version="4.0.1"/>
-    <PackageReference Include="VendorEngrams" Version="1.0.0"/>
     <PackageReference Include="Destiny2" Version="1.9.2"/>
   </ItemGroup>
 </Project>

@@ -1,6 +1,5 @@
 using System;
 using Destiny2;
-using VendorEngrams;
 
 namespace MaxPowerLevel.Services
 {
@@ -14,9 +13,8 @@ namespace MaxPowerLevel.Services
         // Season 10 actually ends on June 9
         protected override DateTime? EndDateOverride => new DateTime(2020, 6, 9, 17, 0, 0, DateTimeKind.Utc);
 
-        public Season10Recommendations(IManifest manifest, IVendorEngramsClient vendorEngrams,
-            SeasonPass seasonPass)
-            : base(manifest, vendorEngrams, seasonPass)
+        public Season10Recommendations(IManifest manifest, SeasonPass seasonPass)
+            : base(manifest, seasonPass)
         {
         }
     }

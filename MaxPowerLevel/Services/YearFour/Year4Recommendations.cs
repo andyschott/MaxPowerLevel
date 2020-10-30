@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Destiny2;
 using MaxPowerLevel.Models;
-using VendorEngrams;
 
 namespace MaxPowerLevel.Services.YearFour
 {
@@ -10,9 +9,8 @@ namespace MaxPowerLevel.Services.YearFour
     {
         protected override int TargetRankPlus20Power => 200;
 
-        protected Year4Recommendations(IManifest manifest, IVendorEngramsClient vendorEngrams,
-            SeasonPass seasonPass)
-            : base(manifest, vendorEngrams, seasonPass)
+        protected Year4Recommendations(IManifest manifest, SeasonPass seasonPass)
+            : base(manifest, seasonPass)
         {
         }
 

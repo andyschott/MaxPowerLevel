@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Destiny2;
 using MaxPowerLevel.Models;
-using VendorEngrams;
 
 namespace MaxPowerLevel.Services
 {
@@ -12,8 +11,8 @@ namespace MaxPowerLevel.Services
         private const string Prophecy = "Prophecy"; // New Dungeon
         private const string DarkTimes = "Dark Times"; // Weekly for PE completions
 
-        public Season11Recommendations(IManifest manifest, IVendorEngramsClient vendorEngrams, SeasonPass seasonPass)
-            : base(manifest, vendorEngrams, seasonPass)
+        public Season11Recommendations(IManifest manifest, SeasonPass seasonPass)
+            : base(manifest, seasonPass)
         {
         }
 

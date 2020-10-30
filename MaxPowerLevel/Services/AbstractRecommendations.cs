@@ -4,10 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
 using Destiny2;
-using Destiny2.Definitions;
 using MaxPowerLevel.Helpers;
 using MaxPowerLevel.Models;
-using VendorEngrams;
 
 namespace MaxPowerLevel.Services
 {
@@ -24,39 +22,35 @@ namespace MaxPowerLevel.Services
         protected virtual int CollectionsPowerLevelDifference { get; }= 20;
 
         protected readonly IManifest _manifest;
-        protected readonly IVendorEngramsClient _vendorEngrams;
         private readonly SeasonPass _seasonPass;
         private const int TrailingPowerLevelDifference = 2;
 
-        protected AbstractRecommendations(IManifest manifest, IVendorEngramsClient vendorEngrams,
-            SeasonPass seasonPass)
+        protected AbstractRecommendations(IManifest manifest, SeasonPass seasonPass)
         {
             _manifest = manifest;
-            _vendorEngrams = vendorEngrams;
             _seasonPass = seasonPass;
         }
 
         public async Task<IEnumerable<Recommendation>> GetRecommendations(CharacterRecomendationInfo info)
         {
             var seasonPassSlots = await _seasonPass.LoadAvailableSeasonPassItems(SeasonHash, info.Progressions);
-            return await GetRecommendations(info, seasonPassSlots);
+            return GetRecommendations(info, seasonPassSlots);
         }
 
         public async Task<IDictionary<long, IEnumerable<Recommendation>>> GetRecommendations(IDictionary<long, CharacterRecomendationInfo> infos)
         {
             var seasonPassSlots = await GetSeasonPassSlots(infos);
 
-            var tasks = infos.Select(async info =>
+            var results = infos.Select(info =>
             {
                 var characterSeasonPassRewords = seasonPassSlots[info.Key];
-                return (info.Key, await GetRecommendations(info.Value, characterSeasonPassRewords));
+                return (info.Key, GetRecommendations(info.Value, characterSeasonPassRewords));
             });
 
-            var results = await Task.WhenAll(tasks);
             return results.ToDictionary(item => item.Key, item => item.Item2);
         }
 
-        private async Task<IEnumerable<Recommendation>> GetRecommendations(CharacterRecomendationInfo info,
+        private IEnumerable<Recommendation> GetRecommendations(CharacterRecomendationInfo info,
             IDictionary<ItemSlot.SlotHashes, int> seasonPassSlots)
         {
             if(info.IntPowerLevel < SoftCap)
@@ -64,7 +58,7 @@ namespace MaxPowerLevel.Services
                 var collections = GetCollectionsRecommendations(info.Items, info.IntPowerLevel);
                 return collections.Concat(new[]
                 {
-                    new Recommendation($"Rare, Legendary, and Vendor Engrams to increase your power level to {SoftCap}")
+                    new Recommendation($"Rare and Legendary Engrams to increase your power level to {SoftCap}")
                 });
             }
 
@@ -74,11 +68,6 @@ namespace MaxPowerLevel.Services
 
                 // Recommmend legendary engrams for any slots that could easily be upgraded
                 recommendations.AddRange(CombineItems(info.Items, info.IntPowerLevel - 2, "Rare/Legendary Engrams"));
-                var vendors = await CreateVendorRecommendations(info.Items, info.IntPowerLevel);
-                if(vendors.Any())
-                {
-                    recommendations.AddRange(vendors);
-                }
 
                 var seasonPassRewards = GetItemRecommendations(info.Items, seasonPassSlots, info.IntPowerLevel, 1);
                 if(seasonPassRewards.Any())
@@ -142,7 +131,7 @@ namespace MaxPowerLevel.Services
             {
                 return new[]
                 {
-                    new Engram("Rare, Legendary, and Vendor Engram", intPowerLevel - 3, Math.Min(intPowerLevel, PowerfulCap)),
+                    new Engram("Rare and Legendary Engram", intPowerLevel - 3, Math.Min(intPowerLevel, PowerfulCap)),
                     new Engram("Powerful Engram (Tier 1)", Math.Min(intPowerLevel + 3, PowerfulCap)),
                     new Engram("Powerful Engram (Tier 2)", Math.Min(intPowerLevel + 5, PowerfulCap)),
                     new Engram("Powerful Engram (Tier 3)", Math.Min(intPowerLevel + 6, PowerfulCap)),
@@ -336,53 +325,6 @@ namespace MaxPowerLevel.Services
 
             // 3. Return the average of all possible power gains
             return possiblePowerGains.Average();
-        }
-
-        private async Task<IEnumerable<Recommendation>> CreateVendorRecommendations(IEnumerable<Item> items, int characterPowerLevel)
-        {
-            if(characterPowerLevel >= PowerfulCap)
-            {
-                // Nothing to recommend
-                return Enumerable.Empty<Recommendation>();
-            }
-
-            var vendorEngrams = await _vendorEngrams.GetVendorDrops();
-            var lookup = vendorEngrams.ToLookup(vendorEngram => vendorEngram.Drop);
-
-            var vendorTasks = vendorEngrams.Select(vendor => _manifest.LoadVendor(vendor.Hash));
-            var vendors = (await Task.WhenAll(vendorTasks)).ToDictionary(vendor => vendor.Hash);
-
-            var lowRecommendation = CreateVendorRecommendation(vendors, lookup[DropStatus.Low],
-                items, characterPowerLevel - 3, characterPowerLevel, "Vendor Engrams - Low");
-            var highRecommendation = CreateVendorRecommendation(vendors, lookup[DropStatus.High],
-                items, characterPowerLevel, characterPowerLevel, "Vendor Engrams - High");
-
-            return new[] { lowRecommendation, highRecommendation }.Where(recommendation => recommendation != null);
-        }
-
-        private Recommendation CreateVendorRecommendation(IDictionary<uint, DestinyVendorDefinition> vendors,
-            IEnumerable<Vendor> engrams, IEnumerable<Item> items, int engramPowerLevel, int powerLevel,
-            string description)
-        {
-            var recommendedVendors = engrams.Select(vendor =>
-            {
-                var slots = VendorEngramSlots.GetEngramSlots(vendor.Hash)
-                    .ToDictionary(slotHash => slotHash, slotHash => engramPowerLevel);
-                var itemRecommendations = GetItemRecommendations(items, slots, engramPowerLevel, 1);
-                if(!itemRecommendations.Any())
-                {
-                    return null;
-                }
-
-                var vendorName = vendors[vendor.Hash].DisplayProperties.Name;
-                return GetDisplayString(vendorName, itemRecommendations);
-            }).Where(thing => thing != null).OrderBy(thing => thing).Select(vendor => new string[] {vendor});
-
-            if(!recommendedVendors.Any())
-            {
-                return null;
-            }
-            return new Recommendation(description, recommendedVendors);
         }
 
         private static IEnumerable<(ItemSlot slot, int count)> GetSeasonPassPinnacleRecomendations(IEnumerable<Item> allItems,

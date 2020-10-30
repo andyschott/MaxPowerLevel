@@ -9,7 +9,6 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using VendorEngrams;
 
 namespace MaxPowerLevel
 {
@@ -41,7 +40,6 @@ namespace MaxPowerLevel
                 ApiKey = bungie.ApiKey,
             };
             services.AddDestiny2(config);
-            services.AddVendorEngramsClient("destiny2utils");
 
             services.AddRazorPages();
 
@@ -101,15 +99,14 @@ namespace MaxPowerLevel
             services.AddScoped<IRecommendations>(sp =>
             {
                 var manifest = sp.GetRequiredService<IManifest>();
-                var vendorEngrams = sp.GetRequiredService<IVendorEngramsClient>();
                 var seasonPass = sp.GetRequiredService<SeasonPass>();
 
                 if(DateTime.UtcNow >= Season12StartDate || true)
                 {
-                    return new Season12Recommendations(manifest, vendorEngrams, seasonPass);
+                    return new Season12Recommendations(manifest, seasonPass);
                 }
 
-                return new Season11Recommendations(manifest, vendorEngrams, seasonPass);
+                return new Season11Recommendations(manifest, seasonPass);
             });
         }
     }

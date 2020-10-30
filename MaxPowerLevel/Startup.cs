@@ -3,6 +3,7 @@ using Destiny2;
 using MaxPowerLevel.Helpers;
 using MaxPowerLevel.Services;
 using MaxPowerLevel.Services.YearFour;
+using MaxPowerLevel.Services.YearThree;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;

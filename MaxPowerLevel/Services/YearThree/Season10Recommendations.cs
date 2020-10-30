@@ -1,7 +1,7 @@
 using System;
 using Destiny2;
 
-namespace MaxPowerLevel.Services
+namespace MaxPowerLevel.Services.YearThree
 {
     public class Season10Recommendations : Year3Recommendations
     {

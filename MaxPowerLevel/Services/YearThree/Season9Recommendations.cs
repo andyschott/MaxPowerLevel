@@ -3,7 +3,7 @@ using System.Linq;
 using Destiny2;
 using MaxPowerLevel.Models;
 
-namespace MaxPowerLevel.Services
+namespace MaxPowerLevel.Services.YearThree
 {
     public class Season9Recommendations : Year3Recommendations
     {

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Destiny2;
 using MaxPowerLevel.Models;
 
-namespace MaxPowerLevel.Services
+namespace MaxPowerLevel.Services.YearThree
 {
     public abstract class Year3Recommendations : AbstractRecommendations
     {

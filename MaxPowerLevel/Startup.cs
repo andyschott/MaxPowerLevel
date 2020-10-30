@@ -102,7 +102,7 @@ namespace MaxPowerLevel
                 var manifest = sp.GetRequiredService<IManifest>();
                 var seasonPass = sp.GetRequiredService<SeasonPass>();
 
-                if(DateTime.UtcNow >= Season12StartDate || true)
+                if(DateTime.UtcNow >= Season12StartDate)
                 {
                     return new Season12Recommendations(manifest, seasonPass);
                 }

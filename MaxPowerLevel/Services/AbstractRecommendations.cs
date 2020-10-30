@@ -18,8 +18,8 @@ namespace MaxPowerLevel.Services
         protected abstract int TargetRankPlus20Power { get; }
         protected virtual DateTime? EndDateOverride { get; } = null;
 
-        // Items pulled from Collections are 20 power levels below the character's max
-        protected virtual int CollectionsPowerLevelDifference { get; }= 20;
+        // Items purchased from Vendors are 20 power levels below the character's max
+        protected virtual int VendorPowerLevelDifference { get; } = 20;
 
         protected readonly IManifest _manifest;
         private readonly SeasonPass _seasonPass;
@@ -55,7 +55,7 @@ namespace MaxPowerLevel.Services
         {
             if(info.IntPowerLevel < SoftCap)
             {
-                var collections = GetCollectionsRecommendations(info.Items, info.IntPowerLevel);
+                var collections = GetVendorRecommendations(info.Items, info.IntPowerLevel);
                 return collections.Concat(new[]
                 {
                     new Recommendation($"Rare and Legendary Engrams to increase your power level to {SoftCap}")
@@ -64,7 +64,7 @@ namespace MaxPowerLevel.Services
 
             if(info.IntPowerLevel < PowerfulCap)
             {
-                var recommendations = new List<Recommendation>(GetCollectionsRecommendations(info.Items, info.IntPowerLevel));
+                var recommendations = new List<Recommendation>(GetVendorRecommendations(info.Items, info.IntPowerLevel));
 
                 // Recommmend legendary engrams for any slots that could easily be upgraded
                 recommendations.AddRange(CombineItems(info.Items, info.IntPowerLevel - 2, "Rare/Legendary Engrams"));
@@ -182,10 +182,10 @@ namespace MaxPowerLevel.Services
             return  _seasonPass.LoadAvailableSeasonPassItems(SeasonHash, progressions);
         }
 
-        private IEnumerable<Recommendation> GetCollectionsRecommendations(IEnumerable<Item> allItems, int powerLevel)
+        private IEnumerable<Recommendation> GetVendorRecommendations(IEnumerable<Item> allItems, int powerLevel)
         {
-            return CombineItems(allItems, powerLevel - CollectionsPowerLevelDifference,
-                "Pull from Collections");
+            return CombineItems(allItems, powerLevel - VendorPowerLevelDifference,
+                "Vendor Engrams");
         }
 
         private static IEnumerable<Recommendation> CombineItems(IEnumerable<Item> allItems,

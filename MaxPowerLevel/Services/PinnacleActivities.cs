@@ -17,13 +17,16 @@ namespace MaxPowerLevel.Services
             ItemSlot.SlotHashes.ClassArmor,
         };
 
-        public static readonly IEnumerable<PinnacleActivity> StandardActivities =
-            new[]
-            {
-                new PinnacleActivity("Weekly Vanguard Strikes", new[] { AllSlots }),
-                new PinnacleActivity("Crucible Core Playlist Challenge", new[] { AllSlots }),
-                new PinnacleActivity("Weekly Gambit Challenge", new[] { AllSlots }),
-                new PinnacleActivity("Clan Rewards", new[] { AllSlots })
-            };
+
+        public static readonly PinnacleActivity Strikes =
+            new PinnacleActivity("Weekly Vanguard Strikes", new[] { AllSlots });
+        public static readonly PinnacleActivity Crucible =
+            new PinnacleActivity("Crucible Playlist Challenge", new[] { AllSlots });
+        public static readonly PinnacleActivity Gambit =
+            new PinnacleActivity("Gambit", new[] { AllSlots });
+        public static readonly PinnacleActivity Clan =
+            new PinnacleActivity("Clan Rewards", new[] { AllSlots });
+        public static readonly PinnacleActivity NightfallScore =
+            new PinnacleActivity("Nightfall: The Ordeal Weekly Score", new[] { PinnacleActivities.AllSlots });
     }
 }

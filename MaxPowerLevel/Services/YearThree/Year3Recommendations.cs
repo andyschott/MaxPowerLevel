@@ -9,7 +9,6 @@ namespace MaxPowerLevel.Services.YearThree
         protected override int SoftCap => 900;
         protected override int TargetRankPlus20Power => 200;
 
-        private const string Nightfall = "Nightfall: The Ordeal Weekly Score";
         private const string MasterNightmareHunt = "Nightmare Hunt: Master";
         private const string PitOfHeresy = "Pit of Heresy";
         private const string GardenOfSalvation = "Garden of Salvation";
@@ -38,7 +37,7 @@ namespace MaxPowerLevel.Services.YearThree
                 // Nightmare Hunt: Master can drop anything
                 new PinnacleActivity(MasterNightmareHunt, new[] { PinnacleActivities.AllSlots }),
                 // Nightfall: The Ordeal Weekly Score can drop anything
-                new PinnacleActivity(Nightfall, new[] { PinnacleActivities.AllSlots }),
+                PinnacleActivities.NightfallScore,
                 // Garden of Salvation
                 new PinnacleActivity(GardenOfSalvation, new[]
                 {
@@ -74,7 +73,12 @@ namespace MaxPowerLevel.Services.YearThree
             };
         }
 
-        protected override IEnumerable<PinnacleActivity> CreateWeakPinnacleActivities()
-            => PinnacleActivities.StandardActivities;
+        protected override IEnumerable<PinnacleActivity> CreateWeakPinnacleActivities() => new[]
+        {
+            PinnacleActivities.Strikes,
+            PinnacleActivities.Crucible,
+            PinnacleActivities.Gambit,
+            PinnacleActivities.Clan
+        };
     }
 }

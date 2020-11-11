@@ -17,11 +17,18 @@ namespace MaxPowerLevel.Services.YearFour
         protected override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
         {
             // TODO: Add pinnacle activities once they are known
-            return Enumerable.Empty<PinnacleActivity>();
+            return new[]
+            {
+                PinnacleActivities.NightfallScore,
+            };
         }
 
-        // TODO: Verify weak pinnacles are the same as during year 3
-        protected override IEnumerable<PinnacleActivity> CreateWeakPinnacleActivities()
-            => PinnacleActivities.StandardActivities;
+        protected override IEnumerable<PinnacleActivity> CreateWeakPinnacleActivities() => new[]
+        {
+            PinnacleActivities.Strikes,
+            PinnacleActivities.Crucible,
+            PinnacleActivities.Gambit,
+            PinnacleActivities.Clan,
+        };
     }
 }

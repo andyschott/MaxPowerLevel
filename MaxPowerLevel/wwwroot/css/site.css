@@ -172,6 +172,15 @@ table.dash-board-table th:first-child { border-left: none; }
   right: 0;
 }
 
+.item-watermark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: auto;
+  height: auto;
+  display: inline-block;
+}
+
 .divider-border {
   border: 1px solid rgba(0,0,0,.12);
 }

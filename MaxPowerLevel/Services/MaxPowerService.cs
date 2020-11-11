@@ -124,17 +124,35 @@ namespace MaxPowerLevel.Services
                 }
 
                 string iconUrl = null;
+                string watermark = null;
                 if(itemComponent.OverrideStyleItemHash != null && !_defaultOrnaments.Contains(itemComponent.OverrideStyleItemHash.Value))
                 {
                     var overrideIcon = await _manifest.LoadInventoryItem(itemComponent.OverrideStyleItemHash.Value);
                     iconUrl = overrideIcon.DisplayProperties.Icon;
+
+                    watermark = GetWatermarkIcon(overrideIcon);
+                }
+                else
+                {
+                    watermark = GetWatermarkIcon(itemDef);
                 }
 
                 itemInstances.TryGetValue(itemComponent.ItemInstanceId, out DestinyItemInstanceComponent instance);
-                items.Add(new Item(_bungie.Value.BaseUrl, itemComponent, itemDef, bucket, instance, iconUrl));
+                items.Add(new Item(_bungie.Value.BaseUrl, itemComponent, itemDef, bucket, instance, iconUrl, watermark));
             }
 
             return items;
+        }
+
+        private static string GetWatermarkIcon(DestinyInventoryItemDefinition itemDef)
+        {
+            if(itemDef.Quality == null || itemDef.Quality.CurrentVersion < 0)
+            {
+                return string.Empty;
+            }
+
+            return itemDef.Quality.DisplayVersionWatermarkIcons.Skip(itemDef.Quality.CurrentVersion)
+                .FirstOrDefault();
         }
 
         private static bool ShouldInclude(DestinyInventoryBucketDefinition bucket)

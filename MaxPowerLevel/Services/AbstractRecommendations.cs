@@ -122,8 +122,8 @@ namespace MaxPowerLevel.Services
             {
                 return new[]
                 {
-                    // TODO: Verify power level of engrams before the soft cap
-                    new Engram("Rare/Legendary Engram",  intPowerLevel + 1, intPowerLevel + 2)
+                    new Engram("Rare/Legendary Engram",  intPowerLevel + 4, intPowerLevel + 6),
+                    new Engram("Prime Engram", intPowerLevel + 7)
                 };
             }
 
@@ -132,6 +132,7 @@ namespace MaxPowerLevel.Services
                 return new[]
                 {
                     new Engram("Rare and Legendary Engram", intPowerLevel - 3, Math.Min(intPowerLevel, PowerfulCap)),
+                    new Engram("Prime Engram", intPowerLevel + 3),
                     new Engram("Powerful Engram (Tier 1)", Math.Min(intPowerLevel + 3, PowerfulCap)),
                     new Engram("Powerful Engram (Tier 2)", Math.Min(intPowerLevel + 5, PowerfulCap)),
                     new Engram("Powerful Engram (Tier 3)", Math.Min(intPowerLevel + 6, PowerfulCap)),
@@ -145,6 +146,7 @@ namespace MaxPowerLevel.Services
                 return new[]
                 {
                     new Engram("Rare/Legendary Engram", Math.Min(intPowerLevel - 3, PowerfulCap), PowerfulCap),
+                    new Engram("Prime Engram", intPowerLevel),
                     new Engram("Powerful Engram (Tier 1)", intPowerLevel),
                     new Engram("Powerful Engram (Tier 2)", intPowerLevel),
                     new Engram("Powerful Engram (Tier 3)", intPowerLevel),

@@ -15,6 +15,6 @@ namespace MaxPowerLevel.Services.YearFour
 
         protected override int HardCap => 1260;
 
-        protected override uint SeasonHash => 1162944553;
+        protected override uint SeasonHash => 2809059427;
     }
 }

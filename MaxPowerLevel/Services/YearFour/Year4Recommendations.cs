@@ -16,10 +16,19 @@ namespace MaxPowerLevel.Services.YearFour
 
         protected override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
         {
-            // TODO: Add pinnacle activities once they are known
             return new[]
             {
                 PinnacleActivities.NightfallScore,
+                new PinnacleActivity("Deep Stone Crypt", new[]
+                {
+                    // Deep Stone Crypt has 4 encounters. Update drops for each encounter once the loot table is known
+                    PinnacleActivities.AllSlots,
+                    PinnacleActivities.AllSlots,
+                    PinnacleActivities.AllSlots,
+                    PinnacleActivities.AllSlots,
+                }),
+                new PinnacleActivity("Weekly Wrathborn Hunts", new[] { PinnacleActivities.AllSlots }),
+                new PinnacleActivity("Weekly Exo Challenge", new[] { PinnacleActivities.AllSlots }),
             };
         }
 

@@ -21,14 +21,38 @@ namespace MaxPowerLevel.Services.YearFour
                 PinnacleActivities.NightfallScore,
                 new PinnacleActivity("Deep Stone Crypt", new[]
                 {
-                    // Deep Stone Crypt has 4 encounters. Update drops for each encounter once the loot table is known
-                    PinnacleActivities.AllSlots,
-                    PinnacleActivities.AllSlots,
-                    PinnacleActivities.AllSlots,
-                    PinnacleActivities.AllSlots,
+                    new[]
+                    {
+                        ItemSlot.SlotHashes.Gauntlet,
+                        ItemSlot.SlotHashes.ClassArmor,
+                        ItemSlot.SlotHashes.LegArmor,
+                        ItemSlot.SlotHashes.Energy // Scout Rifle
+                    },
+                    new[]
+                    {
+                        ItemSlot.SlotHashes.Gauntlet,
+                        ItemSlot.SlotHashes.ClassArmor,
+                        ItemSlot.SlotHashes.LegArmor,
+                        ItemSlot.SlotHashes.Kinetic, // Sniper Rifle and Shotgun
+                    },
+                    new[]
+                    {
+                        ItemSlot.SlotHashes.ChestArmor,
+                        ItemSlot.SlotHashes.Gauntlet,
+                        ItemSlot.SlotHashes.ClassArmor,
+                        ItemSlot.SlotHashes.Energy // Hand Cannon
+                    },
+                    new[]
+                    {
+                        ItemSlot.SlotHashes.Helmet,
+                        ItemSlot.SlotHashes.ChestArmor,
+                        ItemSlot.SlotHashes.LegArmor,
+                        ItemSlot.SlotHashes.Power // Sword and HMG
+                    },
                 }),
                 new PinnacleActivity("Weekly Wrathborn Hunts", new[] { PinnacleActivities.AllSlots }),
                 new PinnacleActivity("Weekly Exo Challenge", new[] { PinnacleActivities.AllSlots }),
+                new PinnacleActivity("Weekly Empire Hunts", new[] { PinnacleActivities.AllSlots })
             };
         }
 

@@ -147,9 +147,7 @@ namespace MaxPowerLevel.Services
                 {
                     new Engram("Rare/Legendary Engram", Math.Min(intPowerLevel - 3, PowerfulCap), PowerfulCap),
                     new Engram("Prime Engram", intPowerLevel),
-                    new Engram("Powerful Engram (Tier 1)", intPowerLevel),
-                    new Engram("Powerful Engram (Tier 2)", intPowerLevel),
-                    new Engram("Powerful Engram (Tier 3)", intPowerLevel),
+                    new Engram("Powerful Engram", intPowerLevel),
                     new Engram("Season Pass Items", intPowerLevel),
                     new Engram("Pinnacle Engram (Weak)", Math.Min(intPowerLevel + 1, HardCap)),
                     new Engram("Pinnacle Engram", Math.Min(intPowerLevel + 2, HardCap))

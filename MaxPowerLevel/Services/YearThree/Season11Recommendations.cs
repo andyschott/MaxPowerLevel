@@ -8,7 +8,6 @@ namespace MaxPowerLevel.Services.YearThree
 {
     public class Season11Recommendations : Year3Recommendations
     {
-        private const string Prophecy = "Prophecy"; // New Dungeon
         private const string DarkTimes = "Dark Times"; // Weekly for PE completions
 
         public Season11Recommendations(IManifest manifest, SeasonPass seasonPass)
@@ -31,17 +30,7 @@ namespace MaxPowerLevel.Services.YearThree
             return base.CreatePinnacleActivities()
                 .Concat(new[]
                 {
-                    new PinnacleActivity(Prophecy, new[]
-                    {
-                        new[]
-                        {
-                            ItemSlot.SlotHashes.Helmet,
-                            ItemSlot.SlotHashes.Gauntlet,
-                            ItemSlot.SlotHashes.ChestArmor,
-                            ItemSlot.SlotHashes.LegArmor,
-                            ItemSlot.SlotHashes.ClassArmor,
-                        }
-                    }),
+                    PinnacleActivities.Prophecy,
                     new PinnacleActivity(DarkTimes, new[] { PinnacleActivities.AllSlots })
                 });
         }

@@ -17,7 +17,6 @@ namespace MaxPowerLevel.Services
             ItemSlot.SlotHashes.ClassArmor,
         };
 
-
         public static readonly PinnacleActivity Strikes =
             new PinnacleActivity("Weekly Vanguard Strikes", new[] { AllSlots });
         public static readonly PinnacleActivity Crucible =
@@ -28,5 +27,17 @@ namespace MaxPowerLevel.Services
             new PinnacleActivity("Clan Rewards", new[] { AllSlots });
         public static readonly PinnacleActivity NightfallScore =
             new PinnacleActivity("Nightfall: The Ordeal Weekly Score", new[] { PinnacleActivities.AllSlots });
+
+        public static readonly PinnacleActivity Prophecy = new PinnacleActivity("Prophecy", new[]
+        {
+            new[]
+            {
+                ItemSlot.SlotHashes.Helmet,
+                ItemSlot.SlotHashes.Gauntlet,
+                ItemSlot.SlotHashes.ChestArmor,
+                ItemSlot.SlotHashes.LegArmor,
+                ItemSlot.SlotHashes.ClassArmor,
+            }
+        });
     }
 }

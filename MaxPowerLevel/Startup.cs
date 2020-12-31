@@ -1,9 +1,7 @@
-﻿using System;
-using Destiny2;
+﻿using Destiny2;
 using MaxPowerLevel.Helpers;
 using MaxPowerLevel.Services;
 using MaxPowerLevel.Services.YearFour;
-using MaxPowerLevel.Services.YearThree;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpOverrides;
@@ -32,6 +30,7 @@ namespace MaxPowerLevel
             services.AddScoped<IMaxPowerService, MaxPowerService>();
             services.AddScoped<SeasonPass>();
             services.AddScoped<ChargedWithLight>();
+            services.AddScoped<Affinitization>();
             AddRecommendations(services);
 
             var config = new Destiny2Config(Configuration["AppName"], Configuration["AppVersion"],

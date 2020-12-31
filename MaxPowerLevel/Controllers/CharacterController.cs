@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Destiny2;
+using Destiny2.Services;
 using MaxPowerLevel.Helpers;
 using MaxPowerLevel.Models;
 using MaxPowerLevel.Services;
@@ -21,12 +22,14 @@ namespace MaxPowerLevel.Controllers
         private readonly IManifest _manifest;
         private readonly IMaxPowerService _maxPower;
         private readonly IRecommendations _recommendations;
+        private readonly Affinitization _affinitization;
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IOptions<BungieSettings> _bungie;
         private readonly ILogger _logger;
 
         public CharacterController(IDestiny2 destiny, IMaxPowerService maxPower,
             IManifest manifest, IRecommendations recommendations,
+            Affinitization affinitization,
             IHttpContextAccessor contextAccessor, IOptions<BungieSettings> bungie,
             ILogger<CharacterController> logger)
         {
@@ -34,6 +37,7 @@ namespace MaxPowerLevel.Controllers
             _maxPower = maxPower;
             _manifest = manifest;
             _recommendations = recommendations;
+            _affinitization = affinitization;
             _contextAccessor = contextAccessor;
             _bungie = bungie;
             _logger = logger;
@@ -50,12 +54,13 @@ namespace MaxPowerLevel.Controllers
             });
 
             return Redirect(url);
-        }
-        
+        }        
 
         [HttpGet("{type}/{id}/characters/{characterId}")]
         public async Task<IActionResult> Details(int type, long id, long characterId)
         {
+            _affinitization.SetCookies(Request.Cookies);
+
             var membershipType = (BungieMembershipType)type;
             _logger.LogInformation($"{membershipType}/{id}/{characterId}");
 
@@ -128,6 +133,11 @@ namespace MaxPowerLevel.Controllers
                 Engrams = _recommendations.GetEngramPowerLevels(maxPower),
                 ClassName = classTask.Result.DisplayProperties.Name
             };
+
+            foreach(var cookie in _affinitization.GetCookies())
+            {
+                Response.Cookies.Append(cookie.name, cookie.value);
+            }
 
             return View(model);
         }

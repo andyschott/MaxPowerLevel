@@ -23,18 +23,21 @@ namespace MaxPowerLevel.Controllers
     private readonly IManifest _manifest;
     private readonly IMaxPowerService _maxPower;
     private readonly IRecommendations _recommendations;
+    private readonly Affinitization _affinitization;
     private readonly IHttpContextAccessor _contextAccessor;
     private readonly IOptions<BungieSettings> _bungie;
     private readonly ILogger _logger;
 
     public AccountController(IDestiny2 destiny, IManifest manifest,
-        IMaxPowerService maxPower, IRecommendations recommendations, IHttpContextAccessor contextAccessor,
+        IMaxPowerService maxPower, IRecommendations recommendations, Affinitization affinitization,
+        IHttpContextAccessor contextAccessor,
         IOptions<BungieSettings> bungie, ILogger<AccountController> logger)
     {
         _destiny = destiny;
         _manifest = manifest;
         _maxPower = maxPower;
         _recommendations = recommendations;
+        _affinitization = affinitization;
         _contextAccessor = contextAccessor;
         _bungie = bungie;
         _logger = logger;
@@ -61,6 +64,8 @@ namespace MaxPowerLevel.Controllers
     [Authorize]
     public async Task<IActionResult> Index()
     {
+        _affinitization.SetCookies(Request.Cookies);
+
         _logger.LogInformation("Index");
         var accessToken = _contextAccessor.HttpContext.GetTokenAsync("access_token");
 
@@ -85,6 +90,11 @@ namespace MaxPowerLevel.Controllers
           return Redirect(url);
         }
 
+        foreach(var cookie in _affinitization.GetCookies())
+        {
+            Response.Cookies.Append(cookie.name, cookie.value);
+        }
+
         var model = new AccountsViewModel();
         model.Accounts = accounts;
         return View(model);
@@ -106,6 +116,8 @@ namespace MaxPowerLevel.Controllers
     [Authorize]
     public async Task<IActionResult> Details(int type, long id)
     {
+        _affinitization.SetCookies(Request.Cookies);
+
         var membershipType = (BungieMembershipType)type;
         _logger.LogInformation($"{membershipType}/{id}");
 
@@ -134,6 +146,11 @@ namespace MaxPowerLevel.Controllers
             }
         }
 
+        foreach(var cookie in _affinitization.GetCookies())
+        {
+            Response.Cookies.Append(cookie.name, cookie.value);
+        }
+
         return View(model);
     }
 
@@ -141,6 +158,8 @@ namespace MaxPowerLevel.Controllers
     [Authorize]
     public async Task<IActionResult> Dashboard(BungieMembershipType type, long id)
     {
+        _affinitization.SetCookies(Request.Cookies);
+
         _logger.LogInformation($"{type}/{id}/dashboard");
 
         var accessToken = await _contextAccessor.HttpContext.GetTokenAsync("access_token");
@@ -207,6 +226,11 @@ namespace MaxPowerLevel.Controllers
         }
 
         await LoadClasses(profile.Characters.Data, viewModels);
+
+        foreach(var cookie in _affinitization.GetCookies())
+        {
+            Response.Cookies.Append(cookie.name, cookie.value);
+        }
 
         return View(viewModels.Values);
     }

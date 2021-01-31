@@ -1,4 +1,5 @@
-﻿using Destiny2;
+﻿using System;
+using Destiny2;
 using MaxPowerLevel.Helpers;
 using MaxPowerLevel.Services;
 using MaxPowerLevel.Services.YearFour;
@@ -91,8 +92,8 @@ namespace MaxPowerLevel
             });
         }
 
-        // private static readonly DateTime Season12StartDate =
-        //     new DateTime(2020, 11, 10, 17, 0, 0, DateTimeKind.Utc);
+        private static readonly DateTime Season13StartDate =
+            new DateTime(2021, 2, 9, 17, 0, 0, DateTimeKind.Utc);
 
         private void AddRecommendations(IServiceCollection services)
         {
@@ -101,10 +102,10 @@ namespace MaxPowerLevel
                 var manifest = sp.GetRequiredService<IManifest>();
                 var seasonPass = sp.GetRequiredService<SeasonPass>();
 
-                // if(DateTime.UtcNow >= Season12StartDate)
-                // {
-                //     return new Season12Recommendations(manifest, seasonPass);
-                // }
+                if(DateTime.UtcNow >= Season13StartDate)
+                {
+                    return new Season13Recommendations(manifest, seasonPass);
+                }
 
                 return new Season12Recommendations(manifest, seasonPass);
             });

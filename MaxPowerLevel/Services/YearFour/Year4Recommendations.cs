@@ -56,7 +56,8 @@ namespace MaxPowerLevel.Services.YearFour
                 new PinnacleActivity("Coup De Grâce", new[] { PinnacleActivities.AllSlots }),
                 new PinnacleActivity("Weekly Exo Challenge", new[] { PinnacleActivities.AllSlots }),
                 new PinnacleActivity("Weekly Empire Hunts", new[] { PinnacleActivities.AllSlots }),
-                PinnacleActivities.Prophecy
+                PinnacleActivities.Prophecy,
+                new PinnacleActivity("Harbringer", new[] { PinnacleActivities.AllSlots })
             };
         }
 

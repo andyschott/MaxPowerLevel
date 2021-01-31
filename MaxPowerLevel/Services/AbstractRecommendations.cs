@@ -62,9 +62,26 @@ namespace MaxPowerLevel.Services
                 });
             }
 
+            Recommendation engramsRecommendation = null;
+            var engramUpgrades = info.Engrams.Where(engram =>
+            {
+                return info.Items.Any(item => engram.PowerLevel > item.PowerLevel);
+            });
+            if(engramUpgrades.Any())
+            {
+                var count = engramUpgrades.Count();
+                var countString = count > 1 ? $" {count}" : string.Empty;
+                engramsRecommendation  = new Recommendation($"Decrypt Engrams at the Cryptarch{count}");
+            }
+
             if(info.IntPowerLevel < PowerfulCap)
             {
                 var recommendations = new List<Recommendation>(GetVendorRecommendations(info.Items, info.IntPowerLevel));
+
+                if(engramsRecommendation != null)
+                {
+                    recommendations.Add(engramsRecommendation);
+                }
 
                 // Recommmend legendary engrams for any slots that could easily be upgraded
                 recommendations.AddRange(CombineItems(info.Items, info.IntPowerLevel - 2, "Rare/Legendary Engrams"));
@@ -85,6 +102,11 @@ namespace MaxPowerLevel.Services
             if(info.IntPowerLevel < HardCap)
             {
                 var recommendations = new List<Recommendation>();
+
+                if(engramsRecommendation != null)
+                {
+                    recommendations.Add(engramsRecommendation);
+                }
 
                 var seasonPassRewards = GetSeasonPassPinnacleRecomendations(info.Items, seasonPassSlots, info.PowerLevel);
                 if (seasonPassRewards.Any())

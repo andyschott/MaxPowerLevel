@@ -71,6 +71,8 @@ namespace MaxPowerLevel.Models
             ClassBanners = 4292445962,
             Emblems = 4274335291,
             Emotes = 1107761855,
+
+            Engrams = 375726501,
         }
 
         public override bool Equals(object obj)

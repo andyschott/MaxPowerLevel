@@ -13,7 +13,7 @@ namespace MaxPowerLevel.Models
             string overrideIconUrl = null, string watermark = null)
         {
             Name = itemDef.DisplayProperties.Name;
-            PowerLevel = instance?.PrimaryStat?.Value ?? 0;
+            PowerLevel = GetPowerLevel(instance, bucket);
             Slot = new ItemSlot(bucket);
             Tier = itemDef.Inventory.TierType;
             ClassType = itemDef.ClassType;
@@ -44,6 +44,7 @@ namespace MaxPowerLevel.Models
 
         public bool IsWeapon => Slot.IsWeapon;
         public bool IsArmor => Slot.IsArmor;
+        public bool IsEngram => Slot.Hash == ItemSlot.SlotHashes.Engrams;
 
         public override bool Equals(object obj)
         {
@@ -82,6 +83,22 @@ namespace MaxPowerLevel.Models
 
             return itemDef.Quality.DisplayVersionWatermarkIcons.Skip(itemDef.Quality.CurrentVersion)
                 .FirstOrDefault();
+        }
+
+        private static int GetPowerLevel(DestinyItemInstanceComponent instance,
+            DestinyInventoryBucketDefinition bucket)
+        {
+            if(instance is null)
+            {
+                return 0;
+            }
+
+            if(bucket.Hash == (uint)ItemSlot.SlotHashes.Engrams)
+            {
+                return instance.ItemLevel * 10;
+            }
+
+            return instance.PrimaryStat?.Value ?? 0;
         }
     }
 }

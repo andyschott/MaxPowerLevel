@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Destiny2;
-using Destiny2.Services;
+using Destiny2.Entities.Items;
 using MaxPowerLevel.Helpers;
 using MaxPowerLevel.Models;
 using MaxPowerLevel.Services;
@@ -23,13 +23,14 @@ namespace MaxPowerLevel.Controllers
         private readonly IMaxPowerService _maxPower;
         private readonly IRecommendations _recommendations;
         private readonly Affinitization _affinitization;
+        private readonly ItemService _itemService;
         private readonly IHttpContextAccessor _contextAccessor;
         private readonly IOptions<BungieSettings> _bungie;
         private readonly ILogger _logger;
 
         public CharacterController(IDestiny2 destiny, IMaxPowerService maxPower,
             IManifest manifest, IRecommendations recommendations,
-            Affinitization affinitization,
+            Affinitization affinitization, ItemService itemService,
             IHttpContextAccessor contextAccessor, IOptions<BungieSettings> bungie,
             ILogger<CharacterController> logger)
         {
@@ -38,6 +39,7 @@ namespace MaxPowerLevel.Controllers
             _manifest = manifest;
             _recommendations = recommendations;
             _affinitization = affinitization;
+            _itemService = itemService;
             _contextAccessor = contextAccessor;
             _bungie = bungie;
             _logger = logger;
@@ -96,6 +98,13 @@ namespace MaxPowerLevel.Controllers
                 return Redirect(url);
             }
 
+            var inventory = Enumerable.Empty<DestinyItemComponent>();
+            if(profile.CharacterInventories.Data.TryGetValue(characterId, out var inventoryComponent))
+            {
+                inventory = inventoryComponent.Items;
+            }
+            var engrams = await _itemService.GetEngrams(inventory, profile.ItemComponents.Instances.Data);
+
             var lowestItems = _maxPower.FindLowestItems(maxGear.Values).ToList();
 
             var classTask = _manifest.LoadClass(character.ClassHash);
@@ -105,7 +114,8 @@ namespace MaxPowerLevel.Controllers
             {
                 Items = maxGear.Values,
                 PowerLevel = maxPower,
-                Progressions = characterProgressions.Progressions.Data.Progressions
+                Progressions = characterProgressions.Progressions.Data.Progressions,
+                Engrams = engrams
             });
 
             await Task.WhenAll(classTask, recommendationsTask);

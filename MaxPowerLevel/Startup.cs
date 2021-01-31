@@ -32,6 +32,7 @@ namespace MaxPowerLevel
             services.AddScoped<SeasonPass>();
             services.AddScoped<ChargedWithLight>();
             services.AddScoped<Affinitization>();
+            services.AddScoped<ItemService>();
             AddRecommendations(services);
 
             var config = new Destiny2Config(Configuration["AppName"], Configuration["AppVersion"],

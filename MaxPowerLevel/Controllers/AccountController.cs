@@ -24,13 +24,14 @@ namespace MaxPowerLevel.Controllers
     private readonly IMaxPowerService _maxPower;
     private readonly IRecommendations _recommendations;
     private readonly Affinitization _affinitization;
-    private readonly IHttpContextAccessor _contextAccessor;
+        private readonly ItemService _itemService;
+        private readonly IHttpContextAccessor _contextAccessor;
     private readonly IOptions<BungieSettings> _bungie;
     private readonly ILogger _logger;
 
     public AccountController(IDestiny2 destiny, IManifest manifest,
         IMaxPowerService maxPower, IRecommendations recommendations, Affinitization affinitization,
-        IHttpContextAccessor contextAccessor,
+        ItemService itemService, IHttpContextAccessor contextAccessor,
         IOptions<BungieSettings> bungie, ILogger<AccountController> logger)
     {
         _destiny = destiny;
@@ -38,6 +39,7 @@ namespace MaxPowerLevel.Controllers
         _maxPower = maxPower;
         _recommendations = recommendations;
         _affinitization = affinitization;
+        _itemService = itemService;
         _contextAccessor = contextAccessor;
         _bungie = bungie;
         _logger = logger;
@@ -188,11 +190,18 @@ namespace MaxPowerLevel.Controllers
             return Redirect(url);
         }
 
+        var engramTasks = profile.CharacterInventories.Data.Select(async characterInventory =>
+        {
+            return (characterInventory.Key, await _itemService.GetEngrams(characterInventory.Value.Items, profile.ItemComponents.Instances.Data));
+        });
+        var engrams = (await Task.WhenAll(engramTasks)).ToDictionary(item => item.Key, item => item.Item2);
+
         var recomendationInfo = maxGear.ToDictionary(item => item.Key, item => new CharacterRecomendationInfo
         {
             Items = maxGear[item.Key].Values,
             PowerLevel = _maxPower.ComputePower(maxGear[item.Key].Values),
-            Progressions = profile.CharacterProgressions.Data[item.Key].Progressions
+            Progressions = profile.CharacterProgressions.Data[item.Key].Progressions,
+            Engrams = engrams[item.Key]
         });
         var recommendations = await _recommendations.GetRecommendations(recomendationInfo);
 

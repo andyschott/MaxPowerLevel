@@ -52,8 +52,6 @@ namespace MaxPowerLevel.Services.YearFour
                         ItemSlot.SlotHashes.Power // Sword and HMG
                     },
                 }),
-                new PinnacleActivity("Weekly Wrathborn Hunts", new[] { PinnacleActivities.AllSlots }),
-                new PinnacleActivity("Coup Dê Grace", new[] { PinnacleActivities.AllSlots }),
                 new PinnacleActivity("Weekly Exo Challenge", new[] { PinnacleActivities.AllSlots }),
                 new PinnacleActivity("Weekly Empire Hunts", new[] { PinnacleActivities.AllSlots }),
                 PinnacleActivities.Prophecy,

@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Destiny2;
 using MaxPowerLevel.Models;
 
@@ -9,7 +7,6 @@ namespace MaxPowerLevel.Services.YearFour
     public abstract class Year4Recommendations : AbstractRecommendations
     {
         protected override int TargetRankPlus20Power => 200;
-        protected override DateTime? EndDateOverride => new DateTime(2021, 2, 9, 17, 0, 0, DateTimeKind.Utc);
 
         protected Year4Recommendations(IManifest manifest, SeasonPass seasonPass)
             : base(manifest, seasonPass)

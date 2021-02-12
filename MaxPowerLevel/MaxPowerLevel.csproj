@@ -21,11 +21,6 @@
     <ItemGroup>
         <SassFiles Include="**\*.scss" Exclude="Views\bulma\**\*.scss;Views\bulmaswatch\**\*.scss" />
     </ItemGroup>
-    <ItemGroup>
-        <SassFiles Update="wwwroot\css\bulma-default.scss">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </SassFiles>
-    </ItemGroup>
     <Target Name="SassCompile" Inputs="@(SassFiles)" Outputs="@(SassFiles-&gt;'$(OutputPath)%(relativedir)%(Filename).css')" BeforeTargets="Build">
         <!-- Inspired by https://github.com/delegateas/Delegate.SassBuilder/blob/master/build/Delegate.SassBuilder.targets -->
         <Message Text="SassCompile: Compiling %(SassFiles.Identity)" Importance="high" />

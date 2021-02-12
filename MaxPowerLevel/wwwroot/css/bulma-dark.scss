@@ -1,0 +1,21 @@
+@import '../../Views/bulmaswatch/cyborg/variables';
+
+$scheme-main: $grey-darker;
+$body-background-color: #121212;
+$text: $grey-light;
+$border-light: $grey;
+$light: $grey-lighter;
+$link: lighten($link, 10);
+
+@import '../../Views/bulma/bulma';
+@import '../../Views/bulmaswatch/cyborg/overrides';
+
+.panel {
+    background-color: $scheme-main;
+}
+
+table.dash-board-table {
+    td, th {
+        border-left-color: $border-light !important;
+    }
+}

@@ -139,9 +139,9 @@ table.dash-board-table th {
 }
 
 table.dash-board-table { border: none; border-collapse: collapse; }
-table.dash-board-table td { border-left: 1px solid #dbdbdb; }
+table.dash-board-table td { border-left: 1px solid; }
 table.dash-board-table td:first-child { border-left: none; }
-table.dash-board-table th { border-left: 1px solid #dbdbdb; }
+table.dash-board-table th { border-left: 1px solid; }
 table.dash-board-table th:first-child { border-left: none; }
 
 .item-image {

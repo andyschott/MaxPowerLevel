@@ -1,3 +1,12 @@
-﻿$navbar-item-color: #fff;
+﻿@import '../../Views/bulma/sass/utilities/derived-variables';
+
+$navbar-item-color: #fff;
+$footer-background-color: $light;
 
 @import '../../Views/bulma/bulma';
+
+table.dash-board-table {
+    td, th {
+        border-left-color: #dbdbdb !important;
+    }
+}

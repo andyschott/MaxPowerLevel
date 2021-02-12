@@ -11,6 +11,7 @@
     </ItemGroup>
     <ItemGroup>
         <Content Remove="wwwroot\css\bulma-default.scss" />
+        <Content Remove="wwwroot\css\bulma-dark.scss" />
     </ItemGroup>
     <ItemGroup>
         <None Include="wwwroot\css\bulma-default.scss">
@@ -18,7 +19,7 @@
         </None>
     </ItemGroup>
     <ItemGroup>
-        <SassFiles Include="**\*.scss" Exclude="Views\bulma\**\*.scss" />
+        <SassFiles Include="**\*.scss" Exclude="Views\bulma\**\*.scss;Views\bulmaswatch\**\*.scss" />
     </ItemGroup>
     <ItemGroup>
         <SassFiles Update="wwwroot\css\bulma-default.scss">

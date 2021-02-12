@@ -54,11 +54,6 @@ img.char-icon {
   margin-right: 1rem;
 }
 
-/* Override bulma responsive navbar */
-.navbar-item {
-  color: #fff !important;
-}
-
 .navbar-end {
   justify-content: flex-end !important;
   margin-left: auto !important;

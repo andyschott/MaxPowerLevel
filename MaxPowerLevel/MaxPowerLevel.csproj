@@ -1,11 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Web">
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-    <UserSecretsId>ed64c0be-3d6b-4283-b887-4dcb9de6293a</UserSecretsId>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Humanizer" Version="2.8.26"/>
-    <PackageReference Include="Fractions" Version="4.0.1"/>
-    <PackageReference Include="Destiny2" Version="1.10.0"/>
-  </ItemGroup>
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <UserSecretsId>ed64c0be-3d6b-4283-b887-4dcb9de6293a</UserSecretsId>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="Humanizer" Version="2.8.26" />
+        <PackageReference Include="Fractions" Version="4.0.1" />
+        <PackageReference Include="Destiny2" Version="1.10.0" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Remove="wwwroot\css\bulma-default.scss" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Include="wwwroot\css\bulma-default.scss">
+            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        </None>
+    </ItemGroup>
+    <ItemGroup>
+        <SassFiles Include="**\*.scss" Exclude="Views\bulma\**\*.scss" />
+    </ItemGroup>
+    <ItemGroup>
+        <SassFiles Update="wwwroot\css\bulma-default.scss">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </SassFiles>
+    </ItemGroup>
+    <Target Name="SassCompile" Inputs="@(SassFiles)" Outputs="@(SassFiles-&gt;'$(OutputPath)%(relativedir)%(Filename).css')" BeforeTargets="Build">
+        <!-- Inspired by https://github.com/delegateas/Delegate.SassBuilder/blob/master/build/Delegate.SassBuilder.targets -->
+        <Message Text="SassCompile: Compiling %(SassFiles.Identity)" Importance="high" />
+        <Exec Command="&quot;sass&quot; &quot;%(SassFiles.Identity)&quot; &quot;$(OutputPath)%(SassFiles.relativedir)%(SassFiles.Filename).css&quot;" />
+    </Target>
+    <Target Name="DeleteCompiledSass" AfterTargets="BeforeClean">
+        <Delete Files="@(SassFiles-&gt;'$(OutputPath)%(relativedir)%(Filename).css')" />
+    </Target>
+    <Target Name="PublishCompiledSass" AfterTargets="AfterPublish">
+        <Copy SourceFiles="@(SassFiles-&gt;'$(OutputPath)%(relativedir)%(Filename).css')" DestinationFiles="@(SassFiles-&gt;'$(PublishDir)%(relativedir)%(Filename).css')" />
+    </Target>
 </Project>

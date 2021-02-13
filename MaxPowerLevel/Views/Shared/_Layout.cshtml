@@ -11,7 +11,20 @@
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
-    <link rel="stylesheet" id="bulma-css" href="~/css/bulma-default.css" />
+    @{ var themeFromCookie = Context.Request.Cookies["theme"];
+        var themeCSS = "bulma-auto.css";
+        // Check cookie value against an explicit whitelist in order to avoid
+        // potential code injection.
+        switch (themeFromCookie)
+        {
+            case "light":
+                themeCSS = "bulma-default.css";
+                break;
+            case "dark":
+                themeCSS = "bulma-dark.css";
+                break;
+        } }
+    <link rel="stylesheet" id="bulma-css" href="~/css/@themeCSS" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/css/elements.css" />

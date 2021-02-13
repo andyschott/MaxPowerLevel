@@ -13,8 +13,10 @@ function updateCSSFilename(id, filename) {
 
 $('.switch-to-dark-mode').click(function() {
     updateCSSFilename('bulma-css', 'bulma-dark.css');
+    document.cookie = 'theme=dark; path=/';
 });
 
 $('.switch-to-light-mode').click(function() {
     updateCSSFilename('bulma-css', 'bulma-default.css');
+    document.cookie = 'theme=light; path=/';
 });

@@ -1,0 +1,2 @@
+@import 'bulma-default.css' not all and (prefers-color-scheme: dark);
+@import 'bulma-dark.css' (prefers-color-scheme: dark);

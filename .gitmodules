@@ -1,6 +1,6 @@
 [submodule "MaxPowerLevel/Views/bulma"]
 	path = MaxPowerLevel/Views/bulma
-	url = git@github.com:jgthms/bulma.git
+	url = https://github.com/jgthms/bulma.git
 	branch = 0.9.2
 [submodule "MaxPowerLevel/Views/bulmaswatch"]
 	path = MaxPowerLevel/Views/bulmaswatch

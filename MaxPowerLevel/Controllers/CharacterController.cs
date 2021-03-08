@@ -115,6 +115,7 @@ namespace MaxPowerLevel.Controllers
                 Items = maxGear.Values,
                 PowerLevel = maxPower,
                 Progressions = characterProgressions.Progressions.Data.Progressions,
+                Milestones = characterProgressions.Progressions.Data.Milestones,
                 Engrams = engrams
             });
 

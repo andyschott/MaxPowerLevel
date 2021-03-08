@@ -23,7 +23,7 @@ namespace MaxPowerLevel.Services.YearThree
             return base.CreatePinnacleActivities()
                 .Concat(new[]
                 {
-                    new PinnacleActivity(SundialLegend, new[]
+                    new PinnacleActivity(SundialLegend, uint.MinValue, new[] //can't find the hash for sundial
                     {
                         new[]
                         {

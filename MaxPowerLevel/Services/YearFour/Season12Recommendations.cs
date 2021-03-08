@@ -26,8 +26,8 @@ namespace MaxPowerLevel.Services.YearFour
             var year4Pinnacles = base.CreatePinnacleActivities();
             return year4Pinnacles.Concat(new[]
             {
-                new PinnacleActivity("Weekly Wrathborn Hunts", new[] { PinnacleActivities.AllSlots }),
-                new PinnacleActivity("Coup Dê Grace", new[] { PinnacleActivities.AllSlots }),
+                new PinnacleActivity("Weekly Wrathborn Hunts", 2406589846, new[] { PinnacleActivities.AllSlots }),
+                new PinnacleActivity("Coup Dê Grace", uint.MinValue, new[] { PinnacleActivities.AllSlots }), //can't find the hash for coup
             });
         }
     }

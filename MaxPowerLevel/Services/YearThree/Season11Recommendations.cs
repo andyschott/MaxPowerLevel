@@ -31,7 +31,7 @@ namespace MaxPowerLevel.Services.YearThree
                 .Concat(new[]
                 {
                     PinnacleActivities.Prophecy,
-                    new PinnacleActivity(DarkTimes, new[] { PinnacleActivities.AllSlots })
+                    new PinnacleActivity(DarkTimes, uint.MinValue, new[] { PinnacleActivities.AllSlots }) //can't find the hash
                 });
         }
     }

@@ -18,17 +18,17 @@ namespace MaxPowerLevel.Services
         };
 
         public static readonly PinnacleActivity Strikes =
-            new PinnacleActivity("Weekly Vanguard Strikes", new[] { AllSlots });
+            new PinnacleActivity("Weekly Vanguard Strikes", 1437935813, new[] { AllSlots });
         public static readonly PinnacleActivity Crucible =
-            new PinnacleActivity("Crucible Playlist Challenge", new[] { AllSlots });
+            new PinnacleActivity("Crucible Playlist Challenge", 3312774044, new[] { AllSlots });
         public static readonly PinnacleActivity Gambit =
-            new PinnacleActivity("Gambit", new[] { AllSlots });
+            new PinnacleActivity("Gambit", 3448738070, new[] { AllSlots });
         public static readonly PinnacleActivity Clan =
-            new PinnacleActivity("Clan Rewards", new[] { AllSlots });
+            new PinnacleActivity("Clan Rewards", 3603098564, new[] { AllSlots });
         public static readonly PinnacleActivity NightfallScore =
-            new PinnacleActivity("Nightfall: The Ordeal Weekly Score", new[] { PinnacleActivities.AllSlots });
+            new PinnacleActivity("Nightfall: The Ordeal Weekly Score", 2029743966, new[] { PinnacleActivities.AllSlots });
 
-        public static readonly PinnacleActivity Prophecy = new PinnacleActivity("Prophecy", new[]
+        public static readonly PinnacleActivity Prophecy = new PinnacleActivity("Prophecy", 825965416, new[]
         {
             new[]
             {

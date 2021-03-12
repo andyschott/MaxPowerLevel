@@ -201,6 +201,7 @@ namespace MaxPowerLevel.Controllers
             Items = maxGear[item.Key].Values,
             PowerLevel = _maxPower.ComputePower(maxGear[item.Key].Values),
             Progressions = profile.CharacterProgressions.Data[item.Key].Progressions,
+            Milestones = profile.CharacterProgressions.Data[item.Key].Milestones,
             Engrams = engrams[item.Key]
         });
         var recommendations = await _recommendations.GetRecommendations(recomendationInfo);

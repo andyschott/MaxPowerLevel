@@ -23,7 +23,7 @@ namespace MaxPowerLevel.Services.YearThree
             return new[]
             {
                 // Pit of Heresy can drop armor
-                new PinnacleActivity(PitOfHeresy, new[]
+                new PinnacleActivity(PitOfHeresy, uint.MinValue, new[] //can't find the hash for PoH
                 {
                     new[]
                     {
@@ -35,11 +35,11 @@ namespace MaxPowerLevel.Services.YearThree
                     }
                 }),
                 // Nightmare Hunt: Master can drop anything
-                new PinnacleActivity(MasterNightmareHunt, new[] { PinnacleActivities.AllSlots }),
+                new PinnacleActivity(MasterNightmareHunt, 291895718, new[] { PinnacleActivities.AllSlots }),
                 // Nightfall: The Ordeal Weekly Score can drop anything
                 PinnacleActivities.NightfallScore,
                 // Garden of Salvation
-                new PinnacleActivity(GardenOfSalvation, new[]
+                new PinnacleActivity(GardenOfSalvation, 2712317338, new[]
                 {
                     // Encounter 1 drops Bow (Kinetic), Fusion Rifle (Energy), Boots
                     new[]

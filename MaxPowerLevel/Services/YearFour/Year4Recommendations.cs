@@ -18,7 +18,7 @@ namespace MaxPowerLevel.Services.YearFour
             return new[]
             {
                 PinnacleActivities.NightfallScore,
-                new PinnacleActivity("Deep Stone Crypt", new[]
+                new PinnacleActivity("Deep Stone Crypt", 541780856, new[]
                 {
                     new[]
                     {
@@ -49,10 +49,11 @@ namespace MaxPowerLevel.Services.YearFour
                         ItemSlot.SlotHashes.Power // Sword and HMG
                     },
                 }),
-                new PinnacleActivity("Weekly Exo Challenge", new[] { PinnacleActivities.AllSlots }),
-                new PinnacleActivity("Weekly Empire Hunts", new[] { PinnacleActivities.AllSlots }),
+                new PinnacleActivity("Weekly Exo Challenge", 1713200903, new[] { PinnacleActivities.AllSlots }),
+                new PinnacleActivity("Weekly Empire Hunts", 291895718, new[] { PinnacleActivities.AllSlots }),
                 PinnacleActivities.Prophecy,
-                new PinnacleActivity("Harbringer", new[] { PinnacleActivities.AllSlots })
+                new PinnacleActivity("Harbinger",1086730368, new[] { PinnacleActivities.AllSlots }),
+
             };
         }
 

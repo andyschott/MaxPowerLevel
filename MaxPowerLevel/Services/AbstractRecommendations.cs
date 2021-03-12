@@ -128,7 +128,7 @@ namespace MaxPowerLevel.Services
                     recommendations.Add(recommendation);
                 }
 
-                recommendations.AddRange(CreatePinnacleRecommendations(info.IntPowerLevel, info.Items));
+                recommendations.AddRange(CreatePinnacleRecommendations(info.IntPowerLevel, info.Items, info.Milestones));
                 return recommendations;
             }
 
@@ -258,14 +258,26 @@ namespace MaxPowerLevel.Services
         protected abstract IEnumerable<PinnacleActivity> CreatePinnacleActivities();
         protected virtual IEnumerable<PinnacleActivity> CreateWeakPinnacleActivities() => Enumerable.Empty<PinnacleActivity>();
 
-        protected virtual IEnumerable<Recommendation> CreatePinnacleRecommendations(int powerLevel, IEnumerable<Item> items)
+        protected virtual IEnumerable<PinnacleActivity> GetAvailablePinnacleActivities(IDictionary<uint, DestinyMilestone> milestones)
+        {
+            return CreatePinnacleActivities()
+                .Where(p => p.MilestoneHash == uint.MinValue || milestones.ContainsKey(p.MilestoneHash));
+        }
+
+        protected virtual IEnumerable<PinnacleActivity> GetAvailableWeakPinnacleActivities(IDictionary<uint, DestinyMilestone> milestones)
+        {
+            return CreateWeakPinnacleActivities()
+                .Where(p => p.MilestoneHash == uint.MinValue || milestones.ContainsKey(p.MilestoneHash));
+        }
+
+        protected virtual IEnumerable<Recommendation> CreatePinnacleRecommendations(int powerLevel, IEnumerable<Item> items, IDictionary<uint, DestinyMilestone> activities)
         {
             var powerLevels = items.ToDictionary(item => item.Slot.Hash, item => (decimal)item.PowerLevel);
 
             var strongPinnacles = new Recommendation("Pinnacle Engrams",
-                SortPinnacleActivites(CreatePinnacleActivities(), powerLevels));
+                SortPinnacleActivites(GetAvailablePinnacleActivities(activities), powerLevels));
             var weakPinnacles = new Recommendation("Pinnacle Engrams (Weak)",
-                SortPinnacleActivites(CreateWeakPinnacleActivities(), powerLevels));
+                SortPinnacleActivites(GetAvailableWeakPinnacleActivities(activities), powerLevels));
 
             var levelsToGo = HardCap - powerLevel;
             if (levelsToGo <= 2)

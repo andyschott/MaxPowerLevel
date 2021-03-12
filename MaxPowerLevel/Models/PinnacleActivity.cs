@@ -6,11 +6,14 @@ namespace MaxPowerLevel.Models
     {
         public string Name { get; }
 
+        public uint MilestoneHash { get; }
+
         public ItemSlot.SlotHashes[][] Encounters { get; }
 
-        public PinnacleActivity(string name, ItemSlot.SlotHashes[][] encounters)
+        public PinnacleActivity(string name, uint milestonHash, ItemSlot.SlotHashes[][] encounters)
         {
             Name = name;
+            MilestoneHash = milestonHash;
             Encounters = encounters;
         }
 

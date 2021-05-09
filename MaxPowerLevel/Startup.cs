@@ -93,8 +93,8 @@ namespace MaxPowerLevel
             });
         }
 
-        private static readonly DateTime Season13StartDate =
-            new DateTime(2021, 2, 9, 17, 0, 0, DateTimeKind.Utc);
+        private static readonly DateTime Season14StartDate =
+            new DateTime(2021, 5, 11, 17, 0, 0, DateTimeKind.Utc);
 
         private void AddRecommendations(IServiceCollection services)
         {
@@ -103,12 +103,12 @@ namespace MaxPowerLevel
                 var manifest = sp.GetRequiredService<IManifest>();
                 var seasonPass = sp.GetRequiredService<SeasonPass>();
 
-                if(DateTime.UtcNow >= Season13StartDate)
+                if(DateTime.UtcNow < Season14StartDate)
                 {
                     return new Season13Recommendations(manifest, seasonPass);
                 }
 
-                return new Season12Recommendations(manifest, seasonPass);
+                return new Season14Recommendations(manifest, seasonPass);
             });
         }
     }

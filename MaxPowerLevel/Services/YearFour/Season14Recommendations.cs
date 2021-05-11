@@ -8,7 +8,7 @@ namespace MaxPowerLevel.Services.YearFour
         {
         }
 
-        protected override int SoftCap => 1250;
+        protected override int SoftCap => 1260;
 
         protected override int PowerfulCap => 1310;
 

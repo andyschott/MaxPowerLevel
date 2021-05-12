@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
 using Destiny2;
+using MaxPowerLevel.Models;
 
 namespace MaxPowerLevel.Services.YearFour
 {
@@ -15,5 +18,14 @@ namespace MaxPowerLevel.Services.YearFour
         protected override int HardCap => 1320;
 
         protected override uint SeasonHash => 2809059429;
+
+        protected override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
+        {
+            return base.CreatePinnacleActivities().Concat(new[]
+            {
+                new PinnacleActivity("Override Conflux Chests", new[] { PinnacleActivities.AllSlots }),
+                new PinnacleActivity("Splicer Servitor Bounties", new[] { PinnacleActivities.AllSlots })
+            });
+        }
     }
 }

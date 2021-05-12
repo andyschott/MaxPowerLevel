@@ -1,4 +1,7 @@
+using System.Collections.Generic;
+using System.Linq;
 using Destiny2;
+using MaxPowerLevel.Models;
 
 namespace MaxPowerLevel.Services.YearFour
 {
@@ -16,5 +19,14 @@ namespace MaxPowerLevel.Services.YearFour
         protected override int HardCap => 1310;
 
         protected override uint SeasonHash => 2809059426;
+
+        protected override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
+        {
+            return base.CreatePinnacleActivities().Concat(new[]
+            {
+                _deepStoneCrypt,
+                _pressage
+            });
+        }
     }
 }

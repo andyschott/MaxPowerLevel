@@ -28,6 +28,8 @@ namespace MaxPowerLevel.Services.YearFour
             {
                 new PinnacleActivity("Weekly Wrathborn Hunts", new[] { PinnacleActivities.AllSlots }),
                 new PinnacleActivity("Coup Dê Grace", new[] { PinnacleActivities.AllSlots }),
+                _deepStoneCrypt,
+                _pressage
             });
         }
     }

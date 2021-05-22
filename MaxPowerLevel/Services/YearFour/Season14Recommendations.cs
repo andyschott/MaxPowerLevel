@@ -23,8 +23,15 @@ namespace MaxPowerLevel.Services.YearFour
         {
             return base.CreatePinnacleActivities().Concat(new[]
             {
-                new PinnacleActivity("Override Conflux Chests", new[] { PinnacleActivities.AllSlots }),
                 new PinnacleActivity("Splicer Servitor Bounties", new[] { PinnacleActivities.AllSlots })
+            });
+        }
+
+        protected override IEnumerable<PinnacleActivity> CreateWeakPinnacleActivities()
+        {
+            return base.CreateWeakPinnacleActivities().Concat(new[]
+            {
+                new PinnacleActivity("Override Conflux Chests", new[] { PinnacleActivities.AllSlots }),
             });
         }
     }

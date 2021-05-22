@@ -23,7 +23,8 @@ namespace MaxPowerLevel.Services.YearFour
         {
             return base.CreatePinnacleActivities().Concat(new[]
             {
-                new PinnacleActivity("Splicer Servitor Bounties", new[] { PinnacleActivities.AllSlots })
+                new PinnacleActivity("Splicer Servitor Bounties", new[] { PinnacleActivities.AllSlots }),
+                _vaultOfGlass
             });
         }
 

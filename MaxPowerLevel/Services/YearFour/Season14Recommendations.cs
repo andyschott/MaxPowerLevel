@@ -34,6 +34,7 @@ namespace MaxPowerLevel.Services.YearFour
             {
                 new PinnacleActivity("Override Conflux Chests", new[] { PinnacleActivities.AllSlots }),
                 new PinnacleActivity("Splicer Servitor Bounties", new[] { PinnacleActivities.AllSlots }),
+                new PinnacleActivity("Corrupted Conflux Chests", new[] { PinnacleActivities.AllSlots }),
             });
         }
     }

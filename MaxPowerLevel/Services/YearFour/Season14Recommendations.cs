@@ -24,7 +24,8 @@ namespace MaxPowerLevel.Services.YearFour
             return base.CreatePinnacleActivities().Concat(new[]
             {
                 _vaultOfGlass,
-                _pressage
+                _pressage,
+                new PinnacleActivity("Corrupted Conflux Chests", new[] { PinnacleActivities.AllSlots }),
             });
         }
 
@@ -34,7 +35,6 @@ namespace MaxPowerLevel.Services.YearFour
             {
                 new PinnacleActivity("Override Conflux Chests", new[] { PinnacleActivities.AllSlots }),
                 new PinnacleActivity("Splicer Servitor Bounties", new[] { PinnacleActivities.AllSlots }),
-                new PinnacleActivity("Corrupted Conflux Chests", new[] { PinnacleActivities.AllSlots }),
             });
         }
     }

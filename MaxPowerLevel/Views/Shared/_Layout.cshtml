@@ -11,7 +11,20 @@
     <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.0/css/bulma.css" />
+    @{ var themeFromCookie = Context.Request.Cookies["theme"];
+        var themeCSS = "bulma-auto.css";
+        // Check cookie value against an explicit whitelist in order to avoid
+        // potential code injection.
+        switch (themeFromCookie)
+        {
+            case "light":
+                themeCSS = "bulma-default.css";
+                break;
+            case "dark":
+                themeCSS = "bulma-dark.css";
+                break;
+        } }
+    <link rel="stylesheet" id="bulma-css" href="~/css/@themeCSS" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/css/elements.css" />
@@ -28,13 +41,19 @@
                             <i class="fas fa-level-up-alt mr-1"></i> Destiny 2 Utilities
                         </a> 
                     </div>
-                        @if(User.Identity.IsAuthenticated){  
-                        <div class="navbar-end">                      
+                        <div class="navbar-end">
+                            <a class="navbar-item switch-to-dark-mode" title="Dark mode">
+                                <i class="fas fa-moon"></i>
+                            </a>
+                            <a class="navbar-item switch-to-light-mode" title="Light mode">
+                                <i class="fas fa-sun"></i>
+                            </a>                    
+                            @if(User.Identity.IsAuthenticated){  
                             <a class="navbar-item ml-3 is-pulled-right" asp-area="" asp-action="Logout" title="Logout" asp-controller="Account">
                                 <i class="fas fa-sign-out-alt"></i> <span class="ml-1 is-hidden-mobile">Logout</span>
                             </a>
+                            }
                         </div>
-                        }
                 </div>
             </nav>
         </header>
@@ -45,7 +64,7 @@
     </div>
    
 
-    <footer class="footer has-background-light">
+    <footer class="footer">
         <div class="container is-fluid has-text-centered">            
             <p>
                 &copy; 2019-2020 - Andy Schott <a href="https://github.com/andyschott/MaxPowerLevel"><i class="fab fab fa-github-square"></i></a>. 

@@ -115,17 +115,20 @@ namespace MaxPowerLevel.Services
                     recommendations.Add(recommendation);
                 }
 
-                // If any slot is at least two power levels behind,
-                // a Powerful Engram would increase the max power level.
-                // Ignore any slots where a season pass reward can be used first.
-                var trailingSlots = info.Items.Where(item => info.IntPowerLevel - item.PowerLevel >= TrailingPowerLevelDifference)
-                    .OrderBy(item => item.PowerLevel)
-                    .Select(item => (item.Slot, 1))
-                    .Except(seasonPassRewards, new ItemComparer());
-                if(trailingSlots.Any())
+                if (info.PowerLevel < HardCap - 2) //powerful engrams only help when more than 2 below hardcap
                 {
-                    var recommendation = new Recommendation(GetDisplayString("Powerful Engrams", trailingSlots));
-                    recommendations.Add(recommendation);
+                    // If any slot is at least two power levels behind,
+                    // a Powerful Engram would increase the max power level.
+                    // Ignore any slots where a season pass reward can be used first.
+                    var trailingSlots = info.Items.Where(item => info.IntPowerLevel - item.PowerLevel >= TrailingPowerLevelDifference)
+                        .OrderBy(item => item.PowerLevel)
+                        .Select(item => (item.Slot, 1))
+                        .Except(seasonPassRewards, new ItemComparer());
+                    if (trailingSlots.Any())
+                    {
+                        var recommendation = new Recommendation(GetDisplayString("Powerful Engrams", trailingSlots));
+                        recommendations.Add(recommendation);
+                    }
                 }
 
                 recommendations.AddRange(CreatePinnacleRecommendations(info.IntPowerLevel, info.Items));

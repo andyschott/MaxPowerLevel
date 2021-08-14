@@ -106,10 +106,10 @@ namespace MaxPowerLevel
 
                 if(DateTime.UtcNow < Season15StartDate)
                 {
-                    return new Season14Recommendations();
+                    return new Season14();
                 }
 
-                return new Season15Recommendations();
+                return new Season15();
             });
         }
     }

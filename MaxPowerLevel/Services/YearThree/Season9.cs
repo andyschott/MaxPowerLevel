@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using System.Linq;
-using Destiny2;
 using MaxPowerLevel.Models;
 
 namespace MaxPowerLevel.Services.YearThree
 {
-    public class Season9Recommendations : Year3Recommendations
+    public class Season9 : AbstractYear3Season
     {
         public override int PowerfulCap => 960;
         public override int HardCap => 970;

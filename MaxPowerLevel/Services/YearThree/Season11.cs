@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Destiny2;
 using MaxPowerLevel.Models;
 
 namespace MaxPowerLevel.Services.YearThree
 {
-    public class Season11Recommendations : Year3Recommendations
+    public class Season11 : AbstractYear3Season
     {
         private const string DarkTimes = "Dark Times"; // Weekly for PE completions
 

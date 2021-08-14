@@ -1,10 +1,9 @@
 using System.Collections.Generic;
-using Destiny2;
 using MaxPowerLevel.Models;
 
 namespace MaxPowerLevel.Services.YearFour
 {
-    public abstract class Year4Recommendations : AbstractSeason
+    public abstract class AbstractYear4Season : AbstractSeason
     {
         protected static readonly PinnacleActivity _pressage = new PinnacleActivity("Pressage", new[] { AllSlots });
         protected static readonly PinnacleActivity _deepStoneCrypt = new PinnacleActivity("Deep Stone Crypt", new[]

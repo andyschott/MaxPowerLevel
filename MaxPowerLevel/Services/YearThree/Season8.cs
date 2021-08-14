@@ -2,7 +2,7 @@ using Destiny2;
 
 namespace MaxPowerLevel.Services.YearThree
 {
-    public class Season8Recommendations : Year3Recommendations
+    public class Season8 : AbstractYear3Season
     {
         public override int PowerfulCap => 950;
 

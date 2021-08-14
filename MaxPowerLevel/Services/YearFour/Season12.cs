@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Destiny2;
 using MaxPowerLevel.Models;
 
 namespace MaxPowerLevel.Services.YearFour
 {
-    public class Season12Recommendations : Year4Recommendations
+    public class Season12 : AbstractYear4Season
     {
         public override int SoftCap => 1200;
 

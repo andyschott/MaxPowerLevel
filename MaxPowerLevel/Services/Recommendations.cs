@@ -11,14 +11,12 @@ namespace MaxPowerLevel.Services
 {
     public class Recommendations : IRecommendations
     {
-
-        // Items purchased from Vendors are 20 power levels below the character's max
-        protected virtual int VendorPowerLevelDifference { get; } = 20;
-
         protected readonly IManifest _manifest;
         private readonly ISeason _season;
         private readonly SeasonPass _seasonPass;
         private const int TrailingPowerLevelDifference = 2;
+        // Items purchased from Vendors are 20 power levels below the character's max
+        private const int VendorPowerLevelDifference = 20;
 
         public Recommendations(IManifest manifest, ISeason season, SeasonPass seasonPass)
         {

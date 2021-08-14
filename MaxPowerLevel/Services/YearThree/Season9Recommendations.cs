@@ -7,18 +7,13 @@ namespace MaxPowerLevel.Services.YearThree
 {
     public class Season9Recommendations : Year3Recommendations
     {
-        protected override int PowerfulCap => 960;
-        protected override int HardCap => 970;
-        protected override uint SeasonHash => 2007338097;
+        public override int PowerfulCap => 960;
+        public override int HardCap => 970;
+        public override uint SeasonHash => 2007338097;
 
         private const string SundialLegend = "The Sundial: Legend";
 
-        public Season9Recommendations(IManifest manifest, SeasonPass seasonPass)
-            : base(manifest, seasonPass)
-        {
-        }
-
-        protected override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
+        public override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
         {
             return base.CreatePinnacleActivities()
                 .Concat(new[]

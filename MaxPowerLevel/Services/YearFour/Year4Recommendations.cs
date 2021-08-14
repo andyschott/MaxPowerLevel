@@ -4,11 +4,9 @@ using MaxPowerLevel.Models;
 
 namespace MaxPowerLevel.Services.YearFour
 {
-    public abstract class Year4Recommendations : AbstractRecommendations
+    public abstract class Year4Recommendations : AbstractSeason
     {
-        protected override int TargetRankPlus20Power => 200;
-
-        protected static readonly PinnacleActivity _pressage = new PinnacleActivity("Pressage", new[] { PinnacleActivities.AllSlots });
+        protected static readonly PinnacleActivity _pressage = new PinnacleActivity("Pressage", new[] { AllSlots });
         protected static readonly PinnacleActivity _deepStoneCrypt = new PinnacleActivity("Deep Stone Crypt", new[]
         {
             new[]
@@ -81,29 +79,16 @@ namespace MaxPowerLevel.Services.YearFour
                 ItemSlot.SlotHashes.Power // Machine Gun, Rocket Launcher
             }
         });
-        protected Year4Recommendations(IManifest manifest, SeasonPass seasonPass)
-            : base(manifest, seasonPass)
-        {
-        }
-
-        protected override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
+        public override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
         {
             return new[]
             {
-                PinnacleActivities.NightfallScore,
-                new PinnacleActivity("Weekly Exo Challenge", new[] { PinnacleActivities.AllSlots }),
-                new PinnacleActivity("Weekly Empire Hunts", new[] { PinnacleActivities.AllSlots }),
-                PinnacleActivities.Prophecy,
-                new PinnacleActivity("Harbringer", new[] { PinnacleActivities.AllSlots }),
+                NightfallScore,
+                new PinnacleActivity("Weekly Exo Challenge", new[] { AllSlots }),
+                new PinnacleActivity("Weekly Empire Hunts", new[] { AllSlots }),
+                Prophecy,
+                new PinnacleActivity("Harbringer", new[] { AllSlots }),
             };
         }
-
-        protected override IEnumerable<PinnacleActivity> CreateWeakPinnacleActivities() => new[]
-        {
-            PinnacleActivities.Strikes,
-            PinnacleActivities.Crucible,
-            PinnacleActivities.Gambit,
-            PinnacleActivities.Clan,
-        };
     }
 }

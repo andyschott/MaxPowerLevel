@@ -9,31 +9,27 @@ using MaxPowerLevel.Models;
 
 namespace MaxPowerLevel.Services
 {
-    public abstract class AbstractRecommendations : IRecommendations
+    public class Recommendations : IRecommendations
     {
-        protected abstract int SoftCap { get; }
-        protected abstract int PowerfulCap { get; }
-        protected abstract int HardCap { get; }
-        protected abstract uint SeasonHash { get; }
-        protected abstract int TargetRankPlus20Power { get; }
-        protected virtual DateTime? EndDateOverride { get; } = null;
 
         // Items purchased from Vendors are 20 power levels below the character's max
         protected virtual int VendorPowerLevelDifference { get; } = 20;
 
         protected readonly IManifest _manifest;
+        private readonly ISeason _season;
         private readonly SeasonPass _seasonPass;
         private const int TrailingPowerLevelDifference = 2;
 
-        protected AbstractRecommendations(IManifest manifest, SeasonPass seasonPass)
+        public Recommendations(IManifest manifest, ISeason season, SeasonPass seasonPass)
         {
             _manifest = manifest;
+            _season = season;
             _seasonPass = seasonPass;
         }
 
         public async Task<IEnumerable<Recommendation>> GetRecommendations(CharacterRecomendationInfo info)
         {
-            var seasonPassSlots = await _seasonPass.LoadAvailableSeasonPassItems(SeasonHash, info.Progressions);
+            var seasonPassSlots = await _seasonPass.LoadAvailableSeasonPassItems(_season.SeasonHash, info.Progressions);
             return GetRecommendations(info, seasonPassSlots);
         }
 
@@ -53,12 +49,12 @@ namespace MaxPowerLevel.Services
         private IEnumerable<Recommendation> GetRecommendations(CharacterRecomendationInfo info,
             IDictionary<ItemSlot.SlotHashes, int> seasonPassSlots)
         {
-            if(info.IntPowerLevel < SoftCap)
+            if(info.IntPowerLevel < _season.SoftCap)
             {
                 var collections = GetVendorRecommendations(info.Items, info.IntPowerLevel);
                 return collections.Concat(new[]
                 {
-                    new Recommendation($"Rare and Legendary Engrams to increase your power level to {SoftCap}")
+                    new Recommendation($"Rare and Legendary Engrams to increase your power level to {_season.SoftCap}")
                 });
             }
 
@@ -74,7 +70,7 @@ namespace MaxPowerLevel.Services
                 engramsRecommendation  = new Recommendation($"Decrypt Engrams at the Cryptarch{count}");
             }
 
-            if(info.IntPowerLevel < PowerfulCap)
+            if(info.IntPowerLevel < _season.PowerfulCap)
             {
                 var recommendations = new List<Recommendation>(GetVendorRecommendations(info.Items, info.IntPowerLevel));
 
@@ -99,7 +95,7 @@ namespace MaxPowerLevel.Services
                 return  recommendations;
             }
 
-            if(info.IntPowerLevel < HardCap)
+            if(info.IntPowerLevel < _season.HardCap)
             {
                 var recommendations = new List<Recommendation>();
 
@@ -140,7 +136,7 @@ namespace MaxPowerLevel.Services
         {
             var intPowerLevel = (int)Math.Floor(powerLevel);
 
-            if (intPowerLevel < SoftCap)
+            if (intPowerLevel < _season.SoftCap)
             {
                 return new[]
                 {
@@ -149,30 +145,30 @@ namespace MaxPowerLevel.Services
                 };
             }
 
-            if (powerLevel < PowerfulCap)
+            if (powerLevel < _season.PowerfulCap)
             {
                 return new[]
                 {
-                    new Engram("Rare and Legendary Engram", intPowerLevel - 3, Math.Min(intPowerLevel, PowerfulCap)),
-                    new Engram("Prime Engram", Math.Min(intPowerLevel + 3, PowerfulCap)),
-                    new Engram("Powerful Engram (Tier 1)", Math.Min(intPowerLevel + 3, PowerfulCap)),
-                    new Engram("Powerful Engram (Tier 2)", Math.Min(intPowerLevel + 5, PowerfulCap)),
-                    new Engram("Powerful Engram (Tier 3)", Math.Min(intPowerLevel + 6, PowerfulCap)),
-                    new Engram("Pinnacle Engram (Weak)", Math.Min(intPowerLevel + 4, PowerfulCap + 1)),
-                    new Engram("Pinnacle Engram", Math.Min(intPowerLevel + 5, PowerfulCap + 2))
+                    new Engram("Rare and Legendary Engram", intPowerLevel - 3, Math.Min(intPowerLevel, _season.PowerfulCap)),
+                    new Engram("Prime Engram", Math.Min(intPowerLevel + 3, _season.PowerfulCap)),
+                    new Engram("Powerful Engram (Tier 1)", Math.Min(intPowerLevel + 3, _season.PowerfulCap)),
+                    new Engram("Powerful Engram (Tier 2)", Math.Min(intPowerLevel + 5, _season.PowerfulCap)),
+                    new Engram("Powerful Engram (Tier 3)", Math.Min(intPowerLevel + 6, _season.PowerfulCap)),
+                    new Engram("Pinnacle Engram (Weak)", Math.Min(intPowerLevel + 4, _season.PowerfulCap + 1)),
+                    new Engram("Pinnacle Engram", Math.Min(intPowerLevel + 5, _season.PowerfulCap + 2))
                 };
             }
 
-            if (powerLevel <= HardCap)
+            if (powerLevel <= _season.HardCap)
             {
                 return new[]
                 {
-                    new Engram("Rare/Legendary Engram", Math.Min(intPowerLevel - 3, PowerfulCap), PowerfulCap),
+                    new Engram("Rare/Legendary Engram", Math.Min(intPowerLevel - 3, _season.PowerfulCap), _season.PowerfulCap),
                     new Engram("Prime Engram", intPowerLevel),
                     new Engram("Powerful Engram", intPowerLevel),
                     new Engram("Season Pass Items", intPowerLevel),
-                    new Engram("Pinnacle Engram (Weak)", Math.Min(intPowerLevel + 1, HardCap)),
-                    new Engram("Pinnacle Engram", Math.Min(intPowerLevel + 2, HardCap))
+                    new Engram("Pinnacle Engram (Weak)", Math.Min(intPowerLevel + 1, _season.HardCap)),
+                    new Engram("Pinnacle Engram", Math.Min(intPowerLevel + 2, _season.HardCap))
                 };
             }
 
@@ -181,7 +177,7 @@ namespace MaxPowerLevel.Services
 
         public async Task<SeasonPassInfo> GetSeasonPassInfo(IDictionary<uint, DestinyProgression> progression)
         {
-            var season = await _manifest.LoadSeason(SeasonHash);
+            var season = await _manifest.LoadSeason(_season.SeasonHash);
             var seasonPass = await _manifest.LoadSeasonPass(season.SeasonPassHash);
 
             if(season.SeasonPassProgressionHash == 0)
@@ -194,14 +190,14 @@ namespace MaxPowerLevel.Services
 
             var rank = baseProgression.Level + prestigeProgression.Level;
 
-            var seasonEndDate = EndDateOverride ?? season.EndDate.Value;
-            return new SeasonPassInfo(season.DisplayProperties.Name, seasonEndDate, rank, TargetRankPlus20Power);
+            var seasonEndDate = _season.EndDateOverride ?? season.EndDate.Value;
+            return new SeasonPassInfo(season.DisplayProperties.Name, seasonEndDate, rank, _season.TargetRankPlus20Power);
         }
 
         private Task<IDictionary<long, IDictionary<ItemSlot.SlotHashes, int>>> GetSeasonPassSlots(IDictionary<long, CharacterRecomendationInfo> infos)
         {
             var progressions = infos.ToDictionary(item => item.Key, item => item.Value.Progressions);
-            return  _seasonPass.LoadAvailableSeasonPassItems(SeasonHash, progressions);
+            return  _seasonPass.LoadAvailableSeasonPassItems(_season.SeasonHash, progressions);
         }
 
         private IEnumerable<Recommendation> GetVendorRecommendations(IEnumerable<Item> allItems, int powerLevel)
@@ -255,19 +251,16 @@ namespace MaxPowerLevel.Services
             return $"{description} ({string.Join(", ", slotNames)})";
         }
 
-        protected abstract IEnumerable<PinnacleActivity> CreatePinnacleActivities();
-        protected virtual IEnumerable<PinnacleActivity> CreateWeakPinnacleActivities() => Enumerable.Empty<PinnacleActivity>();
-
         protected virtual IEnumerable<Recommendation> CreatePinnacleRecommendations(int powerLevel, IEnumerable<Item> items)
         {
             var powerLevels = items.ToDictionary(item => item.Slot.Hash, item => (decimal)item.PowerLevel);
 
             var strongPinnacles = new Recommendation("Pinnacle Engrams",
-                SortPinnacleActivites(CreatePinnacleActivities(), powerLevels));
+                SortPinnacleActivites(_season.CreatePinnacleActivities(), powerLevels));
             var weakPinnacles = new Recommendation("Pinnacle Engrams (Weak)",
-                SortPinnacleActivites(CreateWeakPinnacleActivities(), powerLevels));
+                SortPinnacleActivites(_season.CreateWeakPinnacleActivities(), powerLevels));
 
-            var levelsToGo = HardCap - powerLevel;
+            var levelsToGo = _season.HardCap - powerLevel;
             if (levelsToGo <= 2)
             {
                 // If within 1 of the hard cap, order doesn't matter.
@@ -337,7 +330,7 @@ namespace MaxPowerLevel.Services
 
                 foreach(var slot in combo)
                 {
-                    var pinnacleItemLevel = Math.Min(Math.Floor(currentPowerLevels.Values.Average()) + 2, HardCap);
+                    var pinnacleItemLevel = Math.Min(Math.Floor(currentPowerLevels.Values.Average()) + 2, _season.HardCap);
                     currentPowerLevels[slot] = Math.Max(pinnacleItemLevel, currentPowerLevels[slot]);
                 }
 

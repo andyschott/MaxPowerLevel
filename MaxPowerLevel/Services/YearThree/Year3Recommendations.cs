@@ -4,21 +4,15 @@ using MaxPowerLevel.Models;
 
 namespace MaxPowerLevel.Services.YearThree
 {
-    public abstract class Year3Recommendations : AbstractRecommendations
+    public abstract class Year3Recommendations : AbstractSeason
     {
-        protected override int SoftCap => 900;
-        protected override int TargetRankPlus20Power => 200;
+        public override int SoftCap => 900;
 
         private const string MasterNightmareHunt = "Nightmare Hunt: Master";
         private const string PitOfHeresy = "Pit of Heresy";
         private const string GardenOfSalvation = "Garden of Salvation";
         
-        protected Year3Recommendations(IManifest manifest, SeasonPass seasonPass)
-            : base(manifest, seasonPass)
-        {
-        }
-
-        protected override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
+        public override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
         {
             return new[]
             {
@@ -35,9 +29,9 @@ namespace MaxPowerLevel.Services.YearThree
                     }
                 }),
                 // Nightmare Hunt: Master can drop anything
-                new PinnacleActivity(MasterNightmareHunt, new[] { PinnacleActivities.AllSlots }),
+                new PinnacleActivity(MasterNightmareHunt, new[] { AllSlots }),
                 // Nightfall: The Ordeal Weekly Score can drop anything
-                PinnacleActivities.NightfallScore,
+                NightfallScore,
                 // Garden of Salvation
                 new PinnacleActivity(GardenOfSalvation, new[]
                 {
@@ -72,13 +66,5 @@ namespace MaxPowerLevel.Services.YearThree
                 })
             };
         }
-
-        protected override IEnumerable<PinnacleActivity> CreateWeakPinnacleActivities() => new[]
-        {
-            PinnacleActivities.Strikes,
-            PinnacleActivities.Crucible,
-            PinnacleActivities.Gambit,
-            PinnacleActivities.Clan
-        };
     }
 }

@@ -7,34 +7,30 @@ namespace MaxPowerLevel.Services.YearFour
 {
     public class Season14Recommendations : Year4Recommendations
     {
-        public Season14Recommendations(IManifest manifest, SeasonPass seasonPass) : base(manifest, seasonPass)
-        {
-        }
+        public override int SoftCap => 1260;
 
-        protected override int SoftCap => 1260;
+        public override int PowerfulCap => 1310;
 
-        protected override int PowerfulCap => 1310;
+        public override int HardCap => 1320;
 
-        protected override int HardCap => 1320;
+        public override uint SeasonHash => 2809059429;
 
-        protected override uint SeasonHash => 2809059429;
-
-        protected override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
+        public override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
         {
             return base.CreatePinnacleActivities().Concat(new[]
             {
                 _vaultOfGlass,
                 _pressage,
-                new PinnacleActivity("Corrupted Conflux Chests", new[] { PinnacleActivities.AllSlots }),
+                new PinnacleActivity("Corrupted Conflux Chests", new[] { AllSlots }),
             });
         }
 
-        protected override IEnumerable<PinnacleActivity> CreateWeakPinnacleActivities()
+        public override IEnumerable<PinnacleActivity> CreateWeakPinnacleActivities()
         {
             return base.CreateWeakPinnacleActivities().Concat(new[]
             {
-                new PinnacleActivity("Override Conflux Chests", new[] { PinnacleActivities.AllSlots }),
-                new PinnacleActivity("Splicer Servitor Bounties", new[] { PinnacleActivities.AllSlots }),
+                new PinnacleActivity("Override Conflux Chests", new[] { AllSlots }),
+                new PinnacleActivity("Splicer Servitor Bounties", new[] { AllSlots }),
             });
         }
     }

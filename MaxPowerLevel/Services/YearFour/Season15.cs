@@ -12,7 +12,7 @@ namespace MaxPowerLevel.Services.YearFour
 
         public override int HardCap => 1330;
 
-        public override uint SeasonHash => 2698636901;
+        public override uint SeasonHash => 2809059428;
 
         public override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
         {

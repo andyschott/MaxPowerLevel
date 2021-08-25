@@ -18,6 +18,8 @@ namespace MaxPowerLevel.Services.YearFour
         {
             return base.CreatePinnacleActivities().Concat(new[]
             {
+                _vaultOfGlass,
+                _pressage,
                 new PinnacleActivity("Shattered Realm", new[] { AllSlots })
             });
         }

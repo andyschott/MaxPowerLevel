@@ -171,7 +171,7 @@ namespace MaxPowerLevel.Controllers
             DestinyComponentType.ProfileInventories, DestinyComponentType.Characters,
             DestinyComponentType.CharacterInventories, DestinyComponentType.CharacterEquipment,
             DestinyComponentType.ItemInstances, DestinyComponentType.ProfileProgression,
-            DestinyComponentType.CharacterProgressions);
+            DestinyComponentType.CharacterProgressions, DestinyComponentType.CharacterActivities);
 
         var equipped = profile.CharacterEquipment.Data.Values
             .SelectMany(items => items.Items);
@@ -201,6 +201,7 @@ namespace MaxPowerLevel.Controllers
             Items = maxGear[item.Key].Values,
             PowerLevel = _maxPower.ComputePower(maxGear[item.Key].Values),
             Progressions = profile.CharacterProgressions.Data[item.Key].Progressions,
+            Activities = profile.CharacterActivities.Data[item.Key].AvailableActivities,
             Engrams = engrams[item.Key]
         });
         var recommendations = await _recommendations.GetRecommendations(recomendationInfo);

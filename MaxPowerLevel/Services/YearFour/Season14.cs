@@ -14,7 +14,7 @@ namespace MaxPowerLevel.Services.YearFour
 
         public override uint SeasonHash => 2809059429;
 
-        public override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
+        protected override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
         {
             return base.CreatePinnacleActivities().Concat(new[]
             {

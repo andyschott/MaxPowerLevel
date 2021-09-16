@@ -12,7 +12,7 @@ namespace MaxPowerLevel.Services.YearThree
 
         private const string SundialLegend = "The Sundial: Legend";
 
-        public override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
+        protected override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
         {
             return base.CreatePinnacleActivities()
                 .Concat(new[]

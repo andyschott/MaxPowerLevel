@@ -11,7 +11,7 @@ namespace MaxPowerLevel.Services.YearThree
         private const string PitOfHeresy = "Pit of Heresy";
         private const string GardenOfSalvation = "Garden of Salvation";
         
-        public override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
+        protected override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
         {
             return new[]
             {

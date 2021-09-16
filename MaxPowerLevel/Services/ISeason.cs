@@ -13,7 +13,7 @@ namespace MaxPowerLevel.Services
         int TargetRankPlus20Power { get; }
         DateTime? EndDateOverride { get; }
 
-        IEnumerable<PinnacleActivity> CreatePinnacleActivities();
+        IEnumerable<PinnacleActivity> CreatePinnacleActivities(bool includeTrials);
         IEnumerable<PinnacleActivity> CreateWeakPinnacleActivities();
     }
 }

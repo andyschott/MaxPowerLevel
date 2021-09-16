@@ -73,7 +73,7 @@ namespace MaxPowerLevel.Controllers
                 DestinyComponentType.CharacterInventories, DestinyComponentType.CharacterEquipment,
                 DestinyComponentType.ItemInstances, DestinyComponentType.ProfileProgression);
             var characterProgressionsTask = _destiny.GetCharacterInfo(accessToken, membershipType, id, characterId,
-                DestinyComponentType.Characters, DestinyComponentType.CharacterProgressions);
+                DestinyComponentType.Characters, DestinyComponentType.CharacterProgressions, DestinyComponentType.CharacterActivities);
 
             await Task.WhenAll(profileTask, characterProgressionsTask);
 
@@ -115,6 +115,7 @@ namespace MaxPowerLevel.Controllers
                 Items = maxGear.Values,
                 PowerLevel = maxPower,
                 Progressions = characterProgressions.Progressions.Data.Progressions,
+                Activities = characterProgressions.Activities.Data.AvailableActivities,
                 Engrams = engrams
             });
 

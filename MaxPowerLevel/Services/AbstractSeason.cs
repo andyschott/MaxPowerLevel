@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using MaxPowerLevel.Models;
 
 namespace MaxPowerLevel.Services
@@ -18,7 +19,22 @@ namespace MaxPowerLevel.Services
 
         public virtual DateTime? EndDateOverride => null;
 
-        public abstract IEnumerable<PinnacleActivity> CreatePinnacleActivities();
+        public IEnumerable<PinnacleActivity> CreatePinnacleActivities(bool includeTrials)
+        {
+            var pinnacleActivities = CreatePinnacleActivities();
+            if(includeTrials)
+            {
+                pinnacleActivities = pinnacleActivities.Concat(new[]
+                {
+                    TrialsRoundWins,
+                    TrialsWins,
+                });
+            }
+
+            return pinnacleActivities;
+        }
+
+        protected abstract IEnumerable<PinnacleActivity> CreatePinnacleActivities();
         public virtual IEnumerable<PinnacleActivity> CreateWeakPinnacleActivities() => new[]
         {
             Strikes,
@@ -49,6 +65,10 @@ namespace MaxPowerLevel.Services
             new PinnacleActivity("Clan Rewards", new[] { AllSlots });
         protected static readonly PinnacleActivity NightfallScore =
             new PinnacleActivity("Nightfall: The Ordeal Weekly Score", new[] { AllSlots });
+        protected static readonly PinnacleActivity TrialsRoundWins =
+            new PinnacleActivity("Trials of Osiris (Round Wins)", new[] { AllSlots });
+        protected static readonly PinnacleActivity TrialsWins =
+            new PinnacleActivity("Trials of Osiris (Match Wins)", new[] { AllSlots });
 
         protected static readonly PinnacleActivity Prophecy = new PinnacleActivity("Prophecy", new[]
         {

@@ -19,7 +19,7 @@ namespace MaxPowerLevel.Services.YearThree
 
         public override DateTime? EndDateOverride => new DateTime(2020, 11, 10, 17, 0, 0, DateTimeKind.Utc);
 
-        public override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
+        protected override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
         {
             return base.CreatePinnacleActivities()
                 .Concat(new[]

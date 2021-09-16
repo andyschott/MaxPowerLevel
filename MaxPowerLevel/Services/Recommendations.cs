@@ -17,6 +17,7 @@ namespace MaxPowerLevel.Services
         private const int TrailingPowerLevelDifference = 2;
         // Items purchased from Vendors are 20 power levels below the character's max
         private const int VendorPowerLevelDifference = 20;
+        private const uint TrialsOfOsirisActivityHash = 588019350;
 
         public Recommendations(IManifest manifest, ISeason season, SeasonPass seasonPass)
         {
@@ -122,7 +123,8 @@ namespace MaxPowerLevel.Services
                     recommendations.Add(recommendation);
                 }
 
-                recommendations.AddRange(CreatePinnacleRecommendations(info.IntPowerLevel, info.Items));
+                var includeTrials = info.Activities.Any(activity => activity.ActivityHash == TrialsOfOsirisActivityHash);
+                recommendations.AddRange(CreatePinnacleRecommendations(info.IntPowerLevel, info.Items, includeTrials));
                 return recommendations;
             }
 
@@ -249,14 +251,15 @@ namespace MaxPowerLevel.Services
             return $"{description} ({string.Join(", ", slotNames)})";
         }
 
-        protected virtual IEnumerable<Recommendation> CreatePinnacleRecommendations(int powerLevel, IEnumerable<Item> items)
+        protected virtual IEnumerable<Recommendation> CreatePinnacleRecommendations(int powerLevel, IEnumerable<Item> items, bool includeTrials)
         {
             var powerLevels = items.ToDictionary(item => item.Slot.Hash, item => (decimal)item.PowerLevel);
 
             var strongPinnacles = new Recommendation("Pinnacle Engrams",
-                SortPinnacleActivites(_season.CreatePinnacleActivities(), powerLevels));
+                SortPinnacleActivites(_season.CreatePinnacleActivities(includeTrials), powerLevels));
             var weakPinnacles = new Recommendation("Pinnacle Engrams (Weak)",
                 SortPinnacleActivites(_season.CreateWeakPinnacleActivities(), powerLevels));
+            
 
             var levelsToGo = _season.HardCap - powerLevel;
             if (levelsToGo <= 2)

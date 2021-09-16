@@ -15,7 +15,7 @@ namespace MaxPowerLevel.Services.YearFour
 
         public override uint SeasonHash => 2809059427;
         public override DateTime? EndDateOverride => new DateTime(2021, 2, 9, 17, 0, 0, DateTimeKind.Utc);
-        public override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
+        protected override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
         {
             var year4Pinnacles = base.CreatePinnacleActivities();
             return year4Pinnacles.Concat(new[]

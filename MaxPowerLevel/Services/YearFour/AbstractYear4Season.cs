@@ -78,7 +78,7 @@ namespace MaxPowerLevel.Services.YearFour
                 ItemSlot.SlotHashes.Power // Machine Gun, Rocket Launcher
             }
         });
-        public override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
+        protected override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
         {
             return new[]
             {

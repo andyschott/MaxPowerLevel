@@ -20,6 +20,7 @@ namespace MaxPowerLevel.Models
         }
         public int IntPowerLevel { get; private set; }
         public IDictionary<uint, DestinyProgression> Progressions { get; set; }
+        public IEnumerable<DestinyActivity> Activities { get; set; }
         public IEnumerable<Item> Engrams { get; set; }
     }
 }

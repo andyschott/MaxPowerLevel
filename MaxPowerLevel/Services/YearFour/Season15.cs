@@ -20,7 +20,9 @@ namespace MaxPowerLevel.Services.YearFour
             {
                 _vaultOfGlass,
                 _pressage,
-                new PinnacleActivity("Shattered Realm", new[] { AllSlots })
+                new PinnacleActivity("Shattered Realm", new[] { AllSlots }),
+                new PinnacleActivity("Grasp of Avarice", new[] { AllSlots }),
+                new PinnacleActivity("Dares of Eternity - High Score", new[] { AllSlots })
             });
         }
     }

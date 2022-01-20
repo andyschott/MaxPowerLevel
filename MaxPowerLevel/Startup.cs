@@ -2,6 +2,7 @@
 using Destiny2;
 using MaxPowerLevel.Helpers;
 using MaxPowerLevel.Services;
+using MaxPowerLevel.Services.YearFive;
 using MaxPowerLevel.Services.YearFour;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -94,22 +95,19 @@ namespace MaxPowerLevel
             });
         }
 
-        private static readonly DateTime Season15StartDate =
-            new DateTime(2021, 8, 24, 17, 0, 0, DateTimeKind.Utc);
+        private static readonly DateTime Season16StartDate =
+            new DateTime(2022, 2, 22, 17, 0, 0, DateTimeKind.Utc);
 
         private void AddSeason(IServiceCollection services)
         {
             services.AddScoped<ISeason>(sp =>
             {
-                var manifest = sp.GetRequiredService<IManifest>();
-                var seasonPass = sp.GetRequiredService<SeasonPass>();
-
-                if(DateTime.UtcNow < Season15StartDate)
+                if(DateTime.UtcNow < Season16StartDate)
                 {
-                    return new Season14();
+                    return new Season15();
                 }
 
-                return new Season15();
+                return new Season16();
             });
         }
     }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using MaxPowerLevel.Models;
@@ -15,13 +14,12 @@ namespace MaxPowerLevel.Services.YearFive
 
         public override uint SeasonHash => 2809059431;
 
-        // TODO: Verify this once the actual manifest is out
-        public override DateTime? EndDateOverride => new DateTime(2022, 5, 17, 17, 0, 0, DateTimeKind.Utc);
-
         protected override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
         {
-            // TODO: Populate once new pinnacle activities are known
-            return Enumerable.Empty<PinnacleActivity>();
+            return base.CreatePinnacleActivities().Concat(new[]
+            {
+                new PinnacleActivity("For the Light...Against the Light", new[] { AllSlots })
+            });
         }
     }
 }

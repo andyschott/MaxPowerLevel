@@ -9,6 +9,7 @@ namespace MaxPowerLevel.Services.YearFive
         protected static readonly PinnacleActivity _daresOfEternity = new PinnacleActivity("Dares of Eternity Pinnacle Challenge", new[] { AllSlots });
         protected static readonly PinnacleActivity _voxObscura = new PinnacleActivity("Vox Obscura", new[] { AllSlots });
         protected static readonly PinnacleActivity _wellspring = new PinnacleActivity("Wellspring Pinnacle Challenge", new[] { AllSlots });
+        protected static readonly PinnacleActivity _missionHighScore = new PinnacleActivity("Weekly Mission High Score", new[] { AllSlots });
 
         protected override IEnumerable<PinnacleActivity> CreatePinnacleActivities()
         {
@@ -18,7 +19,8 @@ namespace MaxPowerLevel.Services.YearFive
                 _graspOfAvarice,
                 _daresOfEternity,
                 _voxObscura,
-                _wellspring
+                _wellspring,
+                _missionHighScore   
             };
         }
     }

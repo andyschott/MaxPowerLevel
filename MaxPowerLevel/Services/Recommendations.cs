@@ -66,7 +66,7 @@ namespace MaxPowerLevel.Services
             {
                 var count = engramUpgrades.Count();
                 var countString = count > 1 ? $" {count}" : string.Empty;
-                engramsRecommendation  = new Recommendation($"Decrypt Engrams at the Cryptarch{count}");
+                engramsRecommendation  = new Recommendation($"Decrypt Engrams at the Cryptarch {countString}");
             }
 
             if(info.IntPowerLevel < _season.PowerfulCap)

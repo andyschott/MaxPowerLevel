@@ -18,7 +18,8 @@ namespace MaxPowerLevel.Services.YearFive
         {
             return base.CreatePinnacleActivities().Concat(new[]
             {
-                new PinnacleActivity("For the Light...Against the Light", new[] { AllSlots })
+                new PinnacleActivity("For the Light...Against the Light", new[] { AllSlots }),
+                _vowOfTheDisciple
             });
         }
     }

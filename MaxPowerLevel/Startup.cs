@@ -95,19 +95,19 @@ namespace MaxPowerLevel
             });
         }
 
-        private static readonly DateTime Season16StartDate =
-            new DateTime(2022, 2, 22, 17, 0, 0, DateTimeKind.Utc);
+        private static readonly DateTime Season17StartDate =
+            new DateTime(2022, 5, 24, 17, 0, 0, DateTimeKind.Utc);
 
         private void AddSeason(IServiceCollection services)
         {
             services.AddScoped<ISeason>(sp =>
             {
-                if(DateTime.UtcNow < Season16StartDate)
+                if(DateTime.UtcNow < Season17StartDate)
                 {
-                    return new Season15();
+                    return new Season16();
                 }
 
-                return new Season16();
+                return new Season17();
             });
         }
     }
